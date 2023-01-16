@@ -13,8 +13,7 @@ class UserT {
         return "sucess";
     }
 
-    @Post
-    
+
 
 
 
