@@ -12,8 +12,7 @@ class UserT {
     fun test(): String{
         return "sucess";
     }
-
-    @Post
+    
     
 
 
