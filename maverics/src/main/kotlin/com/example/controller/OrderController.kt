@@ -24,30 +24,29 @@ class OrderController {
 
         var currentOrder = Order()
 
-        currentOrder.orderId= orderID
+        currentOrder.orderId = orderID
         orderID++
         currentOrder.quantity = body["quantity"].intValue
         currentOrder.type = body["type"].stringValue
         currentOrder.price = body["price"].intValue
         currentOrder.status = "unfilled"
-        currentOrder.userName=username
+        currentOrder.userName = username
 
 
         orderList.add(currentOrder)
 
 
-
-        var n= orderList.size
-
+        var n = orderList.size
 
 
 
-        if(currentOrder.type=="BUY") {
+
+        if (currentOrder.type == "BUY") {
 
 
-            while(true) {
+            while (true) {
 
-                if(currentOrder.quantity==0)
+                if (currentOrder.quantity == 0)
                     break;
 
                 var minSellerPrice = -1;
@@ -72,43 +71,39 @@ class OrderController {
                 if (orderID != -1) {
 
 
-                    var transQuantity=min(orderList[orderID].quantity,currentOrder.quantity)
+                    var transQuantity = min(orderList[orderID].quantity, currentOrder.quantity)
 
-                    orderList[orderID].quantity-=transQuantity
-                    currentOrder.quantity-=transQuantity
+                    orderList[orderID].quantity -= transQuantity
+                    currentOrder.quantity -= transQuantity
 
-                    var tmpList : MutableList<Pair<Int,Int>> = mutableListOf()
-                    if(!transactions.containsKey(currentOrder.orderId))
-                    {
-                        transactions.put(currentOrder.orderId,tmpList)
+                    var tmpList: MutableList<Pair<Int, Int>> = mutableListOf()
+                    if (!transactions.containsKey(currentOrder.orderId)) {
+                        transactions.put(currentOrder.orderId, tmpList)
                     }
 
-                    tmpList= transactions.get(currentOrder.orderId)!!
+                    tmpList = transactions.get(currentOrder.orderId)!!
 
-                    tmpList.add(Pair(transQuantity,minSellerPrice))
-
-
-                    currentOrder.status="partially filled"
-                    orderList[orderID].status="partially filled"
+                    tmpList.add(Pair(transQuantity, minSellerPrice))
 
 
-                    if(currentOrder.quantity==0)
-                        currentOrder.status="filled"
-                    if(orderList[orderID].quantity==0)
-                        orderList[orderID].status="filled"
+                    currentOrder.status = "partially filled"
+                    orderList[orderID].status = "partially filled"
 
-                }
-                else
+
+                    if (currentOrder.quantity == 0)
+                        currentOrder.status = "filled"
+                    if (orderList[orderID].quantity == 0)
+                        orderList[orderID].status = "filled"
+
+                } else
                     break;
             }
 
-        }
-        else
-        {
+        } else {
 
-            while(true) {
+            while (true) {
 
-                if(currentOrder.quantity==0)
+                if (currentOrder.quantity == 0)
                     break;
 
                 var minSellerPrice = -1;
@@ -133,43 +128,38 @@ class OrderController {
                 if (orderID != -1) {
 
 
-                    var transQuantity=min(orderList[orderID].quantity,currentOrder.quantity)
+                    var transQuantity = min(orderList[orderID].quantity, currentOrder.quantity)
 
-                    orderList[orderID].quantity-=transQuantity
-                    currentOrder.quantity-=transQuantity
+                    orderList[orderID].quantity -= transQuantity
+                    currentOrder.quantity -= transQuantity
 
-                    var tmpList : MutableList<Pair<Int,Int>> = mutableListOf()
-                    if(!transactions.containsKey(currentOrder.orderId))
-                    {
-                        transactions.put(currentOrder.orderId,tmpList)
+                    var tmpList: MutableList<Pair<Int, Int>> = mutableListOf()
+                    if (!transactions.containsKey(currentOrder.orderId)) {
+                        transactions.put(currentOrder.orderId, tmpList)
                     }
 
-                    tmpList= transactions.get(currentOrder.orderId)!!
+                    tmpList = transactions.get(currentOrder.orderId)!!
 
-                    tmpList.add(Pair(transQuantity,minSellerPrice))
-
-
-                    currentOrder.status="partially filled"
-                    orderList[orderID].status="partially filled"
+                    tmpList.add(Pair(transQuantity, minSellerPrice))
 
 
-                    if(currentOrder.quantity==0)
-                        currentOrder.status="filled"
-                    if(orderList[orderID].quantity==0)
-                        orderList[orderID].status="filled"
+                    currentOrder.status = "partially filled"
+                    orderList[orderID].status = "partially filled"
 
-                }
-                else
+
+                    if (currentOrder.quantity == 0)
+                        currentOrder.status = "filled"
+                    if (orderList[orderID].quantity == 0)
+                        orderList[orderID].status = "filled"
+
+                } else
                     break;
             }
 
 
-
-
-
         }
 
-    return currentOrder;
-
+        return currentOrder;
+    }
 }
 
