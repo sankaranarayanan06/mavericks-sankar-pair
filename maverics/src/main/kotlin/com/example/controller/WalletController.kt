@@ -19,15 +19,16 @@ var walletList = mutableMapOf<String,Wallet>()
 @Controller("/user")
 class WalletController(){
     @Post("/{username}/wallet")
-    fun wallet(@PathVariable username: String, @Body body: JsonObject): HttpResponse<Any> {
+    fun wallet(@PathVariable username: String, @Body body: JsonObject): HttpResponse<*> {
         if(UserValidation.isUserExist(username)){
-            val amount:Int = body["amount"].intValue;
+            val amount:Int = body["amount"].intValue
             val wallet: Wallet = walletList.get(username)!!
             wallet.freeAmount += amount
-            return HttpResponse.ok(wallet)
-        }
-        else {
-            return HttpResponse.ok("user does not exist")
+
+            return HttpResponse.ok(Message("${amount} added to account. Remaining Free amount is ${wallet.freeAmount}" +
+                    " and remaining locked amount is ${wallet.lockedAmount}"))
+        }else{
+            return HttpResponse.ok(Message("User not exist"))
         }
     }
 }

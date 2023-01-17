@@ -20,7 +20,10 @@ class InventoryController(){
         if(UserValidation.isUserExist(username)) {
             val quantityToAdd = body["quantity"].intValue
             inventorMap[username]!!.freeESOP += quantityToAdd
-            return HttpResponse.ok(Message("{quantityToAdd} ESOPS added to account"))
+            val userInventory = inventorMap[username]
+
+            return HttpResponse.ok(Message("${quantityToAdd} ESOPS added to account. Remaining quantity is ${userInventory!!.freeESOP}" +
+                    " and remaining locked quantity is ${userInventory!!.lockESOP}"))
         }
         else
         {
