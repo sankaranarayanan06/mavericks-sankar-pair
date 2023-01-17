@@ -1,5 +1,6 @@
 package com.example.controller
 
+
 class Wallet(val user_id:Int){
     var free:Int = 0
         get() = field
