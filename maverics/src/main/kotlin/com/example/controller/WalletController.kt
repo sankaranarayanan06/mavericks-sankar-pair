@@ -10,16 +10,6 @@ import io.micronaut.http.annotation.Post
 import io.micronaut.json.tree.JsonObject
 import com.example.model.Inventory
 
-var inventoryMap= HashMap<String, Inventory>()
-class Inventory(val user_id:Int){
-    var free:Int = 0
-        get() = field
-        set(value) {field = value}
-
-    var locked:Int = 0
-        get() = field
-        set(value) {field = value}
-}
 
 
 var walletList = mutableMapOf<String,Wallet>()
