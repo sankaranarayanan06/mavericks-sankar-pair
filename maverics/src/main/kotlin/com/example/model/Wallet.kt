@@ -5,7 +5,5 @@ import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.PathVariable
 
 
-class Wallet(val username:String, var freeAmount:Int = 0, var lockedAmount:Int = 0) {
-
-
+class Wallet(var freeAmount:Int = 0, var lockedAmount:Int = 0) {
 }

@@ -1,6 +1,8 @@
 package com.example.controller
 
+import com.example.model.Inventory
 import com.example.model.User
+import com.example.model.Wallet
 import com.example.model.allUsers
 import com.example.validations.UserValidation
 import io.micronaut.http.HttpResponse
@@ -36,6 +38,8 @@ class UserController {
 
         if (isUserNameUnique && isEmailUnique && isPhoneNumberUnique) {
             allUsers.put(username, newUser)
+            inventorMap.put(username, Inventory())
+            walletList.put(username, Wallet())
             successBody.add("User added successfully");
 
            return HttpResponse.ok(successBody);

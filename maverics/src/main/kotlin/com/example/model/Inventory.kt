@@ -1,6 +1,6 @@
 package com.example.model
 
 class Inventory {
-    var freeESOP:String=""
-    var lockESOP:String=""
+    var freeESOP:Int=0
+    var lockESOP:Int=0
 }
