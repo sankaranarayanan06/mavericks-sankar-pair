@@ -7,7 +7,7 @@ import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Post
 import io.micronaut.json.tree.JsonObject
 
-
+var orderList= mutableListOf<Order>()
 
 @Controller("/user")
 class OrderController {
