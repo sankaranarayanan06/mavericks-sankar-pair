@@ -1,6 +1,6 @@
 package com.example.controller
 
-class Inventory(val user_id:Int){
+class InventoryController(val username:String){
     var free:Int = 0
         get() = field
         set(value) {field = value}

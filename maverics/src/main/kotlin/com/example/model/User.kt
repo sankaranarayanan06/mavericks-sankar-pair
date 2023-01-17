@@ -5,5 +5,4 @@ class User {
     var lastName :String =""
     var phoneNumber :Int=0
     var email:String=""
-    var userName:String=""
 }
