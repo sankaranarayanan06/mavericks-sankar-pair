@@ -20,7 +20,7 @@ class InventoryController(){
         if(UserValidation.isUserExist(username)) {
             val quantityToAdd = body["quantity"].intValue
             inventorMap[username]!!.freeESOP += quantityToAdd
-            return HttpResponse.ok(Message("{quantityToAdd} ESOPS added to account"))
+            return HttpResponse.ok(Message("${quantityToAdd} ESOPS added to account"))
         }
         else
         {
