@@ -12,15 +12,15 @@ var inventorMap = HashMap<String,Inventory>()
 
 @Controller("/user")
 class InventoryController(){
-    @Post("/{username}/addInventory")
+    @Post("/{username}/inventory")
     fun addEsopInInventory(@PathVariable username: String, @Body body: JsonObject): HttpResponse<*> {
         if(UserValidation.isUserExist(username)) {
             val quantityToAdd = body["quantity"].intValue
             inventorMap[username]!!.freeESOP += quantityToAdd
             val userInventory = inventorMap[username]
 
-            return HttpResponse.ok(Message("${quantityToAdd} ESOPS added to account. Remaining quantity is ${userInventory!!.freeESOP}" +
-                    " and remaining locked quantity is ${userInventory!!.lockESOP}"))
+            return HttpResponse.ok(Message("${quantityToAdd} ESOPS added to account.\n Total free quantity is ${userInventory!!.freeESOP}\n" +
+                    "Total locked quantity is ${userInventory!!.lockESOP}"))
         }
         else
         {

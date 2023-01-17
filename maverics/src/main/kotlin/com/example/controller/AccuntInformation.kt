@@ -1,6 +1,5 @@
 package com.example.controller
 
-import com.example.model.Accountinfo
 import com.example.model.Message
 import com.example.model.Wallet
 import com.example.model.allUsers
@@ -46,7 +45,10 @@ class AccuntInformation {
         }
         else
         {
-            return HttpResponse.badRequest(Message("User not exist"))
+            val errorResponse = mutableMapOf<String, MutableList<String>>();
+            var errorList = mutableListOf<String>("User doesn't exist.")
+            errorResponse["error"] = errorList;
+            return HttpResponse.badRequest(errorResponse);
         }
 
 

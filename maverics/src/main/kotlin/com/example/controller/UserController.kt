@@ -22,7 +22,7 @@ class UserController {
     }
 
     @Post("/register")
-    fun register(@Body body:JsonObject): HttpResponse<MutableList<String>>{
+    fun register(@Body body:JsonObject): HttpResponse<*>{
         val firstName:String = body["firstName"].stringValue
         val lastName:String = body["lastName"].stringValue
         val phoneNumber:String = body["phoneNumber"].stringValue
@@ -31,7 +31,7 @@ class UserController {
         var newUser = User(firstName, lastName, phoneNumber, email, username)
         var errorsBody = mutableListOf<String>();
         var successBody = mutableListOf<String>()
-
+        val errorResponse = mutableMapOf<String, MutableList<String>>();
         var isUserNameUnique = UserValidation().ifUniqueUsername(username)
         var isEmailUnique = UserValidation().ifUniqueEmail(email)
         var isPhoneNumberUnique = UserValidation().ifUniquePhoneNumber(phoneNumber)
@@ -45,20 +45,22 @@ class UserController {
 
            return HttpResponse.ok(successBody);
         } else {
+            var errorList = mutableListOf<String>()
+            errorResponse["error"] = errorList;
             if (!isUserNameUnique) {
-                errorsBody.add("User with given username already exists");
+                errorList.add("User with given username already exists");
             }
 
             if (!isPhoneNumberUnique) {
-                errorsBody.add("User with given phone number already exists");
+                errorList.add("User with given phone number already exists");
             }
 
             if (!isEmailUnique) {
-                errorsBody.add("User with given email already exists");
+                errorList.add("User with given email already exists");
             }
         }
 
-        return HttpResponse.badRequest(errorsBody);
+        return HttpResponse.badRequest(errorResponse);
     }
 
 
