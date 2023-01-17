@@ -1,5 +1,5 @@
 package com.example.model
 
-class Message(msg :String) {
-    var message=""
-}
+data class Message(
+    var message :String=""
+)
