@@ -20,9 +20,15 @@ class UserT {
 
     @Post("/register")
     fun register(@Body body:JsonObject):User{
+        val firstName:String = body["firstName"].stringValue
+        val lastName:String = body["lastName"].stringValue
+        val phoneNumber:String = body["phoneNumber"].stringValue
+        val email:String = body["email"].stringValue
+        val username:String = body["username"].stringValue
+        var newUser=User(firstName, lastName, phoneNumber, email, username)
 
-        var newUser=User()
-        newUser.firstName=body["firstName"].stringValue
+        // check all fields
+        // check if phonenumber, email and username are unique.
         return newUser
     }
 
