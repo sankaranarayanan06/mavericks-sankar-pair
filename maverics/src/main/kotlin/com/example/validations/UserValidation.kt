@@ -33,12 +33,11 @@ class UserValidation {
     }
     companion object {
         fun isUserExist(username: String): Boolean {
-            for (user in allUsers.keys) {
-                if (allUsers[user]!!.userName == username) {
-                    return true
-                }
+            if (allUsers.containsKey(username)) {
+                return true;
             }
-            return false
+
+            return false;
         }
     }
 

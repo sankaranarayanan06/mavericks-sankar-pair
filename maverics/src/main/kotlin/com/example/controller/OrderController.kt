@@ -2,6 +2,9 @@ package com.example.controller
 
 import com.example.model.Order
 import com.example.model.User
+import com.example.validations.OrderValidation
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus
 import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.PathVariable
@@ -19,35 +22,31 @@ var transactions: MutableMap<Int,MutableList<Pair<Int,Int>>> =  mutableMapOf()
 class OrderController {
 
     @Post("/{username}/order")
-    fun register(@Body body: JsonObject,@PathVariable username:String): Order {
-
-
+    fun register(@Body body: JsonObject,@PathVariable username:String): HttpResponse<*> {
         var currentOrder = Order()
 
-        currentOrder.orderId = orderID
-        orderID++
-        currentOrder.quantity = body["quantity"].intValue
-        currentOrder.type = body["type"].stringValue
-        currentOrder.price = body["price"].intValue
-        currentOrder.status = "unfilled"
-        currentOrder.userName = username
+        currentOrder.orderId = orderID;
+        orderID++;
+        currentOrder.quantity = body["quantity"].intValue;
+        currentOrder.type = body["type"].stringValue;
+        currentOrder.price = body["price"].intValue;
+        currentOrder.status = "unfilled";
+        currentOrder.userName = username;
 
-
-        orderList.add(currentOrder)
-
+        orderList.add(currentOrder);
 
 
         var n = orderList.size
 
-
-
-
         if (currentOrder.type == "BUY") {
+            var orderAmount = currentOrder.price * currentOrder.quantity;
+
+            if (!OrderValidation().ifSufficientAmountInWallet(username, orderAmount)) {
+                return HttpResponse.badRequest("Insufficient amount in wallet")
+            }
 
             walletList.get(username)!!.lockedAmount+=(currentOrder.quantity*currentOrder.price)
             walletList.get(username)!!.freeAmount-=(currentOrder.quantity*currentOrder.price)
-
-
 
             while (true) {
 
@@ -57,15 +56,10 @@ class OrderController {
                 var minSellerPrice = 1000000000;
                 var orderID = -1;
 
-
-
                 for (orderNumber in 0..n - 2) {
-
-
                     var orderPrev = orderList[orderNumber]
 
                     if ((orderPrev.status != "filled") && (currentOrder.type != orderPrev.type)) {
-
                         if (orderPrev.price < minSellerPrice) {
                             minSellerPrice = orderPrev.price
                             orderID = orderPrev.orderId
@@ -74,8 +68,6 @@ class OrderController {
                 }
 
                 if (orderID != -1) {
-
-
                     var transQuantity = min(orderList[orderID].quantity, currentOrder.quantity)
 
                     orderList[orderID].quantity -= transQuantity
@@ -90,6 +82,7 @@ class OrderController {
 
 
                     var tmpList: MutableList<Pair<Int, Int>> = mutableListOf()
+
                     if (!transactions.containsKey(currentOrder.orderId)) {
                         transactions.put(currentOrder.orderId, tmpList)
                     }
@@ -98,10 +91,8 @@ class OrderController {
 
                     tmpList.add(Pair(transQuantity, minSellerPrice))
 
-
                     currentOrder.status = "partially filled"
                     orderList[orderID].status = "partially filled"
-
 
                     if (currentOrder.quantity == 0)
                         currentOrder.status = "filled"
@@ -113,7 +104,9 @@ class OrderController {
             }
 
         } else {
-
+            if (!OrderValidation().ifSufficientQuantity(username, currentOrder.quantity)) {
+                return HttpResponse.badRequest("Insufficient ESOPs to place sell order");
+            }
 
             inventorMap.get(username)!!.lockESOP+=(currentOrder.quantity)
             inventorMap.get(username)!!.freeESOP-=(currentOrder.quantity)
@@ -125,8 +118,6 @@ class OrderController {
 
                 var minSellerPrice = -1;
                 var orderID = -1;
-
-
 
                 for (orderNumber in 0..n - 2) {
 
@@ -184,7 +175,7 @@ class OrderController {
 
         }
 
-        return currentOrder;
+        return HttpResponse.ok(currentOrder);
     }
 }
 

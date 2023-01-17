@@ -18,16 +18,43 @@ var walletList = mutableMapOf<String,Wallet>()
 
 @Controller("/user")
 class WalletController(){
-    @Post("/{username}/wallet")
-    fun wallet(@PathVariable username: String, @Body body: JsonObject): HttpResponse<Message> {
+    @Post("/{username}/addMoney")
+    fun addMoneyInWallet(@PathVariable username: String, @Body body: JsonObject): HttpResponse<*> {
         if(UserValidation.isUserExist(username)){
             val amount:Int = body["amount"].intValue
             val wallet: Wallet = walletList.get(username)!!
             wallet.freeAmount += amount
-            return HttpResponse.ok(Message("${amount} added to account"))
-        }else{
-            return HttpResponse.ok(Message("User not exist"))
-        }
 
+            return HttpResponse.ok(Message("${amount} added to account."))
+        }else{
+            val response = mutableMapOf<String, String>();
+            response["error"] = "User doesn't exist."
+
+            return HttpResponse.badRequest(response);
+        }
+    }
+
+    @Get("/{username}/walletBalance")
+    fun getWalletBalance(@PathVariable username: String): HttpResponse<*> {
+        if (UserValidation.isUserExist(username)) {
+            val userWallet = walletList[username];
+
+            val response = mutableMapOf<String, Int>();
+
+            if (userWallet != null) {
+                response["Free Balance"] = userWallet.freeAmount
+            };
+
+            if (userWallet != null) {
+                response["Locked Balance"] = userWallet.lockedAmount
+            };
+
+            return HttpResponse.ok(response)
+        } else {
+            val response = mutableMapOf<String, String>();
+            response["error"] = "User doesn't exist.";
+
+            return HttpResponse.badRequest(response);
+        }
     }
 }

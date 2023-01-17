@@ -40,6 +40,7 @@ class UserController {
             allUsers.put(username, newUser)
             inventorMap.put(username, Inventory())
             walletList.put(username, Wallet())
+
             successBody.add("User added successfully");
 
            return HttpResponse.ok(successBody);
