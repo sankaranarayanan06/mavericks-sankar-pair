@@ -1,4 +1,5 @@
 package com.example.controller
+import com.example.model.Wallet
 
 class InventoryController(val username:String){
     var free:Int = 0

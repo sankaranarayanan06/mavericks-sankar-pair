@@ -1,5 +1,4 @@
 package com.example.controller
-
 import com.example.model.Order
 import com.example.model.Wallet
 import io.micronaut.http.HttpResponse
@@ -9,6 +8,19 @@ import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.PathVariable
 import io.micronaut.http.annotation.Post
 import io.micronaut.json.tree.JsonObject
+import com.example.model.Inventory
+
+var inventoryMap= HashMap<String, Inventory>()
+class Inventory(val user_id:Int){
+    var free:Int = 0
+        get() = field
+        set(value) {field = value}
+
+    var locked:Int = 0
+        get() = field
+        set(value) {field = value}
+}
+
 
 var walletList = mutableMapOf<String,Wallet>()
 
