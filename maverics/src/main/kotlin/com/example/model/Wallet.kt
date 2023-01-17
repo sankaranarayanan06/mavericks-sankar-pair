@@ -2,6 +2,6 @@ package com.example.model
 
 class Wallet {
     var userName:String =""
-    var freeAmount:String=""
-    var lockAmount:String=""
+    var freeAmount:Int=0
+    var lockAmount:Int=0
 }
