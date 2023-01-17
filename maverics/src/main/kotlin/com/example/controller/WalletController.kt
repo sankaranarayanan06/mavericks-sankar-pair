@@ -21,18 +21,13 @@ class WalletController(){
     @Post("/{username}/wallet")
     fun wallet(@PathVariable username: String, @Body body: JsonObject): HttpResponse<Any> {
         if(UserValidation.isUserExist(username)){
-            val amount:Int = body["amount"].intValue
-//            if(!walletList.containsKey(username)){
-//                val newWallet:Wallet = Wallet(username)
-//                walletList.put(username,newWallet)
-//            }
+            val amount:Int = body["amount"].intValue;
             val wallet: Wallet = walletList.get(username)!!
             wallet.freeAmount += amount
             return HttpResponse.ok(wallet)
-        }else{
-
+        }
+        else {
             return HttpResponse.ok("user does not exist")
         }
-
     }
 }
