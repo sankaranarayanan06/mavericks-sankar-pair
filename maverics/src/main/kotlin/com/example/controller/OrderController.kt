@@ -49,6 +49,7 @@ class OrderController {
                 return HttpResponse.badRequest(response);
             }
 
+
             walletList.get(username)!!.lockedAmount+=(currentOrder.quantity*currentOrder.price)
             walletList.get(username)!!.freeAmount-=(currentOrder.quantity*currentOrder.price)
 
@@ -76,6 +77,9 @@ class OrderController {
 
                     orderList[orderID].quantity -= transQuantity
                     currentOrder.quantity -= transQuantity
+
+                    walletList.get(username)!!.lockedAmount-=((currentOrder.price-minSellerPrice)*transQuantity)
+                    walletList.get(username)!!.freeAmount+=((currentOrder.price-minSellerPrice)*transQuantity)
 
                     walletList.get(username)!!.lockedAmount-=(transQuantity*minSellerPrice)
                     walletList.get(orderList.get(orderID).userName)!!.freeAmount+=(transQuantity*minSellerPrice)
@@ -124,7 +128,7 @@ class OrderController {
                 if (currentOrder.quantity == 0)
                     break;
 
-                var minSellerPrice = -1;
+                var minSellerPrice = 1000000000;
                 var orderID = -1;
 
                 for (orderNumber in 0..n - 2) {
@@ -148,6 +152,10 @@ class OrderController {
 
                     orderList[orderID].quantity -= transQuantity
                     currentOrder.quantity -= transQuantity
+
+                    walletList.get(orderList.get(orderID).userName)!!.lockedAmount-=((orderList.get(orderID).price-minSellerPrice)*transQuantity)
+                    walletList.get(orderList.get(orderID).userName)!!.freeAmount+=((orderList.get(orderID).price-minSellerPrice)*transQuantity)
+
 
                     walletList.get(username)!!.freeAmount+=(transQuantity*minSellerPrice)
                     walletList.get(orderList.get(orderID).userName)!!.lockedAmount-=(transQuantity*minSellerPrice)
