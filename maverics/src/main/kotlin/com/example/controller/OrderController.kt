@@ -36,6 +36,7 @@ class OrderController {
         orderList.add(currentOrder)
 
 
+
         var n = orderList.size
 
 
@@ -43,13 +44,17 @@ class OrderController {
 
         if (currentOrder.type == "BUY") {
 
+            walletList.get(username)!!.lockedAmount+=(currentOrder.quantity*currentOrder.price)
+            walletList.get(username)!!.freeAmount-=(currentOrder.quantity*currentOrder.price)
+
+
 
             while (true) {
 
                 if (currentOrder.quantity == 0)
                     break;
 
-                var minSellerPrice = -1;
+                var minSellerPrice = 1000000000;
                 var orderID = -1;
 
 
@@ -76,6 +81,14 @@ class OrderController {
                     orderList[orderID].quantity -= transQuantity
                     currentOrder.quantity -= transQuantity
 
+                    walletList.get(username)!!.lockedAmount-=(transQuantity*minSellerPrice)
+                    walletList.get(orderList.get(orderID).userName)!!.freeAmount+=(transQuantity*minSellerPrice)
+
+                    inventorMap.get(orderList.get(orderID).userName)!!.lockESOP-=(transQuantity)
+                    inventorMap.get(username)!!.freeESOP+=(transQuantity)
+
+
+
                     var tmpList: MutableList<Pair<Int, Int>> = mutableListOf()
                     if (!transactions.containsKey(currentOrder.orderId)) {
                         transactions.put(currentOrder.orderId, tmpList)
@@ -100,6 +113,10 @@ class OrderController {
             }
 
         } else {
+
+
+            inventorMap.get(username)!!.lockESOP+=(currentOrder.quantity)
+            inventorMap.get(username)!!.freeESOP-=(currentOrder.quantity)
 
             while (true) {
 
@@ -132,6 +149,14 @@ class OrderController {
 
                     orderList[orderID].quantity -= transQuantity
                     currentOrder.quantity -= transQuantity
+
+                    walletList.get(username)!!.freeAmount+=(transQuantity*minSellerPrice)
+                    walletList.get(orderList.get(orderID).userName)!!.lockedAmount-=(transQuantity*minSellerPrice)
+
+                    inventorMap.get(orderList.get(orderID).userName)!!.freeESOP+=(transQuantity)
+                    inventorMap.get(username)!!.lockESOP-=(transQuantity)
+
+
 
                     var tmpList: MutableList<Pair<Int, Int>> = mutableListOf()
                     if (!transactions.containsKey(currentOrder.orderId)) {
