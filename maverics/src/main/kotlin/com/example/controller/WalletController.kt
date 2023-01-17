@@ -27,8 +27,9 @@ class WalletController(){
 
             return HttpResponse.ok(Message("${amount} added to account."))
         }else{
-            val response = mutableMapOf<String, String>();
-            response["error"] = "User doesn't exist."
+            val response = mutableMapOf<String, MutableList<String>>();
+            var errorList = mutableListOf<String>("User doesn't exist.")
+            response["error"] = errorList;
 
             return HttpResponse.badRequest(response);
         }
@@ -51,8 +52,9 @@ class WalletController(){
 
             return HttpResponse.ok(response)
         } else {
-            val response = mutableMapOf<String, String>();
-            response["error"] = "User doesn't exist.";
+            val response = mutableMapOf<String, MutableList<String>>();
+            var errorList = mutableListOf<String>("User doesn't exist.")
+            response["error"] = errorList;
 
             return HttpResponse.badRequest(response);
         }

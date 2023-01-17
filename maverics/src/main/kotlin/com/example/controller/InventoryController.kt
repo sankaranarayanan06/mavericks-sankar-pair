@@ -4,10 +4,7 @@ import com.example.model.Message
 import com.example.model.Wallet
 import com.example.validations.UserValidation
 import io.micronaut.http.HttpResponse
-import io.micronaut.http.annotation.Body
-import io.micronaut.http.annotation.Controller
-import io.micronaut.http.annotation.PathVariable
-import io.micronaut.http.annotation.Post
+import io.micronaut.http.annotation.*
 import io.micronaut.json.tree.JsonObject
 
 
@@ -15,8 +12,8 @@ var inventorMap = HashMap<String,Inventory>()
 
 @Controller("/user")
 class InventoryController(){
-    @Post("/{username}/inventory")
-    fun wallet(@PathVariable username: String, @Body body: JsonObject): HttpResponse<Message> {
+    @Post("/{username}/addInventory")
+    fun addEsopInInventory(@PathVariable username: String, @Body body: JsonObject): HttpResponse<*> {
         if(UserValidation.isUserExist(username)) {
             val quantityToAdd = body["quantity"].intValue
             inventorMap[username]!!.freeESOP += quantityToAdd
@@ -27,7 +24,37 @@ class InventoryController(){
         }
         else
         {
-            return HttpResponse.ok(Message("User not exist"))
+            val response = mutableMapOf<String, MutableList<String>>();
+            var errorList = mutableListOf<String>("User doesn't exist.")
+            response["error"] = errorList;
+
+            return HttpResponse.badRequest(response);
+        }
+    }
+
+    @Get("/{username}/inventoryBalance")
+    fun getInventory(@PathVariable username: String): HttpResponse<*> {
+        if (UserValidation.isUserExist(username)) {
+
+            val userInventory = inventorMap[username]
+
+            val response = mutableMapOf<String, Int>();
+
+            if (userInventory != null) {
+                response["Free ESOP"] = userInventory.freeESOP
+            };
+
+            if (userInventory != null) {
+                response["Locked ESOP"] = userInventory.lockESOP
+            };
+
+            return HttpResponse.ok(response)
+        } else {
+            val response = mutableMapOf<String, MutableList<String>>();
+            var errorList = mutableListOf<String>("User doesn't exist.")
+            response["error"] = errorList;
+
+            return HttpResponse.badRequest(response);
         }
     }
 }

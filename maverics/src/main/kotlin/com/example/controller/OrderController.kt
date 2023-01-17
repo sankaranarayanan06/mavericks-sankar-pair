@@ -42,7 +42,11 @@ class OrderController {
             var orderAmount = currentOrder.price * currentOrder.quantity;
 
             if (!OrderValidation().ifSufficientAmountInWallet(username, orderAmount)) {
-                return HttpResponse.badRequest("Insufficient amount in wallet")
+                val response = mutableMapOf<String, MutableList<String>>();
+                var errorList = mutableListOf<String>("Insufficient amount in wallet")
+                response["error"] = errorList;
+
+                return HttpResponse.badRequest(response);
             }
 
             walletList.get(username)!!.lockedAmount+=(currentOrder.quantity*currentOrder.price)
@@ -105,7 +109,11 @@ class OrderController {
 
         } else {
             if (!OrderValidation().ifSufficientQuantity(username, currentOrder.quantity)) {
-                return HttpResponse.badRequest("Insufficient ESOPs to place sell order");
+                val response = mutableMapOf<String, MutableList<String>>();
+                var errorList = mutableListOf<String>("Insufficient quantity of ESOPs")
+                response["error"] = errorList;
+
+                return HttpResponse.badRequest(response);
             }
 
             inventorMap.get(username)!!.lockESOP+=(currentOrder.quantity)

@@ -36,7 +36,11 @@ class OrderHistory(){
         }
         else
         {
-            return HttpResponse.ok(Message("User not exist"))
+            val response = mutableMapOf<String, MutableList<String>>();
+            var errorList = mutableListOf<String>("User doesn't exist.")
+            response["error"] = errorList;
+
+            return HttpResponse.badRequest(response);
         }
     }
 }
