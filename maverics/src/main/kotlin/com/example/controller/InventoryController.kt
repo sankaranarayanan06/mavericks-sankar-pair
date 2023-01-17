@@ -16,7 +16,7 @@ var inventorMap = HashMap<String,Inventory>()
 @Controller("/user")
 class InventoryController(){
     @Post("/{username}/inventory")
-    fun wallet(@PathVariable username: String, @Body body: JsonObject): HttpResponse<Message> {
+    fun wallet(@PathVariable username: String, @Body body: JsonObject): HttpResponse<Any> {
         if(UserValidation.isUserExist(username)) {
             val quantityToAdd = body["quantity"].intValue
             inventorMap[username]!!.freeESOP += quantityToAdd
@@ -24,7 +24,7 @@ class InventoryController(){
         }
         else
         {
-            return HttpResponse.ok(Message("User not exist"))
+            return HttpResponse.ok("User not exist")
         }
     }
 }
