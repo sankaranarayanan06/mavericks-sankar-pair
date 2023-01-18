@@ -32,7 +32,7 @@ class InventoryController(){
         }
     }
 
-    @Get("/{username}/inventoryBalance")
+    @Get("/{username}/inventory")
     fun getInventory(@PathVariable username: String): HttpResponse<*> {
         if (UserValidation.isUserExist(username)) {
 
