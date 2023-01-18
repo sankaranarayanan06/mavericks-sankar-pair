@@ -28,7 +28,7 @@ class OrderHistory(){
                         listOfTransactions.add(Transaction(eachTrans.first,eachTrans.second))
                         quantity += eachTrans.first
                     }
-                    listOfOrders.add(com.example.model.OrderHistory(orderID, orderList[i].price,orderList[i].quantity+quantity,orderList[i].type,listOfTransactions))
+                    listOfOrders.add(com.example.model.OrderHistory(orderID+1, orderList[i].price,orderList[i].quantity+quantity,orderList[i].type,listOfTransactions))
                 }
             }
             return HttpResponse.ok(listOfOrders)
