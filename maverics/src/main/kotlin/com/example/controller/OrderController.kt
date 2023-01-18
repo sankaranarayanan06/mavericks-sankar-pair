@@ -30,7 +30,7 @@ class OrderController {
             var currentOrder = Order()
 
             var transT : MutableList<Pair<Int,Int>> = mutableListOf()
-            transactions.put(orderID,transT)
+
 
             currentOrder.orderId = orderID;
 
@@ -55,6 +55,7 @@ class OrderController {
                 }
 
                 orderList.add(currentOrder);
+                transactions.put(orderID,transT)
 
                 walletList.get(username)!!.lockedAmount += (currentOrder.quantity * currentOrder.price)
                 walletList.get(username)!!.freeAmount -= (currentOrder.quantity * currentOrder.price)
@@ -138,6 +139,7 @@ class OrderController {
                 }
 
                 orderList.add(currentOrder);
+                transactions.put(orderID,transT);
 
                 inventorMap.get(username)!!.lockESOP += (currentOrder.quantity)
                 inventorMap.get(username)!!.freeESOP -= (currentOrder.quantity)
@@ -225,8 +227,14 @@ class OrderController {
 
             }
 
-            var ret=currentOrder
-            ret.orderId+=1
+
+            var ret:Order = Order()
+            ret.orderId = currentOrder.orderId+1
+            ret.userName = currentOrder.userName
+            ret.quantity = currentOrder.quantity
+            ret.status = currentOrder.status
+            ret.price = currentOrder.price
+
             return HttpResponse.ok(ret);
         }else
         {

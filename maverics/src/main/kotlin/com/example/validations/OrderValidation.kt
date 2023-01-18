@@ -6,8 +6,6 @@ import com.example.controller.walletList
 class OrderValidation {
 
     fun ifSufficientAmountInWallet(username: String, amount: Int) : Boolean {
-        println(amount);
-        print(walletList[username]!!.freeAmount);
         if (walletList[username]!!.freeAmount < amount) {
             return false;
         }
