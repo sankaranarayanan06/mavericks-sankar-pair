@@ -50,6 +50,4 @@ class AccuntInformation {
             errorResponse["error"] = errorList;
             return HttpResponse.badRequest(errorResponse);
         }
-
-
     }}

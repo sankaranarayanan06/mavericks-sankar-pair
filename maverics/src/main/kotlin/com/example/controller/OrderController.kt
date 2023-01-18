@@ -39,8 +39,6 @@ class OrderController {
             currentOrder.status = "unfilled";
             currentOrder.userName = username;
 
-            orderList.add(currentOrder);
-
 
             var n = orderList.size
 
@@ -55,6 +53,7 @@ class OrderController {
                     return HttpResponse.badRequest(response);
                 }
 
+                orderList.add(currentOrder);
 
                 walletList.get(username)!!.lockedAmount += (currentOrder.quantity * currentOrder.price)
                 walletList.get(username)!!.freeAmount -= (currentOrder.quantity * currentOrder.price)
@@ -136,6 +135,8 @@ class OrderController {
 
                     return HttpResponse.badRequest(response);
                 }
+
+                orderList.add(currentOrder);
 
                 inventorMap.get(username)!!.lockESOP += (currentOrder.quantity)
                 inventorMap.get(username)!!.freeESOP -= (currentOrder.quantity)
