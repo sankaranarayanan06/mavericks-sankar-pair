@@ -66,7 +66,7 @@ class OrderController {
                     for (orderNumber in 0..n - 2) {
                         var orderPrev = orderList[orderNumber]
 
-                        if ((orderPrev.status != "filled") && (currentOrder.type != orderPrev.type)) {
+                        if ((orderPrev.status != "filled") && (currentOrder.type != orderPrev.type) && (currentOrder.price>=orderPrev.price)) {
                             if (orderPrev.price < minSellerPrice) {
                                 minSellerPrice = orderPrev.price
                                 orderID = orderPrev.orderId
@@ -139,7 +139,7 @@ class OrderController {
                     if (currentOrder.quantity == 0)
                         break;
 
-                    var minSellerPrice = 1000000000;
+                    var minSellerPrice = -1;
                     var orderID = -1;
 
                     for (orderNumber in 0..n - 2) {
@@ -147,7 +147,7 @@ class OrderController {
 
                         var orderPrev = orderList[orderNumber]
 
-                        if ((orderPrev.status != "filled") && (currentOrder.type != orderPrev.type)) {
+                        if ((orderPrev.status != "filled") && (currentOrder.type != orderPrev.type) && (currentOrder.price<=orderPrev.price)) {
 
                             if (orderPrev.price > minSellerPrice) {
                                 minSellerPrice = orderPrev.price
