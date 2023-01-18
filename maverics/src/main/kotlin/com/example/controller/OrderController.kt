@@ -95,10 +95,20 @@ class OrderController {
                         if (!transactions.containsKey(currentOrder.orderId)) {
                             transactions.put(currentOrder.orderId, tmpList)
                         }
+                        if (!transactions.containsKey(orderList.get(orderID).orderId)) {
+                            transactions.put(orderList.get(orderID).orderId, tmpList)
+                        }
+
 
                         tmpList = transactions.get(currentOrder.orderId)!!
-
                         tmpList.add(Pair(transQuantity, minSellerPrice))
+
+                        tmpList = transactions.get(orderList.get(orderID).orderId)!!
+                        tmpList.add(Pair(transQuantity, minSellerPrice))
+
+
+
+
 
                         currentOrder.status = "partially filled"
                         orderList[orderID].status = "partially filled"
@@ -166,13 +176,29 @@ class OrderController {
 
 
                         var tmpList: MutableList<Pair<Int, Int>> = mutableListOf()
+
+
+
+
+
                         if (!transactions.containsKey(currentOrder.orderId)) {
                             transactions.put(currentOrder.orderId, tmpList)
                         }
+                        if (!transactions.containsKey(orderList.get(orderID).orderId)) {
+                            transactions.put(orderList.get(orderID).orderId, tmpList)
+                        }
+
 
                         tmpList = transactions.get(currentOrder.orderId)!!
-
                         tmpList.add(Pair(transQuantity, minSellerPrice))
+
+                        tmpList = transactions.get(orderList.get(orderID).orderId)!!
+                        tmpList.add(Pair(transQuantity, minSellerPrice))
+
+
+
+
+
 
 
                         currentOrder.status = "partially filled"
