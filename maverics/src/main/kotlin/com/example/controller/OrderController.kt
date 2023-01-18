@@ -1,6 +1,7 @@
 package com.example.controller
 
 import com.example.model.Order
+import com.example.model.Transaction
 import com.example.model.User
 import com.example.validations.OrderValidation
 import com.example.validations.UserValidation
@@ -37,6 +38,8 @@ class OrderController {
 
             orderList.add(currentOrder);
 
+            var transT : MutableList<Pair<Int,Int>> = mutableListOf()
+            transactions.put(orderID,transT)
 
             var n = orderList.size
 
@@ -54,6 +57,8 @@ class OrderController {
 
                 walletList.get(username)!!.lockedAmount += (currentOrder.quantity * currentOrder.price)
                 walletList.get(username)!!.freeAmount -= (currentOrder.quantity * currentOrder.price)
+
+
 
                 while (true) {
 
@@ -95,15 +100,15 @@ class OrderController {
                         if (!transactions.containsKey(currentOrder.orderId)) {
                             transactions.put(currentOrder.orderId, tmpList)
                         }
-                        if (!transactions.containsKey(orderList.get(orderID).orderId)) {
-                            transactions.put(orderList.get(orderID).orderId, tmpList)
+                        if (!transactions.containsKey(orderID)) {
+                            transactions.put(orderID, tmpList)
                         }
 
 
                         tmpList = transactions.get(currentOrder.orderId)!!
                         tmpList.add(Pair(transQuantity, minSellerPrice))
 
-                        tmpList = transactions.get(orderList.get(orderID).orderId)!!
+                        tmpList = transactions.get(orderID)!!
                         tmpList.add(Pair(transQuantity, minSellerPrice))
 
 
