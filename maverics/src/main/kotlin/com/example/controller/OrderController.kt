@@ -56,6 +56,8 @@ class OrderController {
 
                 orderList.add(currentOrder);
                 transactions.put(orderID,transT)
+                n = orderList.size
+
 
                 walletList.get(username)!!.lockedAmount += (currentOrder.quantity * currentOrder.price)
                 walletList.get(username)!!.freeAmount -= (currentOrder.quantity * currentOrder.price)
@@ -140,6 +142,7 @@ class OrderController {
 
                 orderList.add(currentOrder);
                 transactions.put(orderID,transT);
+                n = orderList.size
 
                 inventorMap.get(username)!!.lockESOP += (currentOrder.quantity)
                 inventorMap.get(username)!!.freeESOP -= (currentOrder.quantity)
@@ -165,6 +168,8 @@ class OrderController {
                             }
                         }
                     }
+                    println(minSellerPrice)
+                    println(orderID)
 
                     if (orderID != -1) {
 
@@ -174,8 +179,10 @@ class OrderController {
                         orderList[orderID].quantity -= transQuantity
                         currentOrder.quantity -= transQuantity
 
-                        walletList.get(orderList.get(orderID).userName)!!.lockedAmount -= ((orderList.get(orderID).price - minSellerPrice) * transQuantity)
-                        walletList.get(orderList.get(orderID).userName)!!.freeAmount += ((orderList.get(orderID).price - minSellerPrice) * transQuantity)
+                        var valOf :Int =((minSellerPrice-currentOrder.price) * transQuantity)
+                        println(valOf)
+                        walletList.get(orderList.get(orderID).userName)!!.lockedAmount -= valOf
+                        walletList.get(orderList.get(orderID).userName)!!.freeAmount += valOf
 
 
                         walletList.get(username)!!.freeAmount += (transQuantity * minSellerPrice)
