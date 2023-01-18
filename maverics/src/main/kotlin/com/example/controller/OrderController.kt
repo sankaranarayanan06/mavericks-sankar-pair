@@ -28,6 +28,9 @@ class OrderController {
         if(UserValidation.isUserExist(username)) {
             var currentOrder = Order()
 
+            var transT : MutableList<Pair<Int,Int>> = mutableListOf()
+            transactions.put(orderID,transT)
+
             currentOrder.orderId = orderID;
             orderID++;
             currentOrder.quantity = body["quantity"].intValue;
@@ -38,8 +41,6 @@ class OrderController {
 
             orderList.add(currentOrder);
 
-            var transT : MutableList<Pair<Int,Int>> = mutableListOf()
-            transactions.put(orderID,transT)
 
             var n = orderList.size
 
