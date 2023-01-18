@@ -15,7 +15,7 @@ import io.micronaut.json.tree.JsonObject
 import java.lang.Integer.min
 
 var orderList= mutableListOf<Order>()
-var orderID=0;
+var orderID=-1;
 
 var transactions: MutableMap<Int,MutableList<Pair<Int,Int>>> =  mutableMapOf()
 /// quantity--price
@@ -26,13 +26,14 @@ class OrderController {
     @Post("/{username}/order")
     fun register(@Body body: JsonObject,@PathVariable username:String): HttpResponse<*> {
         if(UserValidation.isUserExist(username)) {
+            orderID++;
             var currentOrder = Order()
 
             var transT : MutableList<Pair<Int,Int>> = mutableListOf()
             transactions.put(orderID,transT)
 
             currentOrder.orderId = orderID;
-            orderID++;
+
             currentOrder.quantity = body["quantity"].intValue;
             currentOrder.type = body["type"].stringValue;
             currentOrder.price = body["price"].intValue;
@@ -223,7 +224,9 @@ class OrderController {
 
             }
 
-            return HttpResponse.ok(currentOrder);
+            var ret=currentOrder
+            ret.orderId+=1
+            return HttpResponse.ok(ret);
         }else
         {
             val response = mutableMapOf<String, MutableList<String>>();
