@@ -12,7 +12,6 @@ import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.PathVariable
 import io.micronaut.http.annotation.Post
 import io.micronaut.json.tree.JsonObject
-import java.lang.Integer.min
 
 var orderList= mutableListOf<Order>()
 var orderID=-1;
@@ -39,6 +38,25 @@ class OrderController {
             currentOrder.price = body["price"].longValue;
             currentOrder.status = "unfilled";
             currentOrder.userName = username;
+
+            var errorList = mutableListOf<String>()
+
+
+            if(currentOrder.quantity < 0){
+                errorList.add("Invalid Order Quantity")
+            }
+
+            if(currentOrder.price < 0){
+                errorList.add("Invalid order price")
+            }
+
+
+            if(errorList.size > 0)
+            {
+                val response = mutableMapOf<String, MutableList<String>>();
+                response["error"] = errorList;
+                return HttpResponse.badRequest(response);
+            }
 
 
             var n = orderList.size
@@ -69,7 +87,7 @@ class OrderController {
                     if (currentOrder.quantity == 0L)
                         break;
 
-                    var minSellerPrice:Long = 1000000000;
+                    var minSellerPrice:Long = 100000000000000000;
                     var orderID = -1;
 
                     for (orderNumber in 0..n - 2) {
@@ -243,7 +261,6 @@ class OrderController {
 
 
             }
-
             else
             {
                 val response = mutableMapOf<String, MutableList<String>>();
@@ -261,7 +278,8 @@ class OrderController {
             ret.price = currentOrder.price
 
             return HttpResponse.ok(ret);
-        }else
+        }
+        else
         {
             val response = mutableMapOf<String, MutableList<String>>();
             var errorList = mutableListOf<String>("User doesn't exist.")
