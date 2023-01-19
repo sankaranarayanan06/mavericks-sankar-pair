@@ -33,7 +33,6 @@ class OrderController {
 
 
             currentOrder.orderId = orderID;
-
             currentOrder.quantity = body["quantity"].intValue;
             currentOrder.type = body["type"].stringValue;
             currentOrder.price = body["price"].intValue;
