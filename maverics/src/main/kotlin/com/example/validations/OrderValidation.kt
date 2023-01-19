@@ -5,7 +5,7 @@ import com.example.controller.walletList
 
 class OrderValidation {
 
-    fun ifSufficientAmountInWallet(username: String, amount: Int) : Boolean {
+    fun ifSufficientAmountInWallet(username: String, amount: Long) : Boolean {
         if (walletList[username]!!.freeAmount < amount) {
             return false;
         }
@@ -13,7 +13,7 @@ class OrderValidation {
         return true;
     }
 
-    fun ifSufficientQuantity(username: String, quantity: Int) : Boolean {
+    fun ifSufficientQuantity(username: String, quantity: Long) : Boolean {
         if (inventorMap[username]!!.freeESOP < quantity) {
             return false;
         }

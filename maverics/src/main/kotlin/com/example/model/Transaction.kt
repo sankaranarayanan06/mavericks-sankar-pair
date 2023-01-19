@@ -1,7 +1,5 @@
 package com.example.model
 
 class Transaction(
-    var quantity:Int=0,
-    var price:Int=0)
-{
-}
+    var quantity:Long=0,
+    var price: Long =0)

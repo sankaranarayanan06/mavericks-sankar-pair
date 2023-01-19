@@ -21,8 +21,8 @@ class AccuntInformation {
             var userInventory = inventorMap.get(username);
 
             var response = mutableMapOf<String, Any>()
-            var walletInfo = mutableMapOf<String, Int>()
-            var inventoryInfo = mutableMapOf<String, Int>()
+            var walletInfo = mutableMapOf<String, Long>()
+            var inventoryInfo = mutableMapOf<String, Long>()
 
             walletInfo["free"] = userWallet!!.freeAmount
             walletInfo["locked"] = userWallet!!.lockedAmount
@@ -36,7 +36,7 @@ class AccuntInformation {
             response["lastName"] = user!!.lastName
             response["phoneNumber"] = user!!.phoneNumber
             response["email"] = user!!.email
-            
+
             response["wallet"] = walletInfo
             response["inventory"] = inventoryInfo
 

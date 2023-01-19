@@ -18,7 +18,7 @@ class OrderHistory(){
             var listOfOrders= mutableListOf<OrderHistory>()
             for (i in 0 until orderList.size) {
                 var orderID :Int
-                var quantity=0
+                var quantity:Long=0
                 if(username== orderList[i].userName)
                 {
                     orderID= orderList[i].orderId

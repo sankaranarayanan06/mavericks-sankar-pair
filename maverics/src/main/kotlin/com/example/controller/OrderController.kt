@@ -17,7 +17,7 @@ import java.lang.Integer.min
 var orderList= mutableListOf<Order>()
 var orderID=-1;
 
-var transactions: MutableMap<Int,MutableList<Pair<Int,Int>>> =  mutableMapOf()
+var transactions: MutableMap<Int,MutableList<Pair<Long,Long>>> =  mutableMapOf()
 /// quantity--price
 
 @Controller("/user")
@@ -29,14 +29,14 @@ class OrderController {
             orderID++;
             var currentOrder = Order()
 
-            var transT : MutableList<Pair<Int,Int>> = mutableListOf()
+            var transT : MutableList<Pair<Long,Long>> = mutableListOf()
 
 
             currentOrder.orderId = orderID;
 
-            currentOrder.quantity = body["quantity"].intValue;
+            currentOrder.quantity = body["quantity"].longValue;
             currentOrder.type = body["type"].stringValue;
-            currentOrder.price = body["price"].intValue;
+            currentOrder.price = body["price"].longValue;
             currentOrder.status = "unfilled";
             currentOrder.userName = username;
 
@@ -66,10 +66,10 @@ class OrderController {
 
                 while (true) {
 
-                    if (currentOrder.quantity == 0)
+                    if (currentOrder.quantity == 0L)
                         break;
 
-                    var minSellerPrice = 1000000000;
+                    var minSellerPrice:Long = 1000000000;
                     var orderID = -1;
 
                     for (orderNumber in 0..n - 2) {
@@ -84,22 +84,32 @@ class OrderController {
                     }
 
                     if (orderID != -1) {
-                        var transQuantity = min(orderList[orderID].quantity, currentOrder.quantity)
+                        var transQuantity:Long = Math.min(orderList[orderID].quantity, currentOrder.quantity).toLong()
 
                         orderList[orderID].quantity -= transQuantity
                         currentOrder.quantity -= transQuantity
 
+
+                        // Return amount if the buy price is more than seller order price
                         walletList.get(username)!!.lockedAmount -= ((currentOrder.price - minSellerPrice) * transQuantity)
                         walletList.get(username)!!.freeAmount += ((currentOrder.price - minSellerPrice) * transQuantity)
 
+                        // Updating the wallets afer transaction is completed
                         walletList.get(username)!!.lockedAmount -= (transQuantity * minSellerPrice)
-                        walletList.get(orderList.get(orderID).userName)!!.freeAmount += (transQuantity * minSellerPrice)
 
+                        // Calculating the transaction charge for the seller
+                        var charge = ((transQuantity * minSellerPrice * 2) / 100);
+
+                        // Adding money to seller's wallet with charge deducted
+                        walletList.get(orderList.get(orderID).userName)!!.freeAmount += (transQuantity * minSellerPrice - charge)
+
+
+                        // Updating inventory at both ends
                         inventorMap.get(orderList.get(orderID).userName)!!.lockESOP -= (transQuantity)
                         inventorMap.get(username)!!.freeESOP += (transQuantity)
 
 
-                        var tmpList: MutableList<Pair<Int, Int>> = mutableListOf()
+                        var tmpList: MutableList<Pair<Long, Long>> = mutableListOf()
 
                         if (!transactions.containsKey(currentOrder.orderId)) {
                             transactions.put(currentOrder.orderId, tmpList)
@@ -122,16 +132,16 @@ class OrderController {
                         currentOrder.status = "partially filled"
                         orderList[orderID].status = "partially filled"
 
-                        if (currentOrder.quantity == 0)
+                        if (currentOrder.quantity == 0L)
                             currentOrder.status = "filled"
-                        if (orderList[orderID].quantity == 0)
+                        if (orderList[orderID].quantity == 0L)
                             orderList[orderID].status = "filled"
 
                     } else
                         break;
                 }
 
-            } else {
+            } else if(currentOrder.type == "SELL"){
                 if (!OrderValidation().ifSufficientQuantity(username, currentOrder.quantity)) {
                     val response = mutableMapOf<String, MutableList<String>>();
                     var errorList = mutableListOf<String>("Insufficient quantity of ESOPs")
@@ -149,10 +159,10 @@ class OrderController {
 
                 while (true) {
 
-                    if (currentOrder.quantity == 0)
+                    if (currentOrder.quantity == 0L)
                         break;
 
-                    var minSellerPrice = -1;
+                    var minSellerPrice:Long = -1;
                     var orderID = -1;
 
                     for (orderNumber in 0..n - 2) {
@@ -174,12 +184,12 @@ class OrderController {
                     if (orderID != -1) {
 
 
-                        var transQuantity = min(orderList[orderID].quantity, currentOrder.quantity)
+                        var transQuantity = Math.min(orderList[orderID].quantity, currentOrder.quantity)
 
                         orderList[orderID].quantity -= transQuantity
                         currentOrder.quantity -= transQuantity
 
-                        var valOf :Int =((minSellerPrice-currentOrder.price) * transQuantity)
+                        var valOf :Long =((minSellerPrice-currentOrder.price) * transQuantity)
                         println(valOf)
                         walletList.get(orderList.get(orderID).userName)!!.lockedAmount -= valOf
                         walletList.get(orderList.get(orderID).userName)!!.freeAmount += valOf
@@ -192,7 +202,7 @@ class OrderController {
                         inventorMap.get(username)!!.lockESOP -= (transQuantity)
 
 
-                        var tmpList: MutableList<Pair<Int, Int>> = mutableListOf()
+                        var tmpList: MutableList<Pair<Long, Long>> = mutableListOf()
 
 
 
@@ -222,9 +232,9 @@ class OrderController {
                         orderList[orderID].status = "partially filled"
 
 
-                        if (currentOrder.quantity == 0)
+                        if (currentOrder.quantity == 0L)
                             currentOrder.status = "filled"
-                        if (orderList[orderID].quantity == 0)
+                        if (orderList[orderID].quantity == 0L)
                             orderList[orderID].status = "filled"
 
                     } else
@@ -232,6 +242,14 @@ class OrderController {
                 }
 
 
+            }
+
+            else
+            {
+                val response = mutableMapOf<String, MutableList<String>>();
+                var errorList = mutableListOf<String>("Invalid Order Type")
+                response["error"] = errorList;
+                return HttpResponse.badRequest(response);
             }
 
 
@@ -253,4 +271,3 @@ class OrderController {
 
     }
 }
-

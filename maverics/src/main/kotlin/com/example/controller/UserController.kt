@@ -11,8 +11,25 @@ import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Post
 import io.micronaut.json.tree.JsonObject
+import io.micronaut.validation.validator.constraints.EmailValidator
+import javax.validation.constraints.Email
+import io.micronaut.validation.validator.constraints.PatternValidator
 
 
+fun isEmailValid(email: String) : Boolean {
+        var emailRegex = ("^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]|[\\w-]{2,}))@"
+                + "((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
+                + "[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\."
+                + "([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
+                + "[0-9]{1,2}|25[0-5]|2[0-4][0-9]))|"
+                + "([a-zA-Z]+[\\w-]+\\.)+[a-zA-Z]{2,4})$")
+        return emailRegex.toRegex().matches(email)
+}
+
+fun checkUserName(username: String): Boolean {
+    println(username)
+    return ("^[A-Za-z0-9_-]*$").toRegex().matches(username)
+}
 @Controller("/user")
 class UserController {
 
@@ -22,46 +39,143 @@ class UserController {
     }
 
     @Post("/register")
-    fun register(@Body body:JsonObject): HttpResponse<*>{
-        val firstName:String = body["firstName"].stringValue
-        val lastName:String = body["lastName"].stringValue
-        val phoneNumber:String = body["phoneNumber"].stringValue
-        val email:String = body["email"].stringValue
-        val username:String = body["username"].stringValue
-        var newUser = User(firstName, lastName, phoneNumber, email, username)
-        var errorsBody = mutableListOf<String>();
-        var successBody = mutableListOf<String>()
+    fun register(@Body body:JsonObject): HttpResponse<*> {
+        var errorList = mutableListOf<String>()
         val errorResponse = mutableMapOf<String, MutableList<String>>();
-        var isUserNameUnique = UserValidation().ifUniqueUsername(username)
-        var isEmailUnique = UserValidation().ifUniqueEmail(email)
-        var isPhoneNumberUnique = UserValidation().ifUniquePhoneNumber(phoneNumber)
+        var firstName: String=""
+        var lastName:String=""
+        var phoneNumber: String=""
+        var email: String = ""
+        var username: String=""
+        try {
+            if(body["firstName"] == null){
+                errorList.add("First Name is Required")
+            }
+            try {
+                firstName = body["firstName"].stringValue
 
-        if (isUserNameUnique && isEmailUnique && isPhoneNumberUnique) {
-            allUsers.put(username, newUser)
-            inventorMap.put(username, Inventory())
-            walletList.put(username, Wallet())
+                if(firstName.length <= 0){
+                    errorList.add("First Name cannot be empty")
+                }
 
-            successBody.add("User added successfully");
+            }
+            catch (e:Exception){
 
-           return HttpResponse.ok(successBody);
-        } else {
-            var errorList = mutableListOf<String>()
-            errorResponse["error"] = errorList;
-            if (!isUserNameUnique) {
-                errorList.add("User with given username already exists");
             }
 
-            if (!isPhoneNumberUnique) {
-                errorList.add("User with given phone number already exists");
+
+            if(body["lastName"] == null){
+                errorList.add("Last Name is Required")
             }
 
-            if (!isEmailUnique) {
-                errorList.add("User with given email already exists");
+            try {
+                lastName = body["lastName"].stringValue
+
+                if(lastName.length <= 0){
+                    errorList.add("Last Name cannot be empty")
+                }
             }
+            catch (e:Exception){}
+
+            if(body["phoneNumber"] == null){
+                errorList.add("Phone number is Required")
+            }
+
+            try {
+                phoneNumber = body["phoneNumber"].stringValue
+
+
+                if(phoneNumber.length <= 0){
+                    errorList.add("Phone number cannot be empty")
+                }
+
+            }
+            catch (e:Exception){}
+
+            if(body["email"] == null){
+                errorList.add("Email is required")
+            }
+
+            try {
+                email = body["email"].stringValue
+
+                if(email.length <= 0){
+                    errorList.add("Email cannot be empty")
+                }
+
+            }
+            catch (e:Exception){}
+
+
+            if(isEmailValid(email) == false){
+                errorList.add("Email is not valid")
+            }
+
+            if(body["username"] == null){
+                errorList.add("Username is Requied")
+            }
+
+            try {
+                username = body["username"].stringValue
+
+                if(username.length <= 0){
+                    errorList.add("Username cannot be empty")
+                }
+
+            }
+            catch (e:Exception){}
+
+            if(checkUserName(username) == false){
+                errorList.add("Invalid User Name")
+            }
+
+
+
+            errorResponse["errors"] = errorList
+            if(errorList.size > 0){
+                return HttpResponse.badRequest(errorResponse)
+            }
+            var newUser = User(firstName, lastName, phoneNumber, email, username)
+            var errorsBody = mutableListOf<String>();
+            var successBody = mutableListOf<String>()
+            var isUserNameUnique = UserValidation().ifUniqueUsername(username)
+            var isEmailUnique = UserValidation().ifUniqueEmail(email)
+            var isPhoneNumberUnique = UserValidation().ifUniquePhoneNumber(phoneNumber)
+
+            if (isUserNameUnique && isEmailUnique && isPhoneNumberUnique) {
+                allUsers.put(username, newUser)
+                inventorMap.put(username, Inventory())
+                walletList.put(username, Wallet())
+
+                successBody.add("User added successfully");
+
+                return HttpResponse.ok(successBody);
+            } else {
+                var errorList = mutableListOf<String>()
+                errorResponse["error"] = errorList;
+                if (!isUserNameUnique) {
+                    errorList.add("User with given username already exists");
+                }
+
+                if (!isPhoneNumberUnique) {
+                    errorList.add("User with given phone number already exists");
+                }
+
+                if (!isEmailUnique) {
+                    errorList.add("User with given email already exists");
+                }
+
+                return HttpResponse.badRequest(errorResponse);
+
+            }
+
+
+        }
+        catch (e: Exception) {
+            return HttpResponse.badRequest("Error");
         }
 
-        return HttpResponse.badRequest(errorResponse);
-    }
 
+    }
 
 }

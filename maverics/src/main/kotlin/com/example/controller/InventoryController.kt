@@ -15,7 +15,7 @@ class InventoryController(){
     @Post("/{username}/inventory")
     fun addEsopInInventory(@PathVariable username: String, @Body body: JsonObject): HttpResponse<*> {
         if(UserValidation.isUserExist(username)) {
-            val quantityToAdd = body["quantity"].intValue
+            val quantityToAdd:Long = body["quantity"].longValue
             inventorMap[username]!!.freeESOP += quantityToAdd
             val userInventory = inventorMap[username]
 
@@ -38,7 +38,7 @@ class InventoryController(){
 
             val userInventory = inventorMap[username]
 
-            val response = mutableMapOf<String, Int>();
+            val response = mutableMapOf<String, Long>();
 
             if (userInventory != null) {
                 response["Free ESOP"] = userInventory.freeESOP

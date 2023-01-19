@@ -21,7 +21,7 @@ class WalletController(){
     @Post("/{username}/wallet")
     fun addMoneyInWallet(@PathVariable username: String, @Body body: JsonObject): HttpResponse<*> {
         if(UserValidation.isUserExist(username)){
-            val amount:Int = body["amount"].intValue
+            val amount:Long = body["amount"].longValue
             val wallet: Wallet = walletList.get(username)!!
             wallet.freeAmount += amount
 
@@ -40,7 +40,7 @@ class WalletController(){
         if (UserValidation.isUserExist(username)) {
             val userWallet = walletList[username];
 
-            val response = mutableMapOf<String, Int>();
+            val response = mutableMapOf<String, Long>();
 
             if (userWallet != null) {
                 response["Free Balance"] = userWallet.freeAmount
