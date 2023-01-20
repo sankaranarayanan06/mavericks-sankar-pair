@@ -32,12 +32,8 @@ class OrderController {
 
 
             currentOrder.orderId = orderID;
-<<<<<<< HEAD
 
             currentOrder.quantity = body["quantity"].longValue;
-=======
-            currentOrder.quantity = body["quantity"].intValue;
->>>>>>> 6d87e27575f718c792effc43239f021c52820ec6
             currentOrder.type = body["type"].stringValue;
             currentOrder.price = body["price"].longValue;
             currentOrder.status = "unfilled";
