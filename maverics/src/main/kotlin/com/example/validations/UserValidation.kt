@@ -8,7 +8,6 @@ class UserValidation {
         if (allUsers.containsKey(username)) {
             return false
         }
-
         return true
     }
 
@@ -18,7 +17,6 @@ class UserValidation {
                 return false
             }
         }
-
         return true
     }
 
@@ -28,7 +26,6 @@ class UserValidation {
                 return false
             }
         }
-
         return true
     }
     companion object {
@@ -36,7 +33,6 @@ class UserValidation {
             if (allUsers.containsKey(username)) {
                 return true;
             }
-
             return false;
         }
     }
