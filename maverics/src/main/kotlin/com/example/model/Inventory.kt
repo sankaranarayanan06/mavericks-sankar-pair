@@ -1,6 +1,7 @@
 package com.example.model
 
-class Inventory (freeESOP: Long = 0, lockESOP: Long = 0) {
-    var freeESOP = freeESOP;
-    var lockESOP = lockESOP;
+class Inventory (free: Long = 0, locked: Long = 0, type: String = "PERFORMANCE")  {
+    var type: String = type;
+    var free = free;
+    var locked = locked;
 }

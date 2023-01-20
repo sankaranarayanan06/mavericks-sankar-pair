@@ -1,4 +1,5 @@
 package com.example.controller
+
 import com.example.model.Inventory
 import com.example.model.Message
 import com.example.model.Wallet
@@ -7,48 +8,40 @@ import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.*
 import io.micronaut.json.tree.JsonObject
 
+var inventoryList: MutableList<Inventory> = mutableListOf()
 
-var inventorMap = HashMap<String,Inventory>()
+var inventorMap = HashMap<String, MutableList<Inventory>>()
+
 
 @Controller("/user")
-class InventoryController(){
+class InventoryController() {
     @Post("/{username}/inventory")
     fun addEsopInInventory(@PathVariable username: String, @Body body: JsonObject): HttpResponse<*> {
-        if(UserValidation.isUserExist(username)) {
-            val quantityToAdd:Long = body["quantity"].longValue
-            inventorMap[username]!!.freeESOP += quantityToAdd
-            val userInventory = inventorMap[username]
-
-            return HttpResponse.ok(Message("${quantityToAdd} ESOPS added to account.\n Total free quantity is ${userInventory!!.freeESOP}\n" +
-                    "Total locked quantity is ${userInventory!!.lockESOP}"))
-        }
-        else
-        {
-            val response = mutableMapOf<String, MutableList<String>>();
-            var errorList = mutableListOf<String>("User doesn't exist.")
-            response["error"] = errorList;
-
-            return HttpResponse.badRequest(response);
-        }
-    }
-
-    @Get("/{username}/inventory")
-    fun getInventory(@PathVariable username: String): HttpResponse<*> {
         if (UserValidation.isUserExist(username)) {
+            val response = mutableMapOf<String, MutableList<String>>();
 
-            val userInventory = inventorMap[username]
+            val quantityToAdd: Long = body["quantity"].longValue
 
-            val response = mutableMapOf<String, Long>();
+            val type: String = body["type"].stringValue
 
-            if (userInventory != null) {
-                response["Free ESOP"] = userInventory.freeESOP
-            };
+            inventoryList = inventorMap[username]!!
 
-            if (userInventory != null) {
-                response["Locked ESOP"] = userInventory.lockESOP
-            };
+            if (type == "PERFORMANCE") {
+                inventoryList[0].free += quantityToAdd
+            } else if (type == "NON_PERFORMANCE") {
+                inventoryList[1].free += quantityToAdd
+            } else {
 
-            return HttpResponse.ok(response)
+                var errorList = mutableListOf<String>("Wrong ESOP type!")
+                response["error"] = errorList;
+                return HttpResponse.ok(response);
+            }
+
+            inventorMap[username] = inventoryList
+
+
+
+            return HttpResponse.ok(Message("${quantityToAdd}  $type ESOPS added to account"))
         } else {
             val response = mutableMapOf<String, MutableList<String>>();
             var errorList = mutableListOf<String>("User doesn't exist.")
@@ -57,4 +50,30 @@ class InventoryController(){
             return HttpResponse.badRequest(response);
         }
     }
+
+//    @Get("/{username}/inventory")
+//    fun getInventory(@PathVariable username: String): HttpResponse<*> {
+//        if (UserValidation.isUserExist(username)) {
+//
+//            val userInventory = inventorMap[username]
+//
+//            val response = mutableMapOf<String, Long>();
+//
+//            if (userInventory != null) {
+//                response["Free ESOP"] = userInventory.free
+//            };
+//
+//            if (userInventory != null) {
+//                response["Locked ESOP"] = userInventory.locked
+//            };
+//
+//            return HttpResponse.ok(response)
+//        } else {
+//            val response = mutableMapOf<String, MutableList<String>>();
+//            var errorList = mutableListOf<String>("User doesn't exist.")
+//            response["error"] = errorList;s
+//
+//            return HttpResponse.badRequest(response);
+//        }
+//    }
 }

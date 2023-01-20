@@ -2,6 +2,7 @@ package com.example.validations
 
 import com.example.controller.inventorMap
 import com.example.controller.walletList
+import com.example.model.Inventory
 
 class OrderValidation {
 
@@ -14,8 +15,10 @@ class OrderValidation {
     }
 
     fun ifSufficientQuantity(username: String, quantity: Long) : Boolean {
-        if (inventorMap[username]!!.freeESOP < quantity) {
-            return false;
+        var inventoryList: MutableList<Inventory> = inventorMap[username]!!
+
+        if(inventoryList[0].free + inventoryList[1].free< quantity) {
+            return false
         }
 
         return true;
