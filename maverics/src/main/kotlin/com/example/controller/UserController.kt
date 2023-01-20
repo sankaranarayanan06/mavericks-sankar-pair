@@ -28,7 +28,7 @@ fun isEmailValid(email: String): Boolean {
 
 fun checkUserName(username: String): Boolean {
     //return ("^[A-Za-z0-9_-]*$").toRegex().matches(username)
-    return  !("^[:/&~*$]*$").toRegex().matches(username)
+    return  !("^[:#/&~*$!%]*$").toRegex().matches(username)
 }
 fun checkPhoneNumber(phoneNumber:String):Boolean{
     return ("^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$").toRegex().matches(phoneNumber)
