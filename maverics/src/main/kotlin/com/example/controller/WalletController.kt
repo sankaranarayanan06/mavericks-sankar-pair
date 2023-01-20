@@ -12,10 +12,24 @@ import com.example.model.Inventory
 import com.example.model.Message
 import com.example.validations.UserValidation
 import io.micronaut.json.tree.JsonArray
+import java.time.temporal.TemporalAmount
+import java.util.stream.LongStream
 
 
 var walletList = mutableMapOf<String,Wallet>()
 const val maxWalletAmount:Long = 100_00_00_000
+
+fun walletvalidation(walletAmount: Long, userAmount: Long): MutableList<String>{
+    val walleterror = mutableListOf<String>()
+    if (userAmount !in 1..maxWalletAmount) {
+        walleterror.add("Amount out of Range. Max: 100 Crore, Min: 1")
+    }
+    if(walletAmount+userAmount > maxWalletAmount){
+        walleterror.add("Max wallet limit of 100 Crores would be exceeded.")
+    }
+    return walleterror
+}
+
 
 @Controller("/user")
 class WalletController() {
@@ -23,23 +37,19 @@ class WalletController() {
     fun addMoneyInWallet(@PathVariable username: String, @Body body: JsonObject): HttpResponse<*> {
         if (UserValidation.isUserExist(username)) {
             val amount: Long = body["amount"].longValue
-            if (amount in 1..maxWalletAmount) {
-                val wallet: Wallet = walletList.get(username)!!
-                if(wallet.freeAmount + amount > maxWalletAmount) {
-                    val response = mutableMapOf<String, MutableList<String>>();
-                    var errorList = mutableListOf<String>("Max wallet limit of 100 Crores would be exceeded.")
-                    response["error"] = errorList;
-                    return HttpResponse.badRequest(response);
-                }
-                wallet.freeAmount += amount
-                return HttpResponse.ok(Message("${amount} added to account."))
-            } else {
-                val response = mutableMapOf<String, MutableList<String>>();
-                var errorList = mutableListOf<String>("Amount out of Range. Max: 100 Crore, Min: 1")
+            val wallet: Wallet = walletList.get(username)!!
+            val response = mutableMapOf<String, MutableList<String>>();
+            var errorList = mutableListOf<String>()
+            errorList += walletvalidation(wallet.freeAmount, amount)
+            if(errorList.size > 0){
                 response["error"] = errorList;
                 return HttpResponse.badRequest(response);
             }
 
+            else{
+                wallet.freeAmount += amount
+                return HttpResponse.ok(Message("${amount} added to account."))
+            }
         } else {
             val response = mutableMapOf<String, MutableList<String>>();
             var errorList = mutableListOf<String>("User doesn't exist.")
