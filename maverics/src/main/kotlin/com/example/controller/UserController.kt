@@ -27,7 +27,6 @@ fun isEmailValid(email: String): Boolean {
 }
 
 fun checkUserName(username: String): Boolean {
-    println(username)
     return ("^[A-Za-z0-9_-]*$").toRegex().matches(username)
 }
 
