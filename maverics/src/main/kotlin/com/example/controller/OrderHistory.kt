@@ -27,9 +27,10 @@ class OrderHistory(){
                     for(eachTrans in transactions[orderID]!!)
                     {
                         listOfTransactions.add(Transaction(eachTrans.first,eachTrans.second))
-                        quantity += eachTrans.first
+                        // quantity += eachTrans.first
                     }
-                    listOfOrders.add(com.example.model.OrderHistory(orderID + 1, orderList[i].price,orderList[i].quantity+quantity,orderList[i].type,listOfTransactions))
+                    listOfOrders.add(com.example.model.OrderHistory(orderID + 1, orderList[i].price,orderList[i].quantity,orderList[i].type,
+                        orderList[i].esopType,listOfTransactions))
                 }
             }
 

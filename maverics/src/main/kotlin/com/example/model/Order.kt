@@ -6,5 +6,6 @@ class Order {
     var quantity :Long=0
     var status :String =""
     var type : String =""
+    var esopType: String = "NON_PERFORMANCE"
     var userName :String=""
 }
