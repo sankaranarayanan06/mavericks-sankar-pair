@@ -25,6 +25,12 @@ class WalletController() {
             val amount: Long = body["amount"].longValue
             if (amount in 1..maxWalletAmount) {
                 val wallet: Wallet = walletList.get(username)!!
+                if(wallet.freeAmount + amount > maxWalletAmount) {
+                    val response = mutableMapOf<String, MutableList<String>>();
+                    var errorList = mutableListOf<String>("Max wallet limit of 100 Crores would be exceeded.")
+                    response["error"] = errorList;
+                    return HttpResponse.badRequest(response);
+                }
                 wallet.freeAmount += amount
                 return HttpResponse.ok(Message("${amount} added to account."))
             } else {
