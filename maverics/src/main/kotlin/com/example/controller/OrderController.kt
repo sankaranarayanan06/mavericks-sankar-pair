@@ -37,9 +37,10 @@ fun performSells(currentOrder: Order, sellerUser: String) {
                 }
             }
         }
-
         if (buyerOrderId != -1) {
-            var transQuantity = min(orderList[buyerOrderId].quantity, currentOrder.quantity)
+            println(orderList.get(buyerOrderId).orderId.toString() + " " + orderList.get(buyerOrderId).quantity)
+
+            var transQuantity: Long = min(orderList[buyerOrderId].quantity, currentOrder.quantity)
             orderList[buyerOrderId].quantity -= transQuantity
             currentOrder.quantity -= transQuantity
 
@@ -65,23 +66,25 @@ fun performSells(currentOrder: Order, sellerUser: String) {
                 inventorMap.get(sellerUser)!![0].locked -= (transQuantity)
             else
                 inventorMap.get(sellerUser)!![1].locked -= (transQuantity)
-            var newOrder: MutableList<Pair<Long, Long>> = mutableListOf()
-
 
             if (!transactions.containsKey(currentOrder.orderId)) {
-                transactions.put(currentOrder.orderId, newOrder)
+                transactions.put(currentOrder.orderId, mutableListOf<Pair<Long,Long>>());
             }
+
+            transactions.get(currentOrder.orderId)!!.add(Pair(transQuantity, currentOrder.price))
 
             if (!transactions.containsKey(orderList.get(buyerOrderId).orderId)) {
-                transactions.put(orderList.get(buyerOrderId).orderId, newOrder)
+                transactions.put(orderList.get(buyerOrderId).orderId, mutableListOf<Pair<Long,Long>>())
             }
 
+            transactions.get(buyerOrderId)!!.add(Pair(transQuantity,currentOrder.price))
+
             currentOrder.status = "partially filled"
-            orderList[currentOrder.orderId].status = "partially filled"
+            orderList[buyerOrderId].status = "partially filled"
 
 
             if (currentOrder.quantity == 0L) currentOrder.status = "filled"
-            if (orderList[currentOrder.orderId].quantity == 0L) orderList[currentOrder.orderId].status = "filled"
+            if (orderList[buyerOrderId].quantity == 0L) orderList[buyerOrderId].status = "filled"
 
         } else break;
     }
