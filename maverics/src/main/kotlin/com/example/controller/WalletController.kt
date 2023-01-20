@@ -15,18 +15,26 @@ import io.micronaut.json.tree.JsonArray
 
 
 var walletList = mutableMapOf<String,Wallet>()
+const val maxWalletAmount:Long = 100_00_00_000
 
 @Controller("/user")
-class WalletController(){
+class WalletController() {
     @Post("/{username}/wallet")
     fun addMoneyInWallet(@PathVariable username: String, @Body body: JsonObject): HttpResponse<*> {
-        if(UserValidation.isUserExist(username)){
-            val amount:Long = body["amount"].longValue
-            val wallet: Wallet = walletList.get(username)!!
-            wallet.freeAmount += amount
+        if (UserValidation.isUserExist(username)) {
+            val amount: Long = body["amount"].longValue
+            if (amount in 1..maxWalletAmount) {
+                val wallet: Wallet = walletList.get(username)!!
+                wallet.freeAmount += amount
+                return HttpResponse.ok(Message("${amount} added to account."))
+            } else {
+                val response = mutableMapOf<String, MutableList<String>>();
+                var errorList = mutableListOf<String>("Amount out of Range. Max: 100 Crore, Min: 1")
+                response["error"] = errorList;
+                return HttpResponse.badRequest(response);
+            }
 
-            return HttpResponse.ok(Message("${amount} added to account."))
-        }else{
+        } else {
             val response = mutableMapOf<String, MutableList<String>>();
             var errorList = mutableListOf<String>("User doesn't exist.")
             response["error"] = errorList;
@@ -34,6 +42,7 @@ class WalletController(){
             return HttpResponse.badRequest(response);
         }
     }
+
 
     @Get("/{username}/wallet")
     fun getWalletBalance(@PathVariable username: String): HttpResponse<*> {
