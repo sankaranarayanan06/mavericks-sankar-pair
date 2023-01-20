@@ -3,12 +3,8 @@ package com.example.validations
 import com.example.model.allUsers
 
 class UserValidation {
-
     fun ifUniqueUsername(username: String): Boolean {
-        if (allUsers.containsKey(username)) {
-            return false
-        }
-        return true
+        return !allUsers.containsKey(username)
     }
 
     fun ifUniqueEmail(email: String): Boolean {
@@ -28,12 +24,10 @@ class UserValidation {
         }
         return true
     }
+
     companion object {
         fun isUserExist(username: String): Boolean {
-            if (allUsers.containsKey(username)) {
-                return true;
-            }
-            return false;
+            return allUsers.containsKey(username)
         }
     }
 

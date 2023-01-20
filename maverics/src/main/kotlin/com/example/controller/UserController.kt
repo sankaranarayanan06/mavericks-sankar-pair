@@ -16,68 +16,66 @@ import javax.validation.constraints.Email
 import io.micronaut.validation.validator.constraints.PatternValidator
 
 
-fun isEmailValid(email: String) : Boolean {
-        var emailRegex = ("^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]|[\\w-]{2,}))@"
-                + "((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
-                + "[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\."
-                + "([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
-                + "[0-9]{1,2}|25[0-5]|2[0-4][0-9]))|"
-                + "([a-zA-Z]+[\\w-]+\\.)+[a-zA-Z]{2,4})$")
-        return emailRegex.toRegex().matches(email)
+fun isEmailValid(email: String): Boolean {
+    var emailRegex = ("^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]|[\\w-]{2,}))@"
+            + "((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
+            + "[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\."
+            + "([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
+            + "[0-9]{1,2}|25[0-5]|2[0-4][0-9]))|"
+            + "([a-zA-Z]+[\\w-]+\\.)+[a-zA-Z]{2,4})$")
+    return emailRegex.toRegex().matches(email)
 }
 
 fun checkUserName(username: String): Boolean {
     println(username)
     return ("^[A-Za-z0-9_-]*$").toRegex().matches(username)
 }
+
 @Controller("/user")
 class UserController {
 
     @Get
-    fun test(): String{
+    fun test(): String {
         return "sucess";
     }
 
+    fun checkFirstName(firstName: String): MutableList<String> {
+        val checkuserlist = mutableListOf<String>()
+        if (firstName== null) {
+            checkuserlist.add("First Name is Required")
+        }
+        if (firstName.length <= 0) {
+            checkuserlist.add("First Name cannot be empty")
+        }
+        return checkuserlist
+    }
+
     @Post("/register")
-    fun register(@Body body:JsonObject): HttpResponse<*> {
+    fun register(@Body body: JsonObject): HttpResponse<*> {
         var errorList = mutableListOf<String>()
         val errorResponse = mutableMapOf<String, MutableList<String>>();
-        var firstName: String=""
-        var lastName:String=""
-        var phoneNumber: String=""
+        var firstName: String = ""
+        var lastName: String = ""
+        var phoneNumber: String = ""
         var email: String = ""
-        var username: String=""
+        var username: String = ""
         try {
-            if(body["firstName"] == null){
-                errorList.add("First Name is Required")
-            }
-            try {
-                firstName = body["firstName"].stringValue
+            errorList += checkFirstName(body["firstName"].stringValue)
 
-                if(firstName.length <= 0){
-                    errorList.add("First Name cannot be empty")
-                }
-
-            }
-            catch (e:Exception){
-
-            }
-
-
-            if(body["lastName"] == null){
+            if (body["lastName"] == null) {
                 errorList.add("Last Name is Required")
             }
 
             try {
                 lastName = body["lastName"].stringValue
 
-                if(lastName.length <= 0){
+                if (lastName.length <= 0) {
                     errorList.add("Last Name cannot be empty")
                 }
+            } catch (e: Exception) {
             }
-            catch (e:Exception){}
 
-            if(body["phoneNumber"] == null){
+            if (body["phoneNumber"] == null) {
                 errorList.add("Phone number is Required")
             }
 
@@ -85,56 +83,55 @@ class UserController {
                 phoneNumber = body["phoneNumber"].stringValue
 
 
-                if(phoneNumber.length <= 0){
+                if (phoneNumber.length <= 0) {
                     errorList.add("Phone number cannot be empty")
                 }
 
+            } catch (e: Exception) {
             }
-            catch (e:Exception){}
 
-            if(body["email"] == null){
+            if (body["email"] == null) {
                 errorList.add("Email is required")
             }
 
             try {
                 email = body["email"].stringValue
 
-                if(email.length <= 0){
+                if (email.length <= 0) {
                     errorList.add("Email cannot be empty")
                 }
 
+            } catch (e: Exception) {
             }
-            catch (e:Exception){}
 
 
-            if(isEmailValid(email) == false){
+            if (isEmailValid(email) == false) {
                 errorList.add("Email is not valid")
             }
 
-            if(body["username"] == null){
+            if (body["username"] == null) {
                 errorList.add("Username is Requied")
             }
 
             try {
                 username = body["username"].stringValue
 
-                if(username.length <= 0){
+                if (username.length <= 0) {
                     errorList.add("Username cannot be empty")
                 }
 
+            } catch (e: Exception) {
             }
-            catch (e:Exception){}
 
-            if(checkUserName(username) == false){
+            if (checkUserName(username) == false) {
                 errorList.add("Invalid User Name")
             }
 
-
-
             errorResponse["errors"] = errorList
-            if(errorList.size > 0){
+            if (errorList.size > 0) {
                 return HttpResponse.badRequest(errorResponse)
             }
+
             var newUser = User(firstName, lastName, phoneNumber, email, username)
             var errorsBody = mutableListOf<String>();
             var successBody = mutableListOf<String>()
@@ -144,11 +141,9 @@ class UserController {
 
             if (isUserNameUnique && isEmailUnique && isPhoneNumberUnique) {
                 allUsers.put(username, newUser)
-                inventorMap.put(username, Inventory())
+                inventorMap.put(username, mutableListOf(Inventory(type = "PERFORMANCE"), Inventory(type = "NON_PERFORMANCE")))
                 walletList.put(username, Wallet())
-
                 successBody.add("User added successfully");
-
                 return HttpResponse.ok(successBody);
             } else {
                 var errorList = mutableListOf<String>()
@@ -170,9 +165,8 @@ class UserController {
             }
 
 
-        }
-        catch (e: Exception) {
-            return HttpResponse.badRequest("Error");
+        } catch (e: Exception) {
+            return HttpResponse.badRequest(e);
         }
 
 

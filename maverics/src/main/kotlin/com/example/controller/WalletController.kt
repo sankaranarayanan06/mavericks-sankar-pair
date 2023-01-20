@@ -12,21 +12,45 @@ import com.example.model.Inventory
 import com.example.model.Message
 import com.example.validations.UserValidation
 import io.micronaut.json.tree.JsonArray
+import java.time.temporal.TemporalAmount
+import java.util.stream.LongStream
 
 
 var walletList = mutableMapOf<String,Wallet>()
+const val maxWalletAmount:Long = 100_00_00_000
+
+fun walletvalidation(walletAmount: Long, userAmount: Long): MutableList<String>{
+    val walleterror = mutableListOf<String>()
+    if (userAmount !in 1..maxWalletAmount) {
+        walleterror.add("Amount out of Range. Max: 100 Crore, Min: 1")
+    }
+    if(walletAmount+userAmount > maxWalletAmount){
+        walleterror.add("Max wallet limit of 100 Crores would be exceeded.")
+    }
+    return walleterror
+}
+
 
 @Controller("/user")
-class WalletController(){
+class WalletController() {
     @Post("/{username}/wallet")
     fun addMoneyInWallet(@PathVariable username: String, @Body body: JsonObject): HttpResponse<*> {
-        if(UserValidation.isUserExist(username)){
-            val amount:Long = body["amount"].longValue
+        if (UserValidation.isUserExist(username)) {
+            val amount: Long = body["amount"].longValue
             val wallet: Wallet = walletList.get(username)!!
-            wallet.freeAmount += amount
+            val response = mutableMapOf<String, MutableList<String>>();
+            var errorList = mutableListOf<String>()
+            errorList += walletvalidation(wallet.freeAmount, amount)
+            if(errorList.size > 0){
+                response["error"] = errorList;
+                return HttpResponse.badRequest(response);
+            }
 
-            return HttpResponse.ok(Message("${amount} added to account."))
-        }else{
+            else{
+                wallet.freeAmount += amount
+                return HttpResponse.ok(Message("${amount} added to account."))
+            }
+        } else {
             val response = mutableMapOf<String, MutableList<String>>();
             var errorList = mutableListOf<String>("User doesn't exist.")
             response["error"] = errorList;
@@ -34,6 +58,7 @@ class WalletController(){
             return HttpResponse.badRequest(response);
         }
     }
+
 
     @Get("/{username}/wallet")
     fun getWalletBalance(@PathVariable username: String): HttpResponse<*> {
