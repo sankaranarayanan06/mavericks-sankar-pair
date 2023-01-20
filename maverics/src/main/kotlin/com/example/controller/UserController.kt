@@ -144,7 +144,7 @@ class UserController {
 
             if (isUserNameUnique && isEmailUnique && isPhoneNumberUnique) {
                 allUsers.put(username, newUser)
-                inventorMap.put(username, Inventory())
+                inventorMap.put(username, mutableListOf(Inventory(type = "PERFORMANCE"), Inventory(type = "NON_PERFORMANCE")))
                 walletList.put(username, Wallet())
 
                 successBody.add("User added successfully");
