@@ -15,7 +15,7 @@ import io.micronaut.validation.validator.constraints.EmailValidator
 import javax.validation.constraints.Email
 import io.micronaut.validation.validator.constraints.PatternValidator
 
-
+//var  internationalCharacters=("^[a-zA-ZÆÐƎƏƐƔĲŊŒẞÞǷȜæðǝəɛɣĳŋœĸſßþƿȝĄƁÇĐƊĘĦĮƘŁØƠŞȘŢȚŦŲƯY̨Ƴąɓçđɗęħįƙłøơşșţțŧųưy̨ƴÁÀÂÄǍĂĀÃÅǺĄÆǼǢƁĆĊĈČÇĎḌĐƊÐÉÈĖÊËĚĔĒĘẸƎƏƐĠĜǦĞĢƔáàâäǎăāãåǻąæǽǣɓćċĉčçďḍđɗðéèėêëěĕēęẹǝəɛġĝǧğģɣĤḤĦIÍÌİÎÏǏĬĪĨĮỊĲĴĶƘĹĻŁĽĿʼNŃN̈ŇÑŅŊÓÒÔÖǑŎŌÕŐỌØǾƠŒĥḥħıíìiîïǐĭīĩįịĳĵķƙĸĺļłľŀŉńn̈ňñņŋóòôöǒŏōõőọøǿơœŔŘŖŚŜŠŞȘṢẞŤŢṬŦÞÚÙÛÜǓŬŪŨŰŮŲỤƯẂẀŴẄǷÝỲŶŸȲỸƳŹŻŽẒŕřŗſśŝšşșṣßťţṭŧþúùûüǔŭūũűůųụưẃẁŵẅƿýỳŷÿȳỹƴźżžẓ\\s-,.\\']+\$")
 fun isEmailValid(email: String): Boolean {
     var emailRegex = ("^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]|[\\w-]{2,}))@"
             + "((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
@@ -27,9 +27,12 @@ fun isEmailValid(email: String): Boolean {
 }
 
 fun checkUserName(username: String): Boolean {
-    return ("^[A-Za-z0-9_-]*$").toRegex().matches(username)
+    //return ("^[A-Za-z0-9_-]*$").toRegex().matches(username)
+    return  !("^[:#/&~*$!%]*$").toRegex().matches(username)
 }
-
+fun checkPhoneNumber(phoneNumber:String):Boolean{
+    return ("^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$").toRegex().matches(phoneNumber)
+}
 @Controller("/user")
 class UserController {
 
@@ -125,7 +128,9 @@ class UserController {
             if (checkUserName(username) == false) {
                 errorList.add("Invalid User Name")
             }
-
+            if (checkPhoneNumber(phoneNumber) == false) {
+                errorList.add("Invalid phone number")
+            }
             errorResponse["errors"] = errorList
             if (errorList.size > 0) {
                 return HttpResponse.badRequest(errorResponse)
