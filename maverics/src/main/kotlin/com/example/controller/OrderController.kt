@@ -74,75 +74,20 @@ class OrderController {
                     return HttpResponse.badRequest(response);
                 }
 
-                var inventoryList: MutableList<Inventory> = inventorMap[username]!!
+                currentOrder.orderId = orderID++;
 
-                var orderOne: Order = Order()
-                var orderTwo: Order = Order()
-
-
-                if (inventoryList[0].free >= body["quantity"].longValue) {
-
-                    println("first")
+                // Locking
+                if(currentOrder.esopType == "PERFORMANCE"){
                     inventoryList[0].free -= body["quantity"].longValue
                     inventoryList[0].locked += body["quantity"].longValue
-
-                    orderOne.orderId = orderID++
-                    orderOne.currentQuantity = quantity
-                    orderOne.placedQuantity = quantity
-                    orderOne.price = body["price"].longValue
-                    orderOne.type = body["type"].stringValue
-                    orderOne.status = "unfilled"
-                    orderOne.userName = username
-                    orderOne.esopType = "PERFORMANCE"
-
-                    orderList.add(orderOne);
-                    transactions.put(orderID - 1, transT);
-
-                    println("Placed Quantity" + currentOrder.placedQuantity)
-
-                    performSells(orderOne, username)
-
-
-                } else {
-                    var quantityFirst = inventoryList[0].free
-                    var quantitySecond = currentOrder.currentQuantity - quantityFirst
-
-
-                    inventoryList[0].free -= quantityFirst
-                    inventoryList[0].locked += quantityFirst
-
-
-                    inventoryList[1].free -= quantitySecond
-                    inventoryList[1].locked += quantitySecond
-
-                    if(quantityFirst > 0) {
-                        orderOne.orderId = orderID++
-                        orderOne.currentQuantity = quantityFirst
-                        orderOne.placedQuantity = quantityFirst
-                        orderOne.price = body["price"].longValue
-                        orderOne.type = body["type"].stringValue
-                        orderOne.status = "unfilled"
-                        orderOne.userName = username
-                        orderOne.esopType = "PERFORMANCE"
-
-                        orderList.add(orderOne);
-                        transactions.put(orderID - 1, mutableListOf<Pair<Long, Long>>());
-                        performSells(orderOne, username)
-                    }
-
-                    orderTwo.orderId = orderID++
-                    orderTwo.currentQuantity = quantitySecond
-                    orderTwo.placedQuantity = quantitySecond
-                    orderTwo.price = body["price"].longValue
-                    orderTwo.type = body["type"].stringValue
-                    orderTwo.status = "unfilled"
-                    orderTwo.userName = username
-                    orderTwo.esopType = "NON_PERFORMANCE"
-                    orderList.add(orderTwo);
-                    transactions.put(orderID - 1, mutableListOf<Pair<Long, Long>>());
-                    performSells(orderTwo, username)
-
                 }
+                else
+                {
+                    inventoryList[1].free -= body["quantity"].longValue
+                    inventoryList[1].locked += body["quantity"].longValue
+                }
+
+                performSells(currentOrder,username)
 
             }
 
