@@ -14,13 +14,15 @@ class OrderValidation {
         return true;
     }
 
-    fun ifSufficientQuantity(username: String, quantity: Long) : Boolean {
+    fun ifSufficientQuantity(username: String, quantity: Long,orderType: String) : Boolean {
         var inventoryList: MutableList<Inventory> = inventorMap[username]!!
 
-        if(inventoryList[0].free + inventoryList[1].free< quantity) {
-            return false
+        if(orderType == "PERFORMANCE"){
+            return inventoryList[0].free >= quantity
         }
-
-        return true;
+        else
+        {
+            return inventoryList[1].free >= quantity
+        }
     }
 }

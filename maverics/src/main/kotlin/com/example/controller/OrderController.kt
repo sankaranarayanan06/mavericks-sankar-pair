@@ -66,7 +66,7 @@ class OrderController {
 
                 var quantity = body["quantity"].longValue
 
-                if (!OrderValidation().ifSufficientQuantity(username, currentOrder.currentQuantity)) {
+                if (!OrderValidation().ifSufficientQuantity(username, currentOrder.currentQuantity,currentOrder.esopType)) {
                     val response = mutableMapOf<String, MutableList<String>>();
                     var errorList = mutableListOf<String>("Insufficient quantity of ESOPs")
                     response["error"] = errorList;
