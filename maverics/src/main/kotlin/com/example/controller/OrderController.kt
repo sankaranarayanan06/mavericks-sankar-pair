@@ -30,7 +30,7 @@ fun performSells(currentOrder: Order, sellerUser: String) {
         for (orderNumber in 0..n - 1) {
             var orderPrev = orderList[orderNumber]
 
-            if ((orderPrev.orderId!=currentOrder.orderId) && (orderPrev.status != "filled") && (currentOrder.type != orderPrev.type) && (currentOrder.price <= orderPrev.price)) {
+            if ((orderPrev.orderId != currentOrder.orderId) && (orderPrev.status != "filled") && (currentOrder.type != orderPrev.type) && (currentOrder.price <= orderPrev.price)) {
                 if (orderPrev.price > maxBuyerPrice) {
                     maxBuyerPrice = orderPrev.price
                     buyerOrderId = orderPrev.orderId
@@ -68,16 +68,16 @@ fun performSells(currentOrder: Order, sellerUser: String) {
                 inventorMap.get(sellerUser)!![1].locked -= (transQuantity)
 
             if (!transactions.containsKey(currentOrder.orderId)) {
-                transactions.put(currentOrder.orderId, mutableListOf<Pair<Long,Long>>());
+                transactions.put(currentOrder.orderId, mutableListOf<Pair<Long, Long>>());
             }
 
             transactions.get(currentOrder.orderId)!!.add(Pair(transQuantity, currentOrder.price))
 
             if (!transactions.containsKey(orderList.get(buyerOrderId).orderId)) {
-                transactions.put(orderList.get(buyerOrderId).orderId, mutableListOf<Pair<Long,Long>>())
+                transactions.put(orderList.get(buyerOrderId).orderId, mutableListOf<Pair<Long, Long>>())
             }
 
-            transactions.get(buyerOrderId)!!.add(Pair(transQuantity,currentOrder.price))
+            transactions.get(buyerOrderId)!!.add(Pair(transQuantity, currentOrder.price))
 
             currentOrder.status = "partially filled"
             orderList[buyerOrderId].status = "partially filled"
@@ -111,7 +111,6 @@ class OrderController {
             currentOrder.userName = username;
 
 
-
             var n = orderList.size
 
             if (currentOrder.type == "BUY") {
@@ -143,17 +142,34 @@ class OrderController {
                     var minSellerPrice: Long = 1000000000000000;
                     var sellerID = -1;
 
+                    // Find if seller with PEROFMANCE order fulfils the deal
                     for (orderNumber in 0..n - 1) {
                         var orderPrev = orderList[orderNumber]
 
                         // Order should match with SELL and should not be filled
-                        if ((orderPrev.orderId != currentOrder.orderId) && (orderPrev.status != "filled") && (currentOrder.type != orderPrev.type) && (currentOrder.price >= orderPrev.price)) {
+                        if ((orderPrev.esopType == "PERFORMANCE") && (orderPrev.orderId != currentOrder.orderId) && (orderPrev.status != "filled") && (currentOrder.type != orderPrev.type) && (currentOrder.price >= orderPrev.price)) {
                             if (orderPrev.price < minSellerPrice) {
                                 minSellerPrice = orderPrev.price.toLong()
                                 sellerID = orderPrev.orderId
                             }
                         }
                     }
+
+                    // If not found any performance esop seller then go for normal esop seller
+                    if (sellerID == -1) {
+                        for (orderNumber in 0..n - 1) {
+                            var orderPrev = orderList[orderNumber]
+
+                            // Order should match with SELL and should not be filled
+                            if ((orderPrev.orderId != currentOrder.orderId) && (orderPrev.status != "filled") && (currentOrder.type != orderPrev.type) && (currentOrder.price >= orderPrev.price)) {
+                                if (orderPrev.price < minSellerPrice) {
+                                    minSellerPrice = orderPrev.price.toLong()
+                                    sellerID = orderPrev.orderId
+                                }
+                            }
+                        }
+                    }
+
                     if (sellerID != -1) {
                         var transQuantity = min(orderList[sellerID].quantity, currentOrder.quantity)
 
@@ -183,17 +199,17 @@ class OrderController {
                         inventorMap.get(username)!![1].free += (transQuantity)
 
                         // Updating buyers transactions
-                        if(!transactions.containsKey(currentOrder.orderId)){
-                            transactions.put(currentOrder.orderId, mutableListOf<Pair<Long,Long>>())
+                        if (!transactions.containsKey(currentOrder.orderId)) {
+                            transactions.put(currentOrder.orderId, mutableListOf<Pair<Long, Long>>())
                         }
 
                         transactions.get(currentOrder.orderId)!!.add(Pair(transQuantity, minSellerPrice))
 
                         // Updating seller entries
-                        if(!transactions.containsKey(sellerID)){
-                            transactions.put(sellerID, mutableListOf<Pair<Long,Long>>())
+                        if (!transactions.containsKey(sellerID)) {
+                            transactions.put(sellerID, mutableListOf<Pair<Long, Long>>())
                         }
-                        transactions.get(sellerID)!!.add(Pair(transQuantity,minSellerPrice))
+                        transactions.get(sellerID)!!.add(Pair(transQuantity, minSellerPrice))
 
                         currentOrder.status = "partially filled"
                         orderList[sellerID].status = "partially filled"
@@ -202,9 +218,7 @@ class OrderController {
                         if (orderList[sellerID].quantity == 0L) orderList[sellerID].status = "filled"
 
 
-                    }
-                    else
-                    {
+                    } else {
                         break;
                     }
                 }
@@ -229,7 +243,7 @@ class OrderController {
                 var orderTwo: Order = Order()
 
 
-                if (inventoryList[0].free - body["quantity"].longValue >= 0) {
+                if (inventoryList[0].free >= body["quantity"].longValue) {
 
                     println("first")
                     inventoryList[0].free -= body["quantity"].longValue
@@ -248,7 +262,7 @@ class OrderController {
 
                     performSells(orderOne, username)
 
-                    //
+
                 } else {
                     var quantityFirst = inventoryList[0].free
                     var quantitySecond = currentOrder.quantity - quantityFirst
@@ -261,18 +275,19 @@ class OrderController {
                     inventoryList[1].free -= quantitySecond
                     inventoryList[1].locked += quantitySecond
 
-                    orderOne.orderId = orderID++
-                    orderOne.quantity = quantityFirst
-                    orderOne.price = body["price"].longValue
-                    orderOne.type = body["type"].stringValue
-                    orderOne.status = "unfilled"
-                    orderOne.userName = username
-                    orderOne.esopType = "PERFORMANCE"
+                    if(quantityFirst > 0) {
+                        orderOne.orderId = orderID++
+                        orderOne.quantity = quantityFirst
+                        orderOne.price = body["price"].longValue
+                        orderOne.type = body["type"].stringValue
+                        orderOne.status = "unfilled"
+                        orderOne.userName = username
+                        orderOne.esopType = "PERFORMANCE"
 
-                    orderList.add(orderOne);
-                    transactions.put(orderID - 1, mutableListOf<Pair<Long,Long>>());
-                    performSells(orderOne, username)
-
+                        orderList.add(orderOne);
+                        transactions.put(orderID - 1, mutableListOf<Pair<Long, Long>>());
+                        performSells(orderOne, username)
+                    }
 
                     orderTwo.orderId = orderID++
                     orderTwo.quantity = quantitySecond
@@ -283,14 +298,14 @@ class OrderController {
                     orderTwo.esopType = "NON_PERFORMANCE"
                     orderList.add(orderTwo);
                     println("Added transactions to order " + orderID)
-                    transactions.put(orderID - 1, mutableListOf<Pair<Long,Long>>());
+                    transactions.put(orderID - 1, mutableListOf<Pair<Long, Long>>());
                     performSells(orderTwo, username)
 
                 }
 
             }
 
-            var ret = HashMap<String,Any>();
+            var ret = HashMap<String, Any>();
 
             ret["userName"] = currentOrder.userName
             ret["quantity"] = currentOrder.quantity
