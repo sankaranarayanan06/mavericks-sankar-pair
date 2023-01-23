@@ -1,6 +1,6 @@
 package com.example.validations
 
-import com.example.controller.inventorMap
+import com.example.constants.inventorMap
 import com.example.controller.walletList
 import com.example.model.Inventory
 

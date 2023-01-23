@@ -1,5 +1,6 @@
 package com.example.controller
 
+import com.example.constants.*
 import com.example.model.Inventory
 import com.example.model.Order
 import com.example.services.generateErrorResponse
@@ -15,11 +16,6 @@ import io.micronaut.http.annotation.PathVariable
 import io.micronaut.http.annotation.Post
 import io.micronaut.json.tree.JsonObject
 
-var orderList = mutableListOf<Order>()
-var orderID = 0;
-const val maxOrderQuantity = 100_000_000
-
-var transactions: MutableMap<Int, MutableList<Pair<Long, Long>>> = mutableMapOf()
 /// quantity--price
 
 
@@ -44,13 +40,19 @@ class OrderController {
         if (UserValidation.isUserExist(username)) {
             var currentOrder = Order()
 
+            try {
+                currentOrder.currentQuantity = body["quantity"].longValue;
+                currentOrder.placedQuantity = currentOrder.currentQuantity
+                currentOrder.type = body["type"].stringValue;
+                currentOrder.price = body["price"].longValue;
+                currentOrder.status = "unfilled";
+                currentOrder.userName = username;
+                currentOrder.esopType = body["esopType"].stringValue
+            } catch (e: Exception) {
+                response["error"] = mutableListOf<String>("Enter quantity, type, price")
+                return HttpResponse.ok(response)
+            }
 
-            currentOrder.currentQuantity = body["quantity"].longValue;
-            currentOrder.placedQuantity = currentOrder.currentQuantity
-            currentOrder.type = body["type"].stringValue;
-            currentOrder.price = body["price"].longValue;
-            currentOrder.status = "unfilled";
-            currentOrder.userName = username;
 
             orderValidation(errorList, currentOrder.placedQuantity, currentOrder.type, currentOrder.price)
             generateErrorResponse(errorList)
@@ -86,7 +88,6 @@ class OrderController {
 
             } else if(currentOrder.type == "SELL") {
 
-                currentOrder.esopType = body["esopType"].stringValue
 
                 if(!isValidESOPType(currentOrder.esopType)){
                     println("Here")

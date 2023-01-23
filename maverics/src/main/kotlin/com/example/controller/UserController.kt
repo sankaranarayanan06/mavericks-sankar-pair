@@ -1,5 +1,7 @@
 package com.example.controller
 
+import com.example.constants.inventorMap
+import com.example.constants.regex
 import com.example.model.Inventory
 import com.example.model.User
 import com.example.model.Wallet
@@ -15,23 +17,16 @@ import io.micronaut.validation.validator.constraints.EmailValidator
 import javax.validation.constraints.Email
 import io.micronaut.validation.validator.constraints.PatternValidator
 
-//var  internationalCharacters=("^[a-zA-ZÆÐƎƏƐƔĲŊŒẞÞǷȜæðǝəɛɣĳŋœĸſßþƿȝĄƁÇĐƊĘĦĮƘŁØƠŞȘŢȚŦŲƯY̨Ƴąɓçđɗęħįƙłøơşșţțŧųưy̨ƴÁÀÂÄǍĂĀÃÅǺĄÆǼǢƁĆĊĈČÇĎḌĐƊÐÉÈĖÊËĚĔĒĘẸƎƏƐĠĜǦĞĢƔáàâäǎăāãåǻąæǽǣɓćċĉčçďḍđɗðéèėêëěĕēęẹǝəɛġĝǧğģɣĤḤĦIÍÌİÎÏǏĬĪĨĮỊĲĴĶƘĹĻŁĽĿʼNŃN̈ŇÑŅŊÓÒÔÖǑŎŌÕŐỌØǾƠŒĥḥħıíìiîïǐĭīĩįịĳĵķƙĸĺļłľŀŉńn̈ňñņŋóòôöǒŏōõőọøǿơœŔŘŖŚŜŠŞȘṢẞŤŢṬŦÞÚÙÛÜǓŬŪŨŰŮŲỤƯẂẀŴẄǷÝỲŶŸȲỸƳŹŻŽẒŕřŗſśŝšşșṣßťţṭŧþúùûüǔŭūũűůųụưẃẁŵẅƿýỳŷÿȳỹƴźżžẓ\\s-,.\\']+\$")
+
 fun isEmailValid(email: String): Boolean {
-    var emailRegex = ("^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]|[\\w-]{2,}))@"
-            + "((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
-            + "[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\."
-            + "([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
-            + "[0-9]{1,2}|25[0-5]|2[0-4][0-9]))|"
-            + "([a-zA-Z]+[\\w-]+\\.)+[a-zA-Z]{2,4})$")
-    return emailRegex.toRegex().matches(email)
+    return regex.getEmailRegex().toRegex().matches(email)
 }
 
 fun checkUserName(username: String): Boolean {
-    //return ("^[A-Za-z0-9_-]*$").toRegex().matches(username)
-    return  !("^[:#/&~*$!%]*$").toRegex().matches(username)
+    return  !regex.getUsernameRegex().toRegex().matches(username)
 }
 fun checkPhoneNumber(phoneNumber:String):Boolean{
-    return ("^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$").toRegex().matches(phoneNumber)
+    return regex.getPhoneNumberRegex().toRegex().matches(phoneNumber)
 }
 @Controller("/user")
 class UserController {
@@ -137,7 +132,6 @@ class UserController {
             }
 
             var newUser = User(firstName, lastName, phoneNumber, email, username)
-            var errorsBody = mutableListOf<String>();
             var successBody = mutableListOf<String>()
             var isUserNameUnique = UserValidation().ifUniqueUsername(username)
             var isEmailUnique = UserValidation().ifUniqueEmail(email)

@@ -1,4 +1,5 @@
 package com.example.controller
+import com.example.constants.response
 import com.example.model.Order
 import com.example.model.Wallet
 import io.micronaut.http.HttpResponse
@@ -27,25 +28,26 @@ class WalletController() {
     fun addMoneyInWallet(@PathVariable username: String, @Body body: JsonObject): HttpResponse<*> {
         if (UserValidation.isUserExist(username)) {
             val walletValidation = WalletValidation()
-            val amount: Long = body["amount"].longValue
+            var amount: Long = 0L
+            try {
+                amount = body["amount"].longValue
+            } catch (e: Exception) {
+                response["error"] = mutableListOf<String>("Please enter amount(Number)")
+                return HttpResponse.ok(response)
+            }
             val wallet: Wallet = walletList.get(username)!!
-            val response = mutableMapOf<String, MutableList<String>>();
             var errorList = mutableListOf<String>()
             errorList += walletValidation.validations(wallet.freeAmount, amount)
             if(errorList.size > 0){
                 response["error"] = errorList;
-                return HttpResponse.badRequest(response);
+                return HttpResponse.ok(response);
             }
-
             else{
                 wallet.freeAmount += amount
                 return HttpResponse.ok(Message("${amount} added to account."))
             }
         } else {
-            val response = mutableMapOf<String, MutableList<String>>();
-            var errorList = mutableListOf<String>("User doesn't exist.")
-            response["error"] = errorList;
-
+            response["error"] = mutableListOf<String>("User doesn't exist.")
             return HttpResponse.badRequest(response);
         }
     }
