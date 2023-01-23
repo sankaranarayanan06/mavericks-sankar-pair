@@ -1,8 +1,8 @@
 package com.example.services
 
-import com.example.controller.inventorMap
-import com.example.controller.orderList
-import com.example.controller.transactions
+import com.example.constants.inventorMap
+import com.example.constants.orderList
+import com.example.constants.transactions
 import com.example.controller.walletList
 import com.example.model.Order
 import kotlin.math.min
