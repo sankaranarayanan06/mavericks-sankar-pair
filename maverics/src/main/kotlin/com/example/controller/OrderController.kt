@@ -55,7 +55,11 @@ class OrderController {
 
 
             orderValidation(errorList, currentOrder.placedQuantity, currentOrder.type, currentOrder.price)
-            generateErrorResponse(errorList)
+
+            if(errorList.size > 0) {
+                return generateErrorResponse(errorList)
+            }
+
 
 
             var n = orderList.size

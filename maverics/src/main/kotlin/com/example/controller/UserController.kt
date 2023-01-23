@@ -156,7 +156,8 @@ class UserController {
 
         } catch (e: Exception) {
             e.printStackTrace()
-            return HttpResponse.badRequest(ErrorResponse(listOf("An unknown error occured.")));
+            errorResponse["error"] = (listOf("An unknown error occured.").toMutableList())
+            return HttpResponse.badRequest(errorResponse);
         }
     }
 }
