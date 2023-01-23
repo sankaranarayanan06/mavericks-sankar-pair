@@ -6,6 +6,7 @@ import com.example.model.Inventory
 import com.example.model.User
 import com.example.model.Wallet
 import com.example.model.allUsers
+import com.example.model.*
 import com.example.validations.UserValidation
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Body
@@ -36,16 +37,6 @@ class UserController {
         return "sucess";
     }
 
-    fun checkFirstName(firstName: String): MutableList<String> {
-        val checkuserlist = mutableListOf<String>()
-        if (firstName== null) {
-            checkuserlist.add("First Name is Required")
-        }
-        if (firstName.length <= 0) {
-            checkuserlist.add("First Name cannot be empty")
-        }
-        return checkuserlist
-    }
 
     @Post("/register")
     fun register(@Body body: JsonObject): HttpResponse<*> {
@@ -57,7 +48,7 @@ class UserController {
         var email: String = ""
         var username: String = ""
         try {
-            errorList += checkFirstName(body["firstName"].stringValue)
+            errorList += UserValidation.checkFirstName(body["firstName"].stringValue)
 
             if (body["lastName"] == null) {
                 errorList.add("Last Name is Required")
@@ -133,9 +124,9 @@ class UserController {
 
             var newUser = User(firstName, lastName, phoneNumber, email, username)
             var successBody = mutableListOf<String>()
-            var isUserNameUnique = UserValidation().ifUniqueUsername(username)
-            var isEmailUnique = UserValidation().ifUniqueEmail(email)
-            var isPhoneNumberUnique = UserValidation().ifUniquePhoneNumber(phoneNumber)
+            var isUserNameUnique = UserValidation.ifUniqueUsername(username)
+            var isEmailUnique = UserValidation.ifUniqueEmail(email)
+            var isPhoneNumberUnique = UserValidation.ifUniquePhoneNumber(phoneNumber)
 
             if (isUserNameUnique && isEmailUnique && isPhoneNumberUnique) {
                 allUsers.put(username, newUser)
@@ -164,10 +155,8 @@ class UserController {
 
 
         } catch (e: Exception) {
-            return HttpResponse.badRequest(e);
+            e.printStackTrace()
+            return HttpResponse.badRequest(ErrorResponse(listOf("An unknown error occured.")));
         }
-
-
     }
-
 }
