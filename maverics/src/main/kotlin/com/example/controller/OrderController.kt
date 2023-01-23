@@ -53,6 +53,7 @@ class OrderController {
             currentOrder.userName = username;
 
             orderValidation(errorList, currentOrder.placedQuantity, currentOrder.type, currentOrder.price)
+
             generateErrorResponse(errorList)
 
 
