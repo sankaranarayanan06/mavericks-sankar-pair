@@ -54,6 +54,10 @@ fun performBuys(currentOrder: Order, username: String){
 
             var platformCharge = (orderTotal * 2) / 100
 
+            if(orderList[sellerID].esopType == "PERFORMANCE"){
+                platformCharge = 0
+            }
+
             // Releasing extra amount from lock for partial matching scenario
             walletList.get(username)!!.lockedAmount -= ((currentOrder.price - minSellerPrice) * transQuantity)
             walletList.get(username)!!.freeAmount += ((currentOrder.price - minSellerPrice) * transQuantity)

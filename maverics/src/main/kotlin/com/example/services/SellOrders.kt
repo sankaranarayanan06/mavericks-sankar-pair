@@ -44,6 +44,10 @@ fun performSells(currentOrder: Order, sellerUser: String) {
             var platformCharge = (orderTotal * 2) / 100
 
 
+            if(currentOrder.esopType == "PERFORMANCE"){
+                platformCharge = 0
+            }
+
 
             walletList.get(sellerUser)!!.freeAmount += (transQuantity * currentOrder.price - platformCharge)
             walletList.get(orderList.get(buyerOrderId).userName)!!.lockedAmount -= (transQuantity * currentOrder.price)
