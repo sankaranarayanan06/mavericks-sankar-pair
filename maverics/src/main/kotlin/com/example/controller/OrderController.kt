@@ -49,7 +49,7 @@ class OrderController {
                 currentOrder.userName = username;
                 currentOrder.esopType = body["esopType"].stringValue
             } catch (e: Exception) {
-                response["error"] = mutableListOf<String>("Enter quantity, type, price")
+                response["error"] = mutableListOf<String>("Enter quantity(Number), type(String), price(Number), esopType(String)")
                 return HttpResponse.ok(response)
             }
 
