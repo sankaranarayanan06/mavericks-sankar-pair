@@ -16,9 +16,23 @@ import kotlin.math.min
 
 var orderList = mutableListOf<Order>()
 var orderID = -1;
+const val maxOrderQuantity = 100_000
 
 var transactions: MutableMap<Int, MutableList<Pair<Long, Long>>> = mutableMapOf()
 /// quantity--price
+
+
+fun orderValidation(orderError: MutableList<String>, quantity: Long, type: String, price: Long) {
+    if (quantity !in 1..maxOrderQuantity) {
+        orderError.add("Quantity out of Range. Max: 100 thousand, Min: 1")
+    }
+    if (price !in 1..maxWalletAmount) {
+        orderError.add("Price out of Range. Max: 100 thousand, Min: 1")
+    }
+    if (type != "SELL" && type != "BUY") {
+        orderError.add("Wrong order type")
+    }
+}
 
 @Controller("/user")
 class OrderController {
@@ -26,18 +40,22 @@ class OrderController {
     @Post("/{username}/order")
     fun register(@Body body: JsonObject, @PathVariable username: String): HttpResponse<*> {
         if (UserValidation.isUserExist(username)) {
+            var orderError: MutableList<String> = mutableListOf()
             orderID++;
             var currentOrder = Order()
-
             var transT: MutableList<Pair<Long, Long>> = mutableListOf()
-
-
             currentOrder.orderId = orderID;
             currentOrder.quantity = body["quantity"].longValue;
             currentOrder.type = body["type"].stringValue;
             currentOrder.price = body["price"].longValue;
             currentOrder.status = "unfilled";
             currentOrder.userName = username;
+
+            orderValidation(orderError, currentOrder.quantity, currentOrder.type, currentOrder.price)
+            if(orderError.size > 0 ) {
+                response["error"] = orderError
+                return HttpResponse.ok(response)
+            }
 
 
             var n = orderList.size
@@ -289,7 +307,6 @@ class OrderController {
 
             return HttpResponse.ok(ret);
         } else {
-            val response = mutableMapOf<String, MutableList<String>>();
             var errorList = mutableListOf<String>("User doesn't exist.")
             response["error"] = errorList;
             return HttpResponse.badRequest(response);

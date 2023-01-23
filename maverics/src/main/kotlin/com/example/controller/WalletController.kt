@@ -11,6 +11,7 @@ import io.micronaut.json.tree.JsonObject
 import com.example.model.Inventory
 import com.example.model.Message
 import com.example.validations.UserValidation
+import com.example.validations.WalletValidation
 import io.micronaut.json.tree.JsonArray
 import java.time.temporal.TemporalAmount
 import java.util.stream.LongStream
@@ -19,28 +20,18 @@ import java.util.stream.LongStream
 var walletList = mutableMapOf<String,Wallet>()
 const val maxWalletAmount:Long = 100_00_00_000
 
-fun walletvalidation(walletAmount: Long, userAmount: Long): MutableList<String>{
-    val walleterror = mutableListOf<String>()
-    if (userAmount !in 1..maxWalletAmount) {
-        walleterror.add("Amount out of Range. Max: 100 Crore, Min: 1")
-    }
-    if(walletAmount+userAmount > maxWalletAmount){
-        walleterror.add("Max wallet limit of 100 Crores would be exceeded.")
-    }
-    return walleterror
-}
-
 
 @Controller("/user")
 class WalletController() {
     @Post("/{username}/wallet")
     fun addMoneyInWallet(@PathVariable username: String, @Body body: JsonObject): HttpResponse<*> {
         if (UserValidation.isUserExist(username)) {
+            val walletValidation = WalletValidation()
             val amount: Long = body["amount"].longValue
             val wallet: Wallet = walletList.get(username)!!
             val response = mutableMapOf<String, MutableList<String>>();
             var errorList = mutableListOf<String>()
-            errorList += walletvalidation(wallet.freeAmount, amount)
+            errorList += walletValidation.validations(wallet.freeAmount, amount)
             if(errorList.size > 0){
                 response["error"] = errorList;
                 return HttpResponse.badRequest(response);
