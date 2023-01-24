@@ -22,10 +22,13 @@ import com.example.constants.maxQuantity
 
 fun orderValidation(orderError: MutableList<String>, quantity: Long, type: String, price: Long) {
     if (quantity !in 1..maxQuantity) {
-        orderError.add("Quantity out of Range. Max: 10 Million, Min: 1")
+        orderError.add("ESOP Quantity out of Range. Max: 10 Million, Min: 1")
     }
     if (price !in 1..maxQuantity) {
-        orderError.add("Price out of Range. Max: 100 thousand, Min: 1")
+        orderError.add("Price out of Range. Max: 10 Million, Min: 1")
+    }
+    if (quantity * price !in 1..maxQuantity){
+        orderError.add("Total Price [Price * Quantity] out of Range. Max: 10 Million, Min: 1")
     }
     if (type != "SELL" && type != "BUY") {
         orderError.add("Wrong order type")
