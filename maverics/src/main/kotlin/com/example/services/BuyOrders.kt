@@ -2,9 +2,11 @@ package com.example.services
 
 import com.example.constants.inventorMap
 import com.example.constants.orderList
+import com.example.constants.totalPlatformFees
 import com.example.constants.transactions
 import com.example.controller.walletList
 import com.example.model.Order
+import java.math.BigInteger
 import kotlin.math.min
 
 
@@ -52,11 +54,9 @@ fun performBuys(currentOrder: Order, username: String){
 
             var orderTotal = minSellerPrice * transQuantity
 
-            var platformCharge = (orderTotal * 2) / 100
+            var platformCharge = if (orderList[sellerID].esopType != "PERFORMANCE") (orderTotal * 2) / 100 else 0
 
-            if(orderList[sellerID].esopType == "PERFORMANCE"){
-                platformCharge = 0
-            }
+            addPlatformCharge(platformCharge)
 
             // Releasing extra amount from lock for partial matching scenario
             walletList.get(username)!!.lockedAmount -= ((currentOrder.price - minSellerPrice) * transQuantity)
@@ -99,5 +99,6 @@ fun performBuys(currentOrder: Order, username: String){
         } else {
             break;
         }
+
     }
 }
