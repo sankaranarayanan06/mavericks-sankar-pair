@@ -25,7 +25,7 @@ fun ifSufficientQuantity(username: String, quantity: Long, orderType: String): B
 
 
 
-fun checkOrderInputs(orderError: MutableList<String>, quantity: Long, type: String, price: Long) {
+fun orderValidation(orderError: MutableList<String>, quantity: Long, type: String, price: Long) {
     if (quantity !in 1..maxOrderQuantity) {
         orderError.add("Quantity out of Range. Max: 100 thousand, Min: 1")
     }

@@ -5,9 +5,11 @@ import com.example.model.Order
 import com.example.services.generateErrorResponse
 import com.example.services.performBuys
 import com.example.services.performSells
-import com.example.validations.order.checkOrderInputs
-import com.example.validations.UserValidation
+import com.example.validations.user.UserValidation
 import com.example.validations.isValidESOPType
+import com.example.validations.order.ifSufficientAmountInWallet
+import com.example.validations.order.ifSufficientQuantity
+import com.example.validations.order.orderValidation
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
@@ -29,7 +31,7 @@ class OrderController {
             var currentOrder = Order()
 
 
-            checkOrderInputs(errorList,body["quantity"].longValue, body["type"].stringValue, body["quantity"].longValue)
+            orderValidation(errorList,body["quantity"].longValue, body["type"].stringValue, body["quantity"].longValue)
 
 
 
@@ -38,20 +40,12 @@ class OrderController {
             }
 
 
-                currentOrder.currentQuantity = body["quantity"].longValue;
-                currentOrder.placedQuantity = currentOrder.currentQuantity
-                currentOrder.type = body["type"].stringValue;
-                currentOrder.price = body["price"].longValue;
-                currentOrder.status = "unfilled";
-                currentOrder.userName = username;
-
-
-
-            orderValidation(errorList, currentOrder.placedQuantity, currentOrder.type, currentOrder.price)
-
-            if(errorList.size > 0) {
-                return generateErrorResponse(errorList)
-            }
+            currentOrder.currentQuantity = body["quantity"].longValue;
+            currentOrder.placedQuantity = currentOrder.currentQuantity
+            currentOrder.type = body["type"].stringValue;
+            currentOrder.price = body["price"].longValue;
+            currentOrder.status = "unfilled";
+            currentOrder.userName = username;
 
 
 
@@ -60,7 +54,7 @@ class OrderController {
             if (currentOrder.type == "BUY") {
                 // Buyer section
                 var orderAmount = currentOrder.price * currentOrder.currentQuantity;
-                if (!OrderValidation().ifSufficientAmountInWallet(username, orderAmount)) {
+                if (ifSufficientAmountInWallet(username, orderAmount)) {
                     errorList.add("Insufficient amont in wallet")
                     return generateErrorResponse(errorList);
                 }
@@ -91,19 +85,7 @@ class OrderController {
 
                 } catch (e: Exception) {
                     errorList.add("Enter ESOP type")
-                    return generateErrorResponse(errorList+
-
-
-
-
-
-
-
-
-
-
-
-                    )
+                    return generateErrorResponse(errorList)
                 }
                 if(!isValidESOPType(currentOrder.esopType)){
                     println("Here")
@@ -112,7 +94,7 @@ class OrderController {
                     return generateErrorResponse(errorList);
                 }
 
-                if (!OrderValidation().ifSufficientQuantity(username, currentOrder.currentQuantity,currentOrder.esopType)) {
+                if (ifSufficientQuantity(username, currentOrder.currentQuantity,currentOrder.esopType)) {
                     errorList.add("Insufficient quantity of ESOPs")
 
                     return generateErrorResponse(errorList)
