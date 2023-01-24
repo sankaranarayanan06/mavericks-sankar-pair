@@ -15,6 +15,4 @@ const val maxOrderQuantity = 100_000_000
 var transactions: MutableMap<Int, MutableList<Pair<Long, Long>>> = mutableMapOf()
 var totalPlatformFees :BigInteger=BigInteger.valueOf(0)
 
-class Variables {
 
-}

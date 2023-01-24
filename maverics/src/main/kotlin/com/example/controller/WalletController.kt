@@ -1,6 +1,5 @@
 package com.example.controller
 import com.example.constants.response
-import com.example.model.Order
 import com.example.model.Wallet
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Body
@@ -9,13 +8,9 @@ import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.PathVariable
 import io.micronaut.http.annotation.Post
 import io.micronaut.json.tree.JsonObject
-import com.example.model.Inventory
 import com.example.model.Message
-import com.example.validations.UserValidation
+import com.example.validations.user.UserValidation
 import com.example.validations.WalletValidation
-import io.micronaut.json.tree.JsonArray
-import java.time.temporal.TemporalAmount
-import java.util.stream.LongStream
 
 
 var walletList = mutableMapOf<String,Wallet>()
