@@ -2,10 +2,12 @@ package com.example.services
 
 import com.example.constants.inventorMap
 import com.example.constants.orderList
+import com.example.constants.totalPlatformFees
 import com.example.constants.transactions
 import com.example.controller.walletList
 import com.example.model.Order
 import com.example.model.Transaction
+import java.math.BigInteger
 import kotlin.math.min
 
 
@@ -42,13 +44,9 @@ fun performSells(currentOrder: Order, sellerUser: String) {
             // Reduce the locked amount from buyer account
             // Add ESOPs to buyer account
             var orderTotal = transQuantity * currentOrder.price
-            var platformCharge = (orderTotal * 2) / 100
+            var platformCharge = if (orderList[currentOrder.orderId].esopType != "PERFORMANCE") (orderTotal * 2) / 100 else 0
 
-
-            if(currentOrder.esopType == "PERFORMANCE"){
-                platformCharge = 0
-            }
-
+            addPlatformCharge(platformCharge)
 
             walletList.get(sellerUser)!!.freeAmount += (transQuantity * currentOrder.price - platformCharge)
             walletList.get(orderList.get(buyerOrderId).userName)!!.lockedAmount -= (transQuantity * currentOrder.price)
@@ -64,13 +62,13 @@ fun performSells(currentOrder: Order, sellerUser: String) {
                 transactions.put(currentOrder.orderId, mutableListOf<Transaction>());
             }
 
-            transactions.get(currentOrder.orderId)!!.add(Transaction(transQuantity, currentOrder.price, currentOrder.esopType))
+            transactions.get(currentOrder.orderId)!!.add(Transaction(transQuantity, currentOrder.price, orderList[currentOrder.orderId].esopType))
 
             if (!transactions.containsKey(orderList.get(buyerOrderId).orderId)) {
                 transactions.put(orderList.get(buyerOrderId).orderId, mutableListOf<Transaction>())
             }
 
-            transactions.get(buyerOrderId)!!.add(Transaction(transQuantity, currentOrder.price, currentOrder.esopType))
+            transactions.get(buyerOrderId)!!.add(Transaction(transQuantity, currentOrder.price, orderList[currentOrder.orderId].esopType))
 
             currentOrder.status = "partially filled"
             orderList[buyerOrderId].status = "partially filled"

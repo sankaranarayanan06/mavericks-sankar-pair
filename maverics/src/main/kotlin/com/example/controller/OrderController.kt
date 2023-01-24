@@ -55,7 +55,7 @@ class OrderController {
             if (currentOrder.type == "BUY") {
                 // Buyer section
                 var orderAmount = currentOrder.price * currentOrder.currentQuantity;
-                if (ifSufficientAmountInWallet(username, orderAmount)) {
+                if (!ifSufficientAmountInWallet(username, orderAmount)) {
                     errorList.add("Insufficient amont in wallet")
                     return generateErrorResponse(errorList);
                 }
@@ -93,7 +93,7 @@ class OrderController {
                     return generateErrorResponse(errorList);
                 }
 
-                if (ifSufficientQuantity(username, currentOrder.currentQuantity,currentOrder.esopType)) {
+                if (!ifSufficientQuantity(username, currentOrder.currentQuantity,currentOrder.esopType)) {
                     errorList.add("Insufficient quantity of ESOPs")
                     return generateErrorResponse(errorList)
                 }

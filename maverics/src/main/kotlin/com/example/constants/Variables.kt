@@ -3,6 +3,7 @@ import com.example.constants.Regex
 import com.example.model.Inventory
 import com.example.model.Order
 import com.example.model.Transaction
+import java.math.BigInteger
 
 val regex = Regex()
 
@@ -18,3 +19,6 @@ var orderList = mutableListOf<Order>()
 var orderID = 0;
 
 var transactions: MutableMap<Int, MutableList<Transaction>> = mutableMapOf()
+var totalPlatformFees :BigInteger=BigInteger.valueOf(0)
+
+
