@@ -1,6 +1,7 @@
 package com.example.validations.order
 
 import com.example.constants.inventorMap
+import com.example.constants.inventoryList
 import com.example.constants.maxQuantity
 import com.example.controller.walletList
 import com.example.model.Inventory
@@ -36,5 +37,16 @@ fun orderValidation(orderError: MutableList<String>, quantity: Long, type: Strin
     }
     if (type != "SELL" && type != "BUY") {
         orderError.add("Wrong order type")
+    }
+}
+
+fun orderoverflowValidation(orderError: MutableList<String>, username: String, quantity: Long, price: Long, type: String) {
+    if (quantity * price + walletList[username]!!.freeAmount + walletList[username]!!.lockedAmount > maxQuantity && type == "SELL"){
+        orderError.add("Cant create order. Wallet will overflow")
+    }
+
+    var inventorylist = inventorMap[username]!!
+    if(quantity + inventorylist[0].free + inventorylist[1].free + inventorylist[0].locked + inventorylist[1].locked > maxQuantity && type == "BUY"){
+        orderError.add("Cant create order. Inventory will overflow")
     }
 }

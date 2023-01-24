@@ -17,8 +17,7 @@ import io.micronaut.http.annotation.PathVariable
 import io.micronaut.http.annotation.Post
 import io.micronaut.json.tree.JsonObject
 import com.example.constants.maxQuantity
-
-
+import com.example.validations.order.orderoverflowValidation
 
 
 @Controller("/user")
@@ -31,14 +30,12 @@ class OrderController {
             var currentOrder = Order()
 
 
-            orderValidation(errorList,body["quantity"].longValue, body["type"].stringValue, body["quantity"].longValue)
-
-
+            orderValidation(errorList, body["quantity"].longValue, body["type"].stringValue, body["price"].longValue)
+            orderoverflowValidation(errorList, username, body["quantity"].longValue, body["price"].longValue, body["type"].stringValue)
 
             if(errorList.size > 0){
                 return generateErrorResponse(errorList)
             }
-
 
             currentOrder.currentQuantity = body["quantity"].longValue;
             currentOrder.placedQuantity = currentOrder.currentQuantity
@@ -54,7 +51,7 @@ class OrderController {
             if (currentOrder.type == "BUY") {
                 // Buyer section
                 var orderAmount = currentOrder.price * currentOrder.currentQuantity;
-                if (ifSufficientAmountInWallet(username, orderAmount)) {
+                if (!ifSufficientAmountInWallet(username, orderAmount)) {
                     errorList.add("Insufficient amont in wallet")
                     return generateErrorResponse(errorList);
                 }
@@ -79,7 +76,6 @@ class OrderController {
 
             } else if(currentOrder.type == "SELL") {
 
-
                 try {
                     currentOrder.esopType = body["esopType"].stringValue
 
@@ -92,10 +88,11 @@ class OrderController {
                     return generateErrorResponse(errorList);
                 }
 
-                if (ifSufficientQuantity(username, currentOrder.currentQuantity,currentOrder.esopType)) {
+                if (!ifSufficientQuantity(username, currentOrder.currentQuantity,currentOrder.esopType)) {
                     errorList.add("Insufficient quantity of ESOPs")
                     return generateErrorResponse(errorList)
                 }
+
 
                 currentOrder.orderId = orderID++;
                 orderList.add(currentOrder)
