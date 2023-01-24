@@ -14,7 +14,6 @@ import com.example.validations.WalletValidation
 
 
 var walletList = mutableMapOf<String,Wallet>()
-const val maxWalletAmount:Long = 100_00_00_000
 
 
 @Controller("/user")

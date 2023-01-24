@@ -25,6 +25,7 @@ fun checkUserName(username: String): Boolean {
 fun checkPhoneNumber(phoneNumber:String):Boolean{
     return regex.getPhoneNumberRegex().toRegex().matches(phoneNumber)
 }
+
 @Controller("/user")
 class UserController {
     @Post("/register")
