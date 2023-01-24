@@ -1,13 +1,12 @@
 package com.example.controller
 
 import com.example.constants.*
-import com.example.model.Inventory
 import com.example.model.Order
 import com.example.services.generateErrorResponse
 import com.example.services.performBuys
 import com.example.services.performSells
 import com.example.validations.OrderValidation
-import com.example.validations.UserValidation
+import com.example.validations.user.UserValidation
 import com.example.validations.isValidESOPType
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Body

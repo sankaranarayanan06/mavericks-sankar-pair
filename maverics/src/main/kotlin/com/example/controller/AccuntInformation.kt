@@ -3,7 +3,7 @@ package com.example.controller
 import com.example.constants.inventorMap
 import com.example.model.Inventory
 import com.example.model.allUsers
-import com.example.validations.UserValidation
+import com.example.validations.user.UserValidation
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get

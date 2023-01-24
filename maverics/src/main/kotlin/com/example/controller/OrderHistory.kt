@@ -2,12 +2,11 @@ package com.example.controller
 
 import com.example.constants.orderList
 import com.example.constants.transactions
-import com.example.model.Message
 import com.example.model.BuyOrderHistory
 import com.example.model.SellOrderHistory
 import com.example.model.Transaction
 import com.example.services.generateErrorResponse
-import com.example.validations.UserValidation
+import com.example.validations.user.UserValidation
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get

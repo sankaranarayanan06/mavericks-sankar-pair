@@ -1,4 +1,4 @@
-package com.example.validations
+package com.example.validations.user
 
 import com.example.model.allUsers
 

@@ -12,8 +12,3 @@ var orderList = mutableListOf<Order>()
 var orderID = 0;
 const val maxOrderQuantity = 100_000_000
 var transactions: MutableMap<Int, MutableList<Pair<Long, Long>>> = mutableMapOf()
-
-
-class Variables {
-
-}
