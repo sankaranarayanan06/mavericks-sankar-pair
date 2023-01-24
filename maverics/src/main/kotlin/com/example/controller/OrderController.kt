@@ -6,7 +6,7 @@ import com.example.model.Order
 import com.example.services.generateErrorResponse
 import com.example.services.performBuys
 import com.example.services.performSells
-import com.example.validations.OrderValidation
+import com.example.validations.order.checkOrderInputs
 import com.example.validations.UserValidation
 import com.example.validations.isValidESOPType
 import io.micronaut.http.HttpResponse
@@ -16,20 +16,9 @@ import io.micronaut.http.annotation.PathVariable
 import io.micronaut.http.annotation.Post
 import io.micronaut.json.tree.JsonObject
 
-/// quantity--price
 
 
-fun orderValidation(orderError: MutableList<String>, quantity: Long, type: String, price: Long) {
-    if (quantity !in 1..maxOrderQuantity) {
-        orderError.add("Quantity out of Range. Max: 100 thousand, Min: 1")
-    }
-    if (price !in 1..maxWalletAmount) {
-        orderError.add("Price out of Range. Max: 100 thousand, Min: 1")
-    }
-    if (type != "SELL" && type != "BUY") {
-        orderError.add("Wrong order type")
-    }
-}
+
 
 @Controller("/user")
 class OrderController {
@@ -40,18 +29,23 @@ class OrderController {
         if (UserValidation.isUserExist(username)) {
             var currentOrder = Order()
 
-            try {
+
+            checkOrderInputs(errorList,body["quantity"].longValue, body["type"].stringValue, body["quantity"].longValue)
+
+
+
+            if(errorList.size > 0){
+                return generateErrorResponse(errorList)
+            }
+
+
                 currentOrder.currentQuantity = body["quantity"].longValue;
                 currentOrder.placedQuantity = currentOrder.currentQuantity
                 currentOrder.type = body["type"].stringValue;
                 currentOrder.price = body["price"].longValue;
                 currentOrder.status = "unfilled";
                 currentOrder.userName = username;
-                currentOrder.esopType = body["esopType"].stringValue
-            } catch (e: Exception) {
-                response["error"] = mutableListOf<String>("Enter quantity(Number), type(String), price(Number), esopType(String)")
-                return HttpResponse.ok(response)
-            }
+
 
 
             orderValidation(errorList, currentOrder.placedQuantity, currentOrder.type, currentOrder.price)
@@ -93,6 +87,25 @@ class OrderController {
             } else if(currentOrder.type == "SELL") {
 
 
+                try {
+                    currentOrder.esopType = body["esopType"].stringValue
+
+                } catch (e: Exception) {
+                    errorList.add("Enter ESOP type")
+                    return generateErrorResponse(errorList+
+
+
+
+
+
+
+
+
+
+
+
+                    )
+                }
                 if(!isValidESOPType(currentOrder.esopType)){
                     println("Here")
                     errorList.add("Invalid ESOP Type")
