@@ -1,14 +1,15 @@
 package com.example.controller
 
 import com.example.constants.*
-import com.example.model.Inventory
 import com.example.model.Order
 import com.example.services.generateErrorResponse
 import com.example.services.performBuys
 import com.example.services.performSells
-import com.example.validations.OrderValidation
-import com.example.validations.UserValidation
+import com.example.validations.user.UserValidation
 import com.example.validations.isValidESOPType
+import com.example.validations.order.ifSufficientAmountInWallet
+import com.example.validations.order.ifSufficientQuantity
+import com.example.validations.order.orderValidation
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
@@ -17,23 +18,8 @@ import io.micronaut.http.annotation.Post
 import io.micronaut.json.tree.JsonObject
 import com.example.constants.maxQuantity
 
-/// quantity--price
 
 
-fun orderValidation(orderError: MutableList<String>, quantity: Long, type: String, price: Long) {
-    if (quantity !in 1..maxQuantity) {
-        orderError.add("ESOP Quantity out of Range. Max: 10 Million, Min: 1")
-    }
-    if (price !in 1..maxQuantity) {
-        orderError.add("Price out of Range. Max: 10 Million, Min: 1")
-    }
-    if (quantity * price !in 1..maxQuantity){
-        orderError.add("Total Price [Price * Quantity] out of Range. Max: 10 Million, Min: 1")
-    }
-    if (type != "SELL" && type != "BUY") {
-        orderError.add("Wrong order type")
-    }
-}
 
 @Controller("/user")
 class OrderController {
@@ -44,25 +30,22 @@ class OrderController {
         if (UserValidation.isUserExist(username)) {
             var currentOrder = Order()
 
-            try {
-                currentOrder.currentQuantity = body["quantity"].longValue;
-                currentOrder.placedQuantity = currentOrder.currentQuantity
-                currentOrder.type = body["type"].stringValue;
-                currentOrder.price = body["price"].longValue;
-                currentOrder.status = "unfilled";
-                currentOrder.userName = username;
-                currentOrder.esopType = body["esopType"].stringValue
-            } catch (e: Exception) {
-                response["error"] = mutableListOf<String>("Enter quantity(Number), type(String), price(Number), esopType(String)")
-                return HttpResponse.ok(response)
-            }
+
+            orderValidation(errorList,body["quantity"].longValue, body["type"].stringValue, body["quantity"].longValue)
 
 
-            orderValidation(errorList, currentOrder.placedQuantity, currentOrder.type, currentOrder.price)
 
-            if(errorList.size > 0) {
+            if(errorList.size > 0){
                 return generateErrorResponse(errorList)
             }
+
+
+            currentOrder.currentQuantity = body["quantity"].longValue;
+            currentOrder.placedQuantity = currentOrder.currentQuantity
+            currentOrder.type = body["type"].stringValue;
+            currentOrder.price = body["price"].longValue;
+            currentOrder.status = "unfilled";
+            currentOrder.userName = username;
 
 
 
@@ -71,7 +54,7 @@ class OrderController {
             if (currentOrder.type == "BUY") {
                 // Buyer section
                 var orderAmount = currentOrder.price * currentOrder.currentQuantity;
-                if (!OrderValidation().ifSufficientAmountInWallet(username, orderAmount)) {
+                if (ifSufficientAmountInWallet(username, orderAmount)) {
                     errorList.add("Insufficient amont in wallet")
                     return generateErrorResponse(errorList);
                 }
@@ -97,12 +80,19 @@ class OrderController {
             } else if(currentOrder.type == "SELL") {
 
 
+                try {
+                    currentOrder.esopType = body["esopType"].stringValue
+
+                } catch (e: Exception) {
+                    errorList.add("Enter ESOP type")
+                    return generateErrorResponse(errorList)
+                }
                 if(!isValidESOPType(currentOrder.esopType)){
                     errorList.add("Invalid ESOP Type")
                     return generateErrorResponse(errorList);
                 }
 
-                if (!OrderValidation().ifSufficientQuantity(username, currentOrder.currentQuantity,currentOrder.esopType)) {
+                if (ifSufficientQuantity(username, currentOrder.currentQuantity,currentOrder.esopType)) {
                     errorList.add("Insufficient quantity of ESOPs")
                     return generateErrorResponse(errorList)
                 }

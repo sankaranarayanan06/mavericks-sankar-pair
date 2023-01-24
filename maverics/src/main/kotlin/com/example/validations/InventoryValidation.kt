@@ -4,7 +4,6 @@ import com.example.constants.maxQuantity
 import com.example.model.Inventory
 
 class InventoryValidation {
-
     fun validation(inventoryError: MutableList<String>, performance: Inventory, nonPerformance: Inventory, quantityToAdd: Long, type: String) {
         if (performance.free + performance.locked + nonPerformance.free + nonPerformance.locked > maxQuantity) {
             inventoryError.add("ESOP Quantity out of Range. Max: 10 Million, Min: 1")

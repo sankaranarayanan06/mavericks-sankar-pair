@@ -7,16 +7,12 @@ import com.example.model.User
 import com.example.model.Wallet
 import com.example.model.allUsers
 import com.example.model.*
-import com.example.validations.UserValidation
+import com.example.validations.user.UserValidation
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
-import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Post
 import io.micronaut.json.tree.JsonObject
-import io.micronaut.validation.validator.constraints.EmailValidator
-import javax.validation.constraints.Email
-import io.micronaut.validation.validator.constraints.PatternValidator
 
 
 fun isEmailValid(email: String): Boolean {
@@ -32,22 +28,15 @@ fun checkPhoneNumber(phoneNumber:String):Boolean{
 
 @Controller("/user")
 class UserController {
-
-    @Get
-    fun test(): String {
-        return "sucess";
-    }
-
-
     @Post("/register")
     fun register(@Body body: JsonObject): HttpResponse<*> {
-        var errorList = mutableListOf<String>()
-        val errorResponse = mutableMapOf<String, MutableList<String>>();
-        var firstName: String = ""
-        var lastName: String = ""
-        var phoneNumber: String = ""
-        var email: String = ""
-        var username: String = ""
+        val errorList = mutableListOf<String>()
+        val errorResponse = mutableMapOf<String, MutableList<String>>()
+        val firstName = ""
+        var lastName = ""
+        var phoneNumber = ""
+        var email = ""
+        var username = ""
         try {
             errorList += UserValidation.checkFirstName(body["firstName"].stringValue)
 
@@ -58,7 +47,7 @@ class UserController {
             try {
                 lastName = body["lastName"].stringValue
 
-                if (lastName.length <= 0) {
+                if (lastName.isEmpty()) {
                     errorList.add("Last Name cannot be empty")
                 }
             } catch (e: Exception) {
@@ -72,7 +61,7 @@ class UserController {
                 phoneNumber = body["phoneNumber"].stringValue
 
 
-                if (phoneNumber.length <= 0) {
+                if (phoneNumber.isEmpty()) {
                     errorList.add("Phone number cannot be empty")
                 }
 
@@ -86,7 +75,7 @@ class UserController {
             try {
                 email = body["email"].stringValue
 
-                if (email.length <= 0) {
+                if (email.isEmpty()) {
                     errorList.add("Email cannot be empty")
                 }
 
@@ -94,28 +83,28 @@ class UserController {
             }
 
 
-            if (isEmailValid(email) == false) {
+            if (!isEmailValid(email)) {
                 errorList.add("Email is not valid")
             }
 
             if (body["username"] == null) {
-                errorList.add("Username is Requied")
+                errorList.add("Username is Required")
             }
 
             try {
                 username = body["username"].stringValue
 
-                if (username.length <= 0) {
+                if (username.isEmpty()) {
                     errorList.add("Username cannot be empty")
                 }
 
             } catch (e: Exception) {
             }
 
-            if (checkUserName(username) == false) {
+            if (!checkUserName(username)) {
                 errorList.add("Invalid User Name")
             }
-            if (checkPhoneNumber(phoneNumber) == false) {
+            if (!checkPhoneNumber(phoneNumber)) {
                 errorList.add("Invalid phone number")
             }
             errorResponse["errors"] = errorList
@@ -123,31 +112,31 @@ class UserController {
                 return HttpResponse.badRequest(errorResponse)
             }
 
-            var newUser = User(firstName, lastName, phoneNumber, email, username)
-            var successBody = mutableListOf<String>()
-            var isUserNameUnique = UserValidation.ifUniqueUsername(username)
-            var isEmailUnique = UserValidation.ifUniqueEmail(email)
-            var isPhoneNumberUnique = UserValidation.ifUniquePhoneNumber(phoneNumber)
+            val newUser = User(firstName, lastName, phoneNumber, email, username)
+            val successBody = mutableListOf<String>()
+            val isUserNameUnique = UserValidation.ifUniqueUsername(username)
+            val isEmailUnique = UserValidation.ifUniqueEmail(email)
+            val isPhoneNumberUnique = UserValidation.ifUniquePhoneNumber(phoneNumber)
 
             if (isUserNameUnique && isEmailUnique && isPhoneNumberUnique) {
-                allUsers.put(username, newUser)
-                inventorMap.put(username, mutableListOf(Inventory(type = "PERFORMANCE"), Inventory(type = "NON_PERFORMANCE")))
-                walletList.put(username, Wallet())
+                allUsers[username] = newUser
+                inventorMap[username] = mutableListOf(Inventory(type = "PERFORMANCE"), Inventory(type = "NON_PERFORMANCE"))
+                walletList[username] = Wallet()
                 successBody.add("User added successfully");
                 return HttpResponse.ok(successBody);
             } else {
-                var errorList = mutableListOf<String>()
-                errorResponse["error"] = errorList;
+                val errorList = mutableListOf<String>()
+                errorResponse["error"] = errorList
                 if (!isUserNameUnique) {
-                    errorList.add("User with given username already exists");
+                    errorList.add("User with given username already exists")
                 }
 
                 if (!isPhoneNumberUnique) {
-                    errorList.add("User with given phone number already exists");
+                    errorList.add("User with given phone number already exists")
                 }
 
                 if (!isEmailUnique) {
-                    errorList.add("User with given email already exists");
+                    errorList.add("User with given email already exists")
                 }
 
                 return HttpResponse.badRequest(errorResponse);
@@ -157,7 +146,7 @@ class UserController {
 
         } catch (e: Exception) {
             e.printStackTrace()
-            errorResponse["error"] = (listOf("An unknown error occured.").toMutableList())
+            errorResponse["error"] = (listOf("An unknown error occurred.").toMutableList())
             return HttpResponse.badRequest(errorResponse);
         }
     }

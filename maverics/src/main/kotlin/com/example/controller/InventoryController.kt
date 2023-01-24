@@ -3,11 +3,9 @@ package com.example.controller
 import com.example.constants.inventorMap
 import com.example.constants.inventoryList
 import com.example.constants.response
-import com.example.model.Inventory
 import com.example.model.Message
-import com.example.model.Wallet
 import com.example.validations.InventoryValidation
-import com.example.validations.UserValidation
+import com.example.validations.user.UserValidation
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.*
 import io.micronaut.json.tree.JsonObject

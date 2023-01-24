@@ -11,8 +11,3 @@ val response = mutableMapOf<String, MutableList<String>>();
 var orderList = mutableListOf<Order>()
 var orderID = 0;
 var transactions: MutableMap<Int, MutableList<Pair<Long, Long>>> = mutableMapOf()
-
-
-class Variables {
-
-}
