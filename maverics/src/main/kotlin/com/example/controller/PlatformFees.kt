@@ -12,7 +12,7 @@ import java.math.BigInteger
 @Controller("/")
 
 class PlatformFees {
-    @Get("/platformfees")
+    @Get("/platformcharge")
     fun totalPlatformCharge(): HttpResponse<*>{
         var response = mutableMapOf<String, BigInteger>()
         response["platformCharge"] = getPlatformFees()
