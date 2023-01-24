@@ -2,6 +2,7 @@ package com.example.controller
 
 import com.example.constants.*
 import com.example.model.Order
+import com.example.model.Transaction
 import com.example.services.generateErrorResponse
 import com.example.services.performBuys
 import com.example.services.performSells
@@ -60,7 +61,7 @@ class OrderController {
                 }
                 currentOrder.orderId = orderID++;
                 orderList.add(currentOrder);
-                transactions.put(orderID-1, mutableListOf<Pair<Long,Long>>())
+                transactions.put(orderID-1, mutableListOf<Transaction>())
 
                 // Locking amount for order placing
                 walletList.get(username)!!.lockedAmount += (currentOrder.currentQuantity * currentOrder.price)
@@ -102,7 +103,7 @@ class OrderController {
 
                 currentOrder.orderId = orderID++;
                 orderList.add(currentOrder)
-                transactions.put(orderID-1, mutableListOf<Pair<Long,Long>>())
+                transactions.put(orderID-1, mutableListOf<Transaction>())
 
                 // Locking
                 if(currentOrder.esopType == "PERFORMANCE"){

@@ -25,9 +25,8 @@ class OrderHistory() {
                 if (username == orderList[i].userName) {
                     orderID = orderList[i].orderId
                     var listOfTransactions = mutableListOf<Transaction>()
-                    println(orderID);
-                    for (eachTrans in transactions[orderID]!!) {
-                        listOfTransactions.add(Transaction(eachTrans.first, eachTrans.second))
+                    for (transaction in transactions[orderID]!!) {
+                        listOfTransactions.add(transaction)
                         // quantity += eachTrans.first
                     }
 

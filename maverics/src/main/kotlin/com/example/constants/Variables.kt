@@ -2,6 +2,7 @@ package com.example.constants
 import com.example.constants.Regex
 import com.example.model.Inventory
 import com.example.model.Order
+import com.example.model.Transaction
 
 val regex = Regex()
 
@@ -19,4 +20,4 @@ var orderID = 0;
 
 const val maxOrderQuantity = 100_000_000
 
-var transactions: MutableMap<Int, MutableList<Pair<Long, Long>>> = mutableMapOf()
+var transactions: MutableMap<Int, MutableList<Transaction>> = mutableMapOf()
