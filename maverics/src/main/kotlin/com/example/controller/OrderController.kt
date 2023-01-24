@@ -15,15 +15,16 @@ import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.PathVariable
 import io.micronaut.http.annotation.Post
 import io.micronaut.json.tree.JsonObject
+import com.example.constants.maxQuantity
 
 /// quantity--price
 
 
 fun orderValidation(orderError: MutableList<String>, quantity: Long, type: String, price: Long) {
-    if (quantity !in 1..maxOrderQuantity) {
-        orderError.add("Quantity out of Range. Max: 100 thousand, Min: 1")
+    if (quantity !in 1..maxQuantity) {
+        orderError.add("Quantity out of Range. Max: 10 Million, Min: 1")
     }
-    if (price !in 1..maxWalletAmount) {
+    if (price !in 1..maxQuantity) {
         orderError.add("Price out of Range. Max: 100 thousand, Min: 1")
     }
     if (type != "SELL" && type != "BUY") {
@@ -94,15 +95,12 @@ class OrderController {
 
 
                 if(!isValidESOPType(currentOrder.esopType)){
-                    println("Here")
                     errorList.add("Invalid ESOP Type")
-
                     return generateErrorResponse(errorList);
                 }
 
                 if (!OrderValidation().ifSufficientQuantity(username, currentOrder.currentQuantity,currentOrder.esopType)) {
                     errorList.add("Insufficient quantity of ESOPs")
-
                     return generateErrorResponse(errorList)
                 }
 
@@ -112,13 +110,13 @@ class OrderController {
 
                 // Locking
                 if(currentOrder.esopType == "PERFORMANCE"){
-                    inventoryList[0].free -= body["quantity"].longValue
-                    inventoryList[0].locked += body["quantity"].longValue
+                    inventoryList[0].free -= currentOrder.currentQuantity
+                    inventoryList[0].locked += currentOrder.currentQuantity
                 }
                 else if(currentOrder.esopType == "NON_PERFORMANCE")
                 {
-                    inventoryList[1].free -= body["quantity"].longValue
-                    inventoryList[1].locked += body["quantity"].longValue
+                    inventoryList[1].free -= currentOrder.currentQuantity
+                    inventoryList[1].locked += currentOrder.currentQuantity
                 }
                 else
                 {

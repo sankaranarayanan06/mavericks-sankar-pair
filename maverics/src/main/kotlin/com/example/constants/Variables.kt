@@ -6,7 +6,7 @@ import com.example.model.Order
 val regex = Regex()
 var inventoryList: MutableList<Inventory> = mutableListOf()
 var inventorMap = HashMap<String, MutableList<Inventory>>()
-const val maxInventoryQuantity = 100_00_00_000
+const val maxQuantity = 100_00_000
 val response = mutableMapOf<String, MutableList<String>>();
 var orderList = mutableListOf<Order>()
 var orderID = 0;
