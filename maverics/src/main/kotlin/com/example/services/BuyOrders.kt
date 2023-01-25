@@ -6,6 +6,7 @@ import com.example.constants.totalPlatformFees
 import com.example.constants.transactions
 import com.example.controller.walletList
 import com.example.model.Order
+import com.example.model.Transaction
 import java.math.BigInteger
 import kotlin.math.min
 
@@ -78,16 +79,16 @@ fun performBuys(currentOrder: Order, username: String){
 
             // Updating buyers transactions
             if (!transactions.containsKey(currentOrder.orderId)) {
-                transactions.put(currentOrder.orderId, mutableListOf<Pair<Long, Long>>())
+                transactions.put(currentOrder.orderId, mutableListOf<Transaction>())
             }
 
-            transactions.get(currentOrder.orderId)!!.add(Pair(transQuantity, minSellerPrice))
+            transactions.get(currentOrder.orderId)!!.add(Transaction(transQuantity, minSellerPrice, orderList[sellerID].esopType))
 
             // Updating seller entries
             if (!transactions.containsKey(sellerID)) {
-                transactions.put(sellerID, mutableListOf<Pair<Long, Long>>())
+                transactions.put(sellerID, mutableListOf<Transaction>())
             }
-            transactions.get(sellerID)!!.add(Pair(transQuantity, minSellerPrice))
+            transactions.get(sellerID)!!.add(Transaction(transQuantity, minSellerPrice, orderList[sellerID].esopType))
 
             currentOrder.status = "partially filled"
             orderList[sellerID].status = "partially filled"

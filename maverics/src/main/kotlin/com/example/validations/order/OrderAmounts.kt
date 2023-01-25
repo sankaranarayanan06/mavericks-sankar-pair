@@ -19,10 +19,10 @@ fun ifSufficientQuantity(username: String, quantity: Long, orderType: String): B
 
     if (orderType == "PERFORMANCE") {
         return inventoryList[0].free >= quantity
+    } else {
+        return inventoryList[1].free >= quantity
     }
-    return inventoryList[1].free >= quantity
 }
-
 
 
 fun orderValidation(orderError: MutableList<String>, quantity: Long, type: String, price: Long) {
@@ -32,7 +32,7 @@ fun orderValidation(orderError: MutableList<String>, quantity: Long, type: Strin
     if (price !in 1..maxQuantity) {
         orderError.add("Price out of Range. Max: 10 Million, Min: 1")
     }
-    if(quantity * price !in 1..maxQuantity){
+    if (quantity * price !in 1..maxQuantity) {
         orderError.add("Total Price [Quantity * Price] out of Range. Max: 10 Million, Min: 1")
     }
     if (type != "SELL" && type != "BUY") {

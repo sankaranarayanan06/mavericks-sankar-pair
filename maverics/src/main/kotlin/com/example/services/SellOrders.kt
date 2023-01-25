@@ -6,6 +6,7 @@ import com.example.constants.totalPlatformFees
 import com.example.constants.transactions
 import com.example.controller.walletList
 import com.example.model.Order
+import com.example.model.Transaction
 import java.math.BigInteger
 import kotlin.math.min
 
@@ -58,16 +59,16 @@ fun performSells(currentOrder: Order, sellerUser: String) {
                 inventorMap.get(sellerUser)!![1].locked -= (transQuantity)
 
             if (!transactions.containsKey(currentOrder.orderId)) {
-                transactions.put(currentOrder.orderId, mutableListOf<Pair<Long, Long>>());
+                transactions.put(currentOrder.orderId, mutableListOf<Transaction>());
             }
 
-            transactions.get(currentOrder.orderId)!!.add(Pair(transQuantity, currentOrder.price))
+            transactions.get(currentOrder.orderId)!!.add(Transaction(transQuantity, currentOrder.price, orderList[currentOrder.orderId].esopType))
 
             if (!transactions.containsKey(orderList.get(buyerOrderId).orderId)) {
-                transactions.put(orderList.get(buyerOrderId).orderId, mutableListOf<Pair<Long, Long>>())
+                transactions.put(orderList.get(buyerOrderId).orderId, mutableListOf<Transaction>())
             }
 
-            transactions.get(buyerOrderId)!!.add(Pair(transQuantity, currentOrder.price))
+            transactions.get(buyerOrderId)!!.add(Transaction(transQuantity, currentOrder.price, orderList[currentOrder.orderId].esopType))
 
             currentOrder.status = "partially filled"
             orderList[buyerOrderId].status = "partially filled"
