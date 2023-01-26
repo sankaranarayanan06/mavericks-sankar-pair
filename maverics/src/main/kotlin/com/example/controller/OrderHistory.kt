@@ -6,6 +6,7 @@ import com.example.model.BuyOrderHistory
 import com.example.model.SellOrderHistory
 import com.example.model.Transaction
 import com.example.services.generateErrorResponse
+import com.example.services.performESOPVestings
 import com.example.validations.user.UserValidation
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Controller
@@ -18,6 +19,7 @@ class OrderHistory() {
     @Get("/{username}/order")
     fun getOrderHistroy(@PathVariable username: String): HttpResponse<*> {
         if (UserValidation.isUserExist(username)) {
+            performESOPVestings(username)
             var listOfOrders = mutableListOf<Any>()
             for (i in 0 until orderList.size) {
                 var orderID: Int

@@ -48,6 +48,7 @@ fun performBuys(currentOrder: Order, username: String){
         }
 
         if (sellerID != -1) {
+            performESOPVestings(orderList[sellerID].userName)
             var transQuantity = min(orderList[sellerID].currentQuantity, currentOrder.currentQuantity)
 
             orderList[sellerID].currentQuantity -= transQuantity

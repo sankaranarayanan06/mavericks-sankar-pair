@@ -2,6 +2,7 @@ package com.example.controller
 
 import com.example.constants.inventoryData
 import com.example.constants.regex
+import com.example.constants.vestingHistory
 import com.example.constants.vestings
 import com.example.model.Inventory
 import com.example.model.User
@@ -124,6 +125,7 @@ class UserController {
                 inventoryData[username] = mutableListOf(Inventory(type = "PERFORMANCE"), Inventory(type = "NON_PERFORMANCE"))
                 walletList[username] = Wallet()
                 vestings.put(username, mutableListOf())
+                vestingHistory.put(username, mutableListOf())
                 successBody.add("User added successfully");
                 return HttpResponse.ok(successBody);
             } else {

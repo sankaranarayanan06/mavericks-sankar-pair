@@ -6,6 +6,8 @@ import java.time.LocalDateTime
 
 fun addESOPVestings(username: String, quantity: Long, esopType: String){
 
+    println(quantity)
+
     var previousQuantity: Long = 0
     var totalPercentage: Long = 0
 
@@ -33,7 +35,7 @@ fun performESOPVestings(username: String)
     {
         val vestingEntry = vestings[username]!![0]
 
-        if(vestingEntry.time.isBefore(systemTime))
+        if(vestingEntry.time.compareTo(systemTime) <= 0)
         {
             if(vestingEntry.esopType == "PERFORMANCE"){
                 inventoryData[username]!![0].free += vestingEntry.quantity
@@ -42,6 +44,10 @@ fun performESOPVestings(username: String)
             {
                 inventoryData[username]!![1].free += vestingEntry.quantity
             }
+        }
+        else
+        {
+            break
         }
 
         vestings[username]!!.remove(vestingEntry)

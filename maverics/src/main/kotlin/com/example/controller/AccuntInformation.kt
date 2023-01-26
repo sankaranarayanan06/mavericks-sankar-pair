@@ -5,6 +5,7 @@ import com.example.constants.vestingHistory
 import com.example.constants.vestings
 import com.example.model.Inventory
 import com.example.model.allUsers
+import com.example.services.performESOPVestings
 import com.example.validations.user.UserValidation
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Controller
@@ -17,6 +18,8 @@ class AccuntInformation {
     @Get("/{username}/accountInformation")
     fun accountInformation(@PathVariable username: String): HttpResponse<*> {
         if(UserValidation.isUserExist(username)) {
+            performESOPVestings(username)
+
             val inventoryList: MutableList<Inventory> = mutableListOf(Inventory(type = "PERFORMANCE"), Inventory(type = "NON_PERFORMANCE"))
             val user = allUsers.get(username)
             val userWallet = walletList[username]
