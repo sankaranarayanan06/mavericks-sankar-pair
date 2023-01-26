@@ -23,6 +23,8 @@ var transactions: MutableMap<Int, MutableList<Transaction>> = mutableMapOf()
 
 var vestings: MutableMap<String, MutableList<VestingData>> = mutableMapOf()
 
+var vestingHistory: MutableMap<String, MutableList<VestingData>> = mutableMapOf()
+
 var vestingPercentages = mutableListOf<Long>(10,30,20,40)
 
 var vestingTimings = mutableListOf<Long>(10,20,30,40)

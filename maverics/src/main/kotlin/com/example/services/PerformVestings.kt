@@ -45,5 +45,6 @@ fun performESOPVestings(username: String)
         }
 
         vestings[username]!!.remove(vestingEntry)
+        vestingHistory[username]!!.add(vestingEntry)
     }
 }

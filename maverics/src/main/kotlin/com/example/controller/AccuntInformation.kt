@@ -1,9 +1,9 @@
 package com.example.controller
 
 import com.example.constants.inventoryData
+import com.example.constants.vestingHistory
 import com.example.constants.vestings
 import com.example.model.Inventory
-import com.example.model.VestingData
 import com.example.model.allUsers
 import com.example.validations.user.UserValidation
 import io.micronaut.http.HttpResponse
@@ -28,7 +28,6 @@ class AccuntInformation {
 
             walletInfo["free"] = userWallet!!.freeAmount
             walletInfo["locked"] = userWallet.lockedAmount
-            val pendingVestings: MutableList<VestingData> = vestings[username]!!
 
             response["firstName"] = user!!.firstName
             response["lastName"] = user.lastName
@@ -37,7 +36,8 @@ class AccuntInformation {
 
             response["wallet"] = walletInfo
             response["inventory"] = inventoryList
-            response["pendingVestings"] = pendingVestings
+            response["pendingVestings"] = vestings[username]!!
+            response["vestingHistory"] = vestingHistory[username]!!
 
             return HttpResponse.ok(response)
 
