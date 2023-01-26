@@ -25,7 +25,7 @@ var vestings: MutableMap<String, MutableList<VestingData>> = mutableMapOf()
 
 var vestingHistory: MutableMap<String, MutableList<VestingData>> = mutableMapOf()
 
-var vestingPercentages = mutableListOf<Long>(10,30,20,40)
+var vestingPercentages = mutableListOf<Long>(30,20,10,40)
 
 var vestingTimings = mutableListOf<Long>(10,20,30,40)
 
