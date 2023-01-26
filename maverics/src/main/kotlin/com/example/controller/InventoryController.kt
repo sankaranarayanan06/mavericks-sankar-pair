@@ -1,6 +1,6 @@
 package com.example.controller
 
-import com.example.constants.inventorMap
+import com.example.constants.inventoryData
 import com.example.constants.inventoryList
 import com.example.constants.response
 import com.example.model.Message
@@ -30,7 +30,7 @@ class InventoryController() {
             }
 
 
-            inventoryList = inventorMap[username]!!
+            inventoryList = inventoryData[username]!!
             inventoryValidation.validation(inventoryError,inventoryList[0], inventoryList[1], quantityToAdd, type)
             if(inventoryError.size > 0) {
                 response["error"] = inventoryError
@@ -43,7 +43,7 @@ class InventoryController() {
                 inventoryList[1].free += quantityToAdd
             }
 
-            inventorMap[username] = inventoryList
+            inventoryData[username] = inventoryList
 
             return HttpResponse.ok(Message("$quantityToAdd $type ESOPs added to account"))
         } else {
@@ -59,7 +59,7 @@ class InventoryController() {
 //    fun getInventory(@PathVariable username: String): HttpResponse<*> {
 //        if (UserValidation.isUserExist(username)) {
 //
-//            val userInventory = inventorMap[username]
+//            val userInventory = inventoryData[username]
 //
 //            val response = mutableMapOf<String, Long>();
 //

@@ -1,6 +1,6 @@
 package com.example.services
 
-import com.example.constants.inventorMap
+import com.example.constants.inventoryData
 import com.example.constants.orderList
 import com.example.constants.totalPlatformFees
 import com.example.constants.transactions
@@ -69,13 +69,13 @@ fun performBuys(currentOrder: Order, username: String){
 
             // Reducing the esops from seller account
             if (orderList.get(sellerID).esopType == "PERFORMANCE") {
-                inventorMap.get(orderList.get(sellerID).userName)!![0].locked -= (transQuantity)
+                inventoryData.get(orderList.get(sellerID).userName)!![0].locked -= (transQuantity)
             } else {
-                inventorMap.get(orderList.get(sellerID).userName)!![1].locked -= (transQuantity)
+                inventoryData.get(orderList.get(sellerID).userName)!![1].locked -= (transQuantity)
             }
 
             //Adding ESOP to buyers account
-            inventorMap.get(username)!![1].free += (transQuantity)
+            inventoryData.get(username)!![1].free += (transQuantity)
 
             // Updating buyers transactions
             if (!transactions.containsKey(currentOrder.orderId)) {

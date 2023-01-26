@@ -1,6 +1,6 @@
 package com.example.controller
 
-import com.example.constants.inventorMap
+import com.example.constants.inventoryData
 import com.example.model.Inventory
 import com.example.model.allUsers
 import com.example.validations.user.UserValidation
@@ -18,8 +18,8 @@ class AccuntInformation {
             var inventoryList: MutableList<Inventory> = mutableListOf(Inventory(type = "PERFORMANCE"), Inventory(type = "NON_PERFORMANCE"))
             var user = allUsers.get(username);
             var userWallet = walletList.get(username);
-            inventoryList[0] = inventorMap[username]?.get(0)!!
-            inventoryList[1] = inventorMap[username]?.get(1)!!
+            inventoryList[0] = inventoryData[username]?.get(0)!!
+            inventoryList[1] = inventoryData[username]?.get(1)!!
 
             var response = mutableMapOf<String, Any>()
             var walletInfo = mutableMapOf<String, Long>()
