@@ -26,10 +26,21 @@ class OrderController {
 
             val currentOrder = Order()
 
-            orderValidation(errorList, body["quantity"]!!.longValue, body["type"]!!.stringValue, body["price"]!!.longValue)
-            orderoverflowValidation(errorList, username, body["quantity"]!!.longValue, body["price"]!!.longValue, body["type"]!!.stringValue)
+            orderValidation(
+                errorList,
+                body["quantity"]!!.longValue,
+                body["type"]!!.stringValue,
+                body["price"]!!.longValue
+            )
+            orderoverflowValidation(
+                errorList,
+                username,
+                body["quantity"]!!.longValue,
+                body["price"]!!.longValue,
+                body["type"]!!.stringValue
+            )
 
-            if(errorList.size > 0){
+            if (errorList.size > 0) {
                 return generateErrorResponse(errorList)
             }
 
@@ -44,15 +55,14 @@ class OrderController {
 
                 val response = addBuyOrder(currentOrder)
 
-                if(response.containsKey("errors")){
+                if (response.containsKey("errors")) {
                     return HttpResponse.badRequest(response["errors"])
                 }
 
-                performBuys(currentOrder,username)
 
                 return HttpResponse.ok(response)
 
-            } else if(currentOrder.type == "SELL") {
+            } else if (currentOrder.type == "SELL") {
 
                 try {
                     currentOrder.esopType = body["esopType"].stringValue
@@ -64,11 +74,11 @@ class OrderController {
 
                 val response = addSellOrder(currentOrder)
 
-                if(response.containsKey("errors")){
+                if (response.containsKey("errors")) {
                     return HttpResponse.badRequest(response["errors"])
                 }
 
-                performSells(currentOrder,username)
+
 
                 return HttpResponse.ok(response)
             }

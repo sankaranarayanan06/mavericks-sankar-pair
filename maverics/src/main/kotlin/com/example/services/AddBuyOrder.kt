@@ -21,14 +21,19 @@ fun addBuyOrder(order: Order) : MutableMap<String,Any>
         errorList.add("Insufficient amont in wallet")
         result["errors"] = errorList;
     }
-    order.orderId = orderID++;
+    order.orderId = orderID;
+
+    orderID++;
+
+    println("Buy Order: ${order.orderId}")
     orderList.add(order);
-    transactions[orderID -1] = mutableListOf<Transaction>()
+    transactions[order.orderId] = mutableListOf()
 
     // Locking amount for order placing
     walletList[username]!!.lockedAmount += (order.currentQuantity * order.price)
     walletList[username]!!.freeAmount -= (order.currentQuantity * order.price)
 
+    performBuys(order,username)
 
     result["userName"] = order.userName
     result["quantity"] = order.placedQuantity

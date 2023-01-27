@@ -15,7 +15,6 @@ fun ifSufficientAmountInWallet(username: String, amount: Long): Boolean {
 
 fun ifSufficientQuantity(username: String, quantity: Long, orderType: String): Boolean {
     val inventoryList: MutableList<Inventory> = inventoryData[username]!!
-
     if (orderType == "PERFORMANCE") {
         return inventoryList[0].free >= quantity
     } else {

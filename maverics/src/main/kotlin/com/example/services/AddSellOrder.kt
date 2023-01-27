@@ -2,7 +2,6 @@ package com.example.services
 
 import com.example.constants.*
 import com.example.model.Order
-import com.example.model.Transaction
 import com.example.validations.isValidESOPType
 import com.example.validations.order.ifSufficientQuantity
 
@@ -26,10 +25,12 @@ fun addSellOrder(order: Order): MutableMap<String,Any> {
     }
 
 
-    order.orderId = orderID++
+    order.orderId = orderID
+    orderID++
+    println("Sell Order: ${order.orderId}")
 
     orderList.add(order)
-    transactions.put(orderID -1, mutableListOf<Transaction>())
+    transactions[order.orderId] = mutableListOf()
 
     result["userName"] = order.userName
     result["quantity"] = order.placedQuantity
@@ -40,17 +41,21 @@ fun addSellOrder(order: Order): MutableMap<String,Any> {
     if(order.esopType == "PERFORMANCE"){
         inventoryData[order.userName]!![0].free -= order.currentQuantity
         inventoryData[order.userName]!![0].locked += order.currentQuantity
+
+        performSells(order,username)
         return result
     }
     else if(order.esopType == "NON_PERFORMANCE")
     {
         inventoryData[order.userName]!![1].free -= order.currentQuantity
         inventoryData[order.userName]!![0].locked += order.currentQuantity
+
+        performSells(order,username)
         return result
     }
     else
     {
-        val error = mutableListOf<String>("Invalid ESOP Type")
+        val error = mutableListOf("Invalid ESOP Type")
         result["errors"] = error
         return result
     }

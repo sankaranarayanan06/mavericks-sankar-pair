@@ -1,13 +1,10 @@
-package com.example.controller
+package com.example.services
 
 import com.example.constants.*
+import com.example.controller.walletList
 import com.example.model.Inventory
 import com.example.model.Order
 import com.example.model.User
-import com.example.services.addBuyOrder
-import com.example.services.addSellOrder
-import com.example.services.addUser
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -17,6 +14,7 @@ class OrderTest {
 
     @BeforeEach
     fun `Clear Inventory, users, wallets, order`() {
+        orderID = 0
         inventoryData.clear()
         allUsers.clear()
         walletList.clear()
@@ -87,6 +85,70 @@ class OrderTest {
         assertEquals(null, orderResponse["errors"])
         assertEquals(5, inventoryData[user.userName]!![0].free)
         assertEquals(5, inventoryData[user.userName]!![0].locked)
+
+    }
+
+    @Test
+    fun `it should match the buy order to existing sell order`() {
+        // Arrange
+        val user1 = User(
+            firstName = "Dnyaneshwar",
+            lastName = "Ware",
+            username = "user1",
+            email = "as",
+            phoneNumber = "4234234"
+        )
+        addUser(user1)
+
+        inventoryData[user1.userName]!![0].free = 10
+
+        val sellOrder = Order()
+        sellOrder.orderId = 0
+        sellOrder.currentQuantity = 5
+        sellOrder.placedQuantity = 5
+        sellOrder.price = 10
+        sellOrder.type = "SELL"
+        sellOrder.esopType = "PERFORMANCE"
+        sellOrder.userName = user1.userName
+
+
+
+        val user2 = User(
+            firstName = "Dnyaneshwar",
+            lastName = "Ware",
+            username = "user2",
+            email = "as",
+            phoneNumber = "4234234"
+        )
+
+        addUser(user2)
+
+        walletList[user2.userName]!!.freeAmount = 200
+
+        val buyOrder = Order()
+        buyOrder.currentQuantity = 5
+        buyOrder.placedQuantity = 5
+        buyOrder.price = 10
+        buyOrder.type = "BUY"
+        buyOrder.userName = user2.userName
+
+        // Act
+
+        var sellOrderResponse = addSellOrder(sellOrder)
+        var buyOrderResponse = addBuyOrder(buyOrder)
+
+
+
+        // Assert [2]
+
+        assertEquals(null,sellOrderResponse["errors"])
+        assertEquals(null, buyOrderResponse["errors"])
+        assertEquals(50, walletList[user1.userName]!!.freeAmount)
+        assertEquals(5, inventoryData[user1.userName]!![0].free)
+
+        assertEquals(150, walletList[user2.userName]!!.freeAmount)
+        assertEquals(5, inventoryData[user2.userName]!![1].free)
+
 
     }
 
