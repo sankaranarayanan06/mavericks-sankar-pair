@@ -40,6 +40,7 @@ class OrderTest {
         // Assert [2]
         assertEquals(null, orderResponse["errors"])
         assertEquals(100, walletList[user.userName]!!.lockedAmount)
+        assertEquals(100, walletList[user.userName]!!.freeAmount)
 
     }
 }
