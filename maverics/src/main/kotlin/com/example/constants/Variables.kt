@@ -1,4 +1,5 @@
 package com.example.constants
+
 import com.example.constants.Regex
 import com.example.model.Inventory
 import com.example.model.Order
@@ -25,8 +26,8 @@ var vestings: MutableMap<String, MutableList<VestingData>> = mutableMapOf()
 
 var vestingHistory: MutableMap<String, MutableList<VestingData>> = mutableMapOf()
 
-var vestingPercentages = mutableListOf<Long>(30,20,10,40)
+var vestingPercentages = mutableListOf<Long>(30, 20, 10, 40)
 
-var vestingTimings = mutableListOf<Long>(10,20,30,40)
+var vestingTimings = mutableListOf<Long>(10, 20, 30, 40)
 
-var totalPlatformFees :BigInteger=BigInteger.valueOf(0)
+var totalPlatformFees: BigInteger = BigInteger.valueOf(0)

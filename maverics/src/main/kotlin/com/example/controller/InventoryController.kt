@@ -28,15 +28,15 @@ class InventoryController {
             try {
                 quantityToAdd = body["quantity"]?.longValue!!
                 type = body["type"]?.stringValue!!
-            } catch(e: Exception) {
+            } catch (e: Exception) {
                 response["error"] = mutableListOf("Please enter both type(String) and quantity(Number)")
                 return HttpResponse.ok(response)
             }
 
 
             inventoryList = inventoryData[username]!!
-            inventoryValidation.validation(inventoryError,inventoryList[0], inventoryList[1], quantityToAdd, type)
-            if(inventoryError.size > 0) {
+            inventoryValidation.validation(inventoryError, inventoryList[0], inventoryList[1], quantityToAdd, type)
+            if (inventoryError.size > 0) {
                 response["error"] = inventoryError
                 return HttpResponse.ok(response)
             }
@@ -46,7 +46,7 @@ class InventoryController {
             } else if (type == "NON_PERFORMANCE") {
                 // Vesting period for non performance esops
 
-                addESOPVestings(username,quantityToAdd,type)
+                addESOPVestings(username, quantityToAdd, type)
 
                 HttpResponse.ok(Message("$quantityToAdd $type ESOP adding request submitted. It will reflect to your account according to vesting period"))
             }
