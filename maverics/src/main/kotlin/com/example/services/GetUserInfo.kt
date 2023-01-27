@@ -6,6 +6,7 @@ import com.example.model.allUsers
 
 fun getUserInfo(username: String): MutableMap<String, Any> {
     val user = allUsers[username]
+
     val userData: MutableMap<String, Any> = mutableMapOf<String, Any>()
 
     userData["firstName"] = user!!.firstName

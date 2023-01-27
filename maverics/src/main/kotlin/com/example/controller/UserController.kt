@@ -42,6 +42,19 @@ class UserController {
         try {
             errorList += UserValidation.checkFirstName(body["firstName"].stringValue)
 
+            if (body["firstName"] == null) {
+                errorList.add("First Name is Required")
+            }
+
+            try {
+                lastName = body["firstName"].stringValue
+
+                if (firstName.isEmpty()) {
+                    errorList.add("First Name cannot be empty")
+                }
+            } catch (e: Exception) {
+            }
+
             if (body["lastName"] == null) {
                 errorList.add("Last Name is Required")
             }

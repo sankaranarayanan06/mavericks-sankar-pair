@@ -24,6 +24,7 @@ class AccuntInformation {
             inventoryList[1] = inventoryData[username]?.get(1)!!
 
             val response = mutableMapOf<String, Any>()
+
             response += getUserInfo(username)
 
             response["wallet"] = getWalletInfo(username)
