@@ -1,14 +1,12 @@
 package com.example.controller
 
-import com.example.constants.inventoryData
-import com.example.constants.regex
-import com.example.constants.vestingHistory
-import com.example.constants.vestings
 import com.example.model.Inventory
 import com.example.model.User
 import com.example.model.Wallet
-import com.example.model.allUsers
+import com.example.constants.allUsers
+import com.example.constants.*
 import com.example.model.*
+import com.example.services.addUser
 import com.example.validations.user.UserValidation
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Body
@@ -34,7 +32,7 @@ class UserController {
     fun register(@Body body: JsonObject): HttpResponse<*> {
         val errorList = mutableListOf<String>()
         val errorResponse = mutableMapOf<String, MutableList<String>>()
-        val firstName = ""
+        var firstName = ""
         var lastName = ""
         var phoneNumber = ""
         var email = ""
@@ -47,7 +45,7 @@ class UserController {
             }
 
             try {
-                lastName = body["firstName"].stringValue
+                firstName = body["firstName"].stringValue
 
                 if (firstName.isEmpty()) {
                     errorList.add("First Name cannot be empty")
@@ -129,16 +127,13 @@ class UserController {
 
             val newUser = User(firstName, lastName, phoneNumber, email, username)
             val successBody = mutableListOf<String>()
+
             val isUserNameUnique = UserValidation.ifUniqueUsername(username)
             val isEmailUnique = UserValidation.ifUniqueEmail(email)
             val isPhoneNumberUnique = UserValidation.ifUniquePhoneNumber(phoneNumber)
 
             if (isUserNameUnique && isEmailUnique && isPhoneNumberUnique) {
-                allUsers[username] = newUser
-                inventoryData[username] = mutableListOf(Inventory(type = "PERFORMANCE"), Inventory(type = "NON_PERFORMANCE"))
-                walletList[username] = Wallet()
-                vestings.put(username, mutableListOf())
-                vestingHistory.put(username, mutableListOf())
+                addUser(newUser)
                 successBody.add("User added successfully");
                 return HttpResponse.ok(successBody);
             } else {

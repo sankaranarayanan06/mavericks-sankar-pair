@@ -3,9 +3,6 @@ package com.example.controller
 import com.example.constants.*
 import com.example.model.Order
 import com.example.model.Transaction
-import com.example.services.generateErrorResponse
-import com.example.services.performBuys
-import com.example.services.performSells
 import com.example.validations.user.UserValidation
 import com.example.validations.isValidESOPType
 import com.example.validations.order.ifSufficientAmountInWallet
@@ -18,7 +15,7 @@ import io.micronaut.http.annotation.PathVariable
 import io.micronaut.http.annotation.Post
 import io.micronaut.json.tree.JsonObject
 import com.example.constants.maxQuantity
-import com.example.services.performESOPVestings
+import com.example.services.*
 import com.example.validations.order.orderoverflowValidation
 
 
@@ -53,28 +50,14 @@ class OrderController {
             var n = orderList.size
 
             if (currentOrder.type == "BUY") {
-                // Buyer section
-                var orderAmount = currentOrder.price * currentOrder.currentQuantity;
-                if (!ifSufficientAmountInWallet(username, orderAmount)) {
-                    errorList.add("Insufficient amont in wallet")
-                    return generateErrorResponse(errorList);
-                }
-                currentOrder.orderId = orderID++;
-                orderList.add(currentOrder);
-                transactions.put(orderID-1, mutableListOf<Transaction>())
 
-                // Locking amount for order placing
-                walletList.get(username)!!.lockedAmount += (currentOrder.currentQuantity * currentOrder.price)
-                walletList.get(username)!!.freeAmount -= (currentOrder.currentQuantity * currentOrder.price)
+                val response = addBuyOrder(currentOrder)
+
+                if(response.containsKey("errors")){
+                    return HttpResponse.badRequest(response["errors"])
+                }
 
                 performBuys(currentOrder,username)
-
-                var response = HashMap<String, Any>();
-
-                response["userName"] = currentOrder.userName
-                response["quantity"] = currentOrder.placedQuantity
-                response["price"] = currentOrder.price
-                response["type"] = currentOrder.type
 
                 return HttpResponse.ok(response);
 
