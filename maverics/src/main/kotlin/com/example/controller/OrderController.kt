@@ -55,7 +55,7 @@ class OrderController {
             } else if(currentOrder.type == "SELL") {
 
                 try {
-                    currentOrder.esopType = body["esopType"]!!.stringValue
+                    currentOrder.esopType = body["esopType"].stringValue
 
                 } catch (e: Exception) {
                     errorList.add("Enter ESOP type")

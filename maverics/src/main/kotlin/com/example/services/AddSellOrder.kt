@@ -38,14 +38,14 @@ fun addSellOrder(order: Order): MutableMap<String,Any> {
 
     // Locking
     if(order.esopType == "PERFORMANCE"){
-        inventoryList[0].free -= order.currentQuantity
-        inventoryList[0].locked += order.currentQuantity
+        inventoryData[order.userName]!![0].free -= order.currentQuantity
+        inventoryData[order.userName]!![0].locked += order.currentQuantity
         return result
     }
     else if(order.esopType == "NON_PERFORMANCE")
     {
-        inventoryList[1].free -= order.currentQuantity
-        inventoryList[1].locked += order.currentQuantity
+        inventoryData[order.userName]!![1].free -= order.currentQuantity
+        inventoryData[order.userName]!![0].locked += order.currentQuantity
         return result
     }
     else
