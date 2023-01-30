@@ -18,6 +18,7 @@ import io.micronaut.http.annotation.PathVariable
 import io.micronaut.http.annotation.Post
 import io.micronaut.json.tree.JsonObject
 import com.example.constants.maxQuantity
+import com.example.services.performESOPVestings
 import com.example.validations.order.orderoverflowValidation
 
 
@@ -28,6 +29,8 @@ class OrderController {
     fun addNewOrder(@Body body: JsonObject, @PathVariable username: String): HttpResponse<*> {
         var errorList = mutableListOf<String>()
         if (UserValidation.isUserExist(username)) {
+            performESOPVestings(username)
+
             var currentOrder = Order()
 
 

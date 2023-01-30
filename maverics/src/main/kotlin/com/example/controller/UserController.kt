@@ -1,7 +1,9 @@
 package com.example.controller
 
-import com.example.constants.inventorMap
+import com.example.constants.inventoryData
 import com.example.constants.regex
+import com.example.constants.vestingHistory
+import com.example.constants.vestings
 import com.example.model.Inventory
 import com.example.model.User
 import com.example.model.Wallet
@@ -39,6 +41,19 @@ class UserController {
         var username = ""
         try {
             errorList += UserValidation.checkFirstName(body["firstName"].stringValue)
+
+            if (body["firstName"] == null) {
+                errorList.add("First Name is Required")
+            }
+
+            try {
+                lastName = body["firstName"].stringValue
+
+                if (firstName.isEmpty()) {
+                    errorList.add("First Name cannot be empty")
+                }
+            } catch (e: Exception) {
+            }
 
             if (body["lastName"] == null) {
                 errorList.add("Last Name is Required")
@@ -120,8 +135,10 @@ class UserController {
 
             if (isUserNameUnique && isEmailUnique && isPhoneNumberUnique) {
                 allUsers[username] = newUser
-                inventorMap[username] = mutableListOf(Inventory(type = "PERFORMANCE"), Inventory(type = "NON_PERFORMANCE"))
+                inventoryData[username] = mutableListOf(Inventory(type = "PERFORMANCE"), Inventory(type = "NON_PERFORMANCE"))
                 walletList[username] = Wallet()
+                vestings.put(username, mutableListOf())
+                vestingHistory.put(username, mutableListOf())
                 successBody.add("User added successfully");
                 return HttpResponse.ok(successBody);
             } else {

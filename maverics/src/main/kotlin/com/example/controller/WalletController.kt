@@ -9,6 +9,7 @@ import io.micronaut.http.annotation.PathVariable
 import io.micronaut.http.annotation.Post
 import io.micronaut.json.tree.JsonObject
 import com.example.model.Message
+import com.example.services.performESOPVestings
 import com.example.validations.user.UserValidation
 import com.example.validations.WalletValidation
 
@@ -21,6 +22,7 @@ class WalletController() {
     @Post("/{username}/wallet")
     fun addMoneyInWallet(@PathVariable username: String, @Body body: JsonObject): HttpResponse<*> {
         if (UserValidation.isUserExist(username)) {
+            performESOPVestings(username)
             val walletValidation = WalletValidation()
             var amount: Long = 0L
             try {

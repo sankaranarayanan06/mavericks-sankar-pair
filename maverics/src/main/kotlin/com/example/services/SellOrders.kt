@@ -1,6 +1,6 @@
 package com.example.services
 
-import com.example.constants.inventorMap
+import com.example.constants.inventoryData
 import com.example.constants.orderList
 import com.example.constants.totalPlatformFees
 import com.example.constants.transactions
@@ -52,11 +52,11 @@ fun performSells(currentOrder: Order, sellerUser: String) {
             walletList.get(orderList.get(buyerOrderId).userName)!!.lockedAmount -= (transQuantity * currentOrder.price)
 
 
-            inventorMap.get(orderList.get(buyerOrderId).userName)!![1].free += (transQuantity)
+            inventoryData.get(orderList.get(buyerOrderId).userName)!![1].free += (transQuantity)
             if (currentOrder.esopType == "PERFORMANCE")
-                inventorMap.get(sellerUser)!![0].locked -= (transQuantity)
+                inventoryData.get(sellerUser)!![0].locked -= (transQuantity)
             else
-                inventorMap.get(sellerUser)!![1].locked -= (transQuantity)
+                inventoryData.get(sellerUser)!![1].locked -= (transQuantity)
 
             if (!transactions.containsKey(currentOrder.orderId)) {
                 transactions.put(currentOrder.orderId, mutableListOf<Transaction>());

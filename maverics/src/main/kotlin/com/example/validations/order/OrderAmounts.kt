@@ -1,7 +1,6 @@
 package com.example.validations.order
 
-import com.example.constants.inventorMap
-import com.example.constants.inventoryList
+import com.example.constants.inventoryData
 import com.example.constants.maxQuantity
 import com.example.controller.walletList
 import com.example.model.Inventory
@@ -9,13 +8,13 @@ import com.example.model.Inventory
 
 fun ifSufficientAmountInWallet(username: String, amount: Long): Boolean {
     if (walletList[username]!!.freeAmount < amount) {
-        return false;
+        return false
     }
-    return true;
+    return true
 }
 
 fun ifSufficientQuantity(username: String, quantity: Long, orderType: String): Boolean {
-    var inventoryList: MutableList<Inventory> = inventorMap[username]!!
+    val inventoryList: MutableList<Inventory> = inventoryData[username]!!
 
     if (orderType == "PERFORMANCE") {
         return inventoryList[0].free >= quantity
@@ -45,7 +44,7 @@ fun orderoverflowValidation(orderError: MutableList<String>, username: String, q
         orderError.add("Cant create order. Wallet will overflow")
     }
 
-    var inventorylist = inventorMap[username]!!
+    val inventorylist = inventoryData[username]!!
     if(quantity + inventorylist[0].free + inventorylist[1].free + inventorylist[0].locked + inventorylist[1].locked > maxQuantity && type == "BUY"){
         orderError.add("Cant create order. Inventory will overflow")
     }
