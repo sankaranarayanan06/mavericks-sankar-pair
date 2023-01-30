@@ -17,7 +17,6 @@ import com.example.validations.order.orderoverflowValidation
 
 @Controller("/user")
 class OrderController {
-
     @Post("/{username}/order")
     fun addNewOrder(@Body body: JsonObject, @PathVariable username: String): HttpResponse<*> {
         val errorList = mutableListOf<String>()
