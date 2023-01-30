@@ -1,6 +1,5 @@
 package com.example.constants
 
-import com.example.constants.Regex
 import com.example.model.*
 import java.math.BigInteger
 
@@ -14,8 +13,6 @@ const val maxQuantity = 100_00_000
 val response = mutableMapOf<String, MutableList<String>>();
 
 var orderList = mutableListOf<Order>()
-
-var orderID = 0;
 
 var transactions: MutableMap<Int, MutableList<Transaction>> = mutableMapOf()
 

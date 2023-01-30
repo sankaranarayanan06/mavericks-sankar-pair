@@ -25,10 +25,6 @@ fun addSellOrder(order: Order): MutableMap<String,Any> {
     }
 
 
-    order.orderId = orderID
-    orderID++
-    println("Sell Order: ${order.orderId}")
-
     orderList.add(order)
     transactions[order.orderId] = mutableListOf()
 
