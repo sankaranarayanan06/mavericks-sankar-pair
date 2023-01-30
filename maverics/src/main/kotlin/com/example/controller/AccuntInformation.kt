@@ -2,7 +2,6 @@ package com.example.controller
 
 import com.example.constants.inventoryData
 import com.example.model.Inventory
-import com.example.model.allUsers
 import com.example.services.*
 import com.example.validations.user.UserValidation
 import io.micronaut.http.HttpResponse
