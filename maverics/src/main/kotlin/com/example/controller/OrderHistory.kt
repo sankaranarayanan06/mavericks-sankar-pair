@@ -39,7 +39,7 @@ class OrderHistory() {
                                 price = order!!.price,
                                 quantity = order!!.placedQuantity,
                                 type = order!!.type,
-                                staus = order!!.status,
+                                status = order!!.status,
                                 filled = listOfTransactions
                             )
                         )
@@ -50,9 +50,9 @@ class OrderHistory() {
                                 price = order!!.price,
                                 quantity = order!!.placedQuantity,
                                 type = order!!.type,
-                                staus = order!!.status,
+                                status = order!!.status,
                                 filled = listOfTransactions,
-                                esopTyoe = order!!.esopType
+                                esopType = order!!.esopType
                             )
                         )
                     }

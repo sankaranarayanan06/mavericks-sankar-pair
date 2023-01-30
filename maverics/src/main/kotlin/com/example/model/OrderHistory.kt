@@ -5,7 +5,7 @@ data class BuyOrderHistory (
   val price :Long ,
   val quantity :Long,
   val type : String ,
-  val staus: String="unfilled",
+  val status: String="unfilled",
   val filled :MutableList<Transaction>
 )
 
@@ -14,7 +14,7 @@ data class SellOrderHistory (
   val price :Long ,
   val quantity :Long,
   val type : String ,
-  val esopTyoe: String? = null,
-  val staus: String="unfilled",
+  val esopType: String? = null,
+  val status: String="unfilled",
   val filled :MutableList<Transaction>
 )

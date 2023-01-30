@@ -15,7 +15,7 @@ fun addBuyOrder(order: Order) : MutableMap<String,Any>
     val orderAmount = order.price * order.currentQuantity;
     if (!ifSufficientAmountInWallet(username, orderAmount)) {
         val errorList = mutableListOf<String>()
-        errorList.add("Insufficient amont in wallet")
+        errorList.add("Insufficient amount in wallet")
         result["errors"] = errorList;
         return result
     }

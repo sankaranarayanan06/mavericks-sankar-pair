@@ -12,7 +12,7 @@ import io.micronaut.http.annotation.PathVariable
 @Controller("/user")
 class AccountInformation {
 
-    @Get("/{username}/accountinformation")
+    @Get("/{username}/accountInformation")
     fun accountInformation(@PathVariable username: String): HttpResponse<*> {
         if(UserValidation.isUserExist(username)) {
 

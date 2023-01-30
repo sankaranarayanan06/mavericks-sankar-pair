@@ -9,7 +9,6 @@ var inventoryList: MutableList<Inventory> = mutableListOf()
 
 var inventoryData = HashMap<String, MutableList<Inventory>>()
 
-const val maxQuantity = 100_00_000
 val response = mutableMapOf<String, MutableList<String>>();
 
 var orderList = mutableMapOf<Int, Order>()
