@@ -6,26 +6,26 @@ import com.example.validations.isValidESOPType
 import com.example.validations.order.ifSufficientQuantity
 
 
-fun addSellOrder(order: Order): MutableMap<String,Any> {
+fun addSellOrder(order: Order): MutableMap<String, Any> {
     val username = order.userName
-    val result = mutableMapOf<String,Any>()
+    val result = mutableMapOf<String, Any>()
     val errorList = mutableListOf<String>()
 
-    if(!isValidESOPType(order.esopType)){
+    if (!isValidESOPType(order.esopType)) {
         errorList.add("Invalid ESOP Type")
     }
 
-    if (!ifSufficientQuantity(username, order.currentQuantity,order.esopType)) {
+    if (!ifSufficientQuantity(username, order.currentQuantity, order.esopType)) {
         errorList.add("Insufficient quantity of ESOPs")
     }
 
-    if(errorList.size > 0){
+    if (errorList.size > 0) {
         result["errors"] = errorList
         return result
     }
 
 
-    orderList.add(order)
+    orderList[order.orderId] = order
     transactions[order.orderId] = mutableListOf()
 
     result["userName"] = order.userName
@@ -34,23 +34,19 @@ fun addSellOrder(order: Order): MutableMap<String,Any> {
     result["type"] = order.type
 
     // Locking
-    if(order.esopType == "PERFORMANCE"){
+    if (order.esopType == "PERFORMANCE") {
         inventoryData[order.userName]!![0].free -= order.currentQuantity
         inventoryData[order.userName]!![0].locked += order.currentQuantity
 
-        performSells(order,username)
+        performSells(order, username)
         return result
-    }
-    else if(order.esopType == "NON_PERFORMANCE")
-    {
+    } else if (order.esopType == "NON_PERFORMANCE") {
         inventoryData[order.userName]!![1].free -= order.currentQuantity
         inventoryData[order.userName]!![0].locked += order.currentQuantity
 
-        performSells(order,username)
+        performSells(order, username)
         return result
-    }
-    else
-    {
+    } else {
         val error = mutableListOf("Invalid ESOP Type")
         result["errors"] = error
         return result

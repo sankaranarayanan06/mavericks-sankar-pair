@@ -20,7 +20,7 @@ fun addBuyOrder(order: Order) : MutableMap<String,Any>
         return result
     }
 
-    orderList.add(order);
+    orderList[order.orderId] = order;
     transactions[order.orderId] = mutableListOf()
 
     // Locking amount for order placing

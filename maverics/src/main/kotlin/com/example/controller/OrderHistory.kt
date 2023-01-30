@@ -21,25 +21,25 @@ class OrderHistory() {
         if (UserValidation.isUserExist(username)) {
             performESOPVestings(username)
             var listOfOrders = mutableListOf<Any>()
-            for (i in 0 until orderList.size) {
+            for ((key,order) in orderList) {
                 var orderID: Int
                 var quantity: Long = 0
-                if (username == orderList[i].userName) {
-                    orderID = orderList[i].orderId
+                if (username == order!!.userName ) {
+                    orderID = order!!.orderId
                     var listOfTransactions = mutableListOf<Transaction>()
                     for (transaction in transactions[orderID]!!) {
                         listOfTransactions.add(transaction)
                         // quantity += eachTrans.first
                     }
 
-                    if (orderList[i].type == "BUY") {
+                    if (order!!.type == "BUY") {
                         listOfOrders.add(
                             BuyOrderHistory(
                                 orderId = orderID + 1,
-                                price = orderList[i].price,
-                                quantity = orderList[i].placedQuantity,
-                                type = orderList[i].type,
-                                staus = orderList[i].status,
+                                price = order!!.price,
+                                quantity = order!!.placedQuantity,
+                                type = order!!.type,
+                                staus = order!!.status,
                                 filled = listOfTransactions
                             )
                         )
@@ -47,12 +47,12 @@ class OrderHistory() {
                         listOfOrders.add(
                             SellOrderHistory(
                                 orderId = orderID + 1,
-                                price = orderList[i].price,
-                                quantity = orderList[i].placedQuantity,
-                                type = orderList[i].type,
-                                staus = orderList[i].status,
+                                price = order!!.price,
+                                quantity = order!!.placedQuantity,
+                                type = order!!.type,
+                                staus = order!!.status,
                                 filled = listOfTransactions,
-                                esopTyoe = orderList[i].esopType
+                                esopTyoe = order!!.esopType
                             )
                         )
                     }

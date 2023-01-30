@@ -98,7 +98,7 @@ class OrderController {
             body["quantity"]!!.longValue,
             "unfilled",
             body["type"]!!.stringValue,
-            username
+            userName = username
         )
     }
 }

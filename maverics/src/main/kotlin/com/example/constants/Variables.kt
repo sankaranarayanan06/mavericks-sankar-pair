@@ -12,7 +12,7 @@ var inventoryData = HashMap<String, MutableList<Inventory>>()
 const val maxQuantity = 100_00_000
 val response = mutableMapOf<String, MutableList<String>>();
 
-var orderList = mutableListOf<Order>()
+var orderList = mutableMapOf<Int, Order>()
 
 var transactions: MutableMap<Int, MutableList<Transaction>> = mutableMapOf()
 
