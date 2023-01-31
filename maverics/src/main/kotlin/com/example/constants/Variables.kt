@@ -25,4 +25,4 @@ var vestingTimings = mutableListOf<Long>(10, 20, 30, 40)
 
 var totalPlatformFees: BigInteger = BigInteger.valueOf(0)
 
-var allUsers : HashMap<String, User> = HashMap<String, User>()
+var allUsers: HashMap<String, User> = HashMap<String, User>()
