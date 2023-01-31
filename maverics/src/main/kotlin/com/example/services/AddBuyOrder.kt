@@ -1,12 +1,9 @@
 package com.example.services
 
 import com.example.model.Order
-import com.example.constants.orderID
 import com.example.constants.orderList
-import com.example.constants.response
 import com.example.constants.transactions
 import com.example.controller.walletList
-import com.example.model.Transaction
 import com.example.validations.order.ifSufficientAmountInWallet
 
 
@@ -18,15 +15,12 @@ fun addBuyOrder(order: Order) : MutableMap<String,Any>
     val orderAmount = order.price * order.currentQuantity;
     if (!ifSufficientAmountInWallet(username, orderAmount)) {
         val errorList = mutableListOf<String>()
-        errorList.add("Insufficient amont in wallet")
+        errorList.add("Insufficient amount in wallet")
         result["errors"] = errorList;
+        return result
     }
-    order.orderId = orderID;
 
-    orderID++;
-
-    println("Buy Order: ${order.orderId}")
-    orderList.add(order);
+    orderList[order.orderId] = order;
     transactions[order.orderId] = mutableListOf()
 
     // Locking amount for order placing

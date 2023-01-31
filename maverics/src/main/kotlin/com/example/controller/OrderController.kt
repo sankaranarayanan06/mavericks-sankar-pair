@@ -17,14 +17,12 @@ import com.example.validations.order.orderoverflowValidation
 
 @Controller("/user")
 class OrderController {
-
     @Post("/{username}/order")
     fun addNewOrder(@Body body: JsonObject, @PathVariable username: String): HttpResponse<*> {
         val errorList = mutableListOf<String>()
         if (UserValidation.isUserExist(username)) {
             performESOPVestings(username)
 
-            val currentOrder = Order()
 
             orderValidation(
                 errorList,
@@ -32,6 +30,7 @@ class OrderController {
                 body["type"]!!.stringValue,
                 body["price"]!!.longValue
             )
+
             orderoverflowValidation(
                 errorList,
                 username,
@@ -44,12 +43,9 @@ class OrderController {
                 return generateErrorResponse(errorList)
             }
 
-            currentOrder.currentQuantity = body["quantity"]!!.longValue
-            currentOrder.placedQuantity = currentOrder.currentQuantity
-            currentOrder.type = body["type"]!!.stringValue
-            currentOrder.price = body["price"]!!.longValue
-            currentOrder.status = "unfilled"
-            currentOrder.userName = username
+
+
+            val currentOrder = getOrderFromBody(body, username)
 
             if (currentOrder.type == "BUY") {
 
@@ -92,5 +88,16 @@ class OrderController {
             return generateErrorResponse(errorList)
         }
 
+    }
+
+    private fun getOrderFromBody(body: JsonObject, username: String): Order {
+        return Order(
+            body["price"]!!.longValue,
+            body["quantity"]!!.longValue,
+            body["quantity"]!!.longValue,
+            "unfilled",
+            body["type"]!!.stringValue,
+            userName = username
+        )
     }
 }

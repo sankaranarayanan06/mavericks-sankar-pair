@@ -10,7 +10,7 @@ import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.PathVariable
 
 @Controller("/user")
-class AccuntInformation {
+class AccountInformation {
 
     @Get("/{username}/accountInformation")
     fun accountInformation(@PathVariable username: String): HttpResponse<*> {

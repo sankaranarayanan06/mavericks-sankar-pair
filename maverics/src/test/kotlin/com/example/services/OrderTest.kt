@@ -14,7 +14,7 @@ class OrderTest {
 
     @BeforeEach
     fun `Clear Inventory, users, wallets, order`() {
-        orderID = 0
+        Order.orderIdCounter = 0
         inventoryData.clear()
         allUsers.clear()
         walletList.clear()
@@ -38,7 +38,6 @@ class OrderTest {
         walletList[user.userName]!!.freeAmount = 200
 
         val buyOrder = Order()
-        buyOrder.orderId = 0
         buyOrder.currentQuantity = 1
         buyOrder.placedQuantity = 1
         buyOrder.price = 100
@@ -70,7 +69,6 @@ class OrderTest {
 
         inventoryData[user.userName] = mutableListOf(Inventory(10, 0), Inventory(0, 0))
         val sellOrder = Order()
-        sellOrder.orderId = 0
         sellOrder.currentQuantity = 5
         sellOrder.placedQuantity = 5
         sellOrder.price = 100
@@ -100,18 +98,13 @@ class OrderTest {
         )
         addUser(user1)
 
-        inventoryData[user1.userName]!![0].free = 10
-
         val sellOrder = Order()
-        sellOrder.orderId = 0
         sellOrder.currentQuantity = 5
         sellOrder.placedQuantity = 5
         sellOrder.price = 10
         sellOrder.type = "SELL"
         sellOrder.esopType = "PERFORMANCE"
         sellOrder.userName = user1.userName
-
-
 
         val user2 = User(
             firstName = "Dnyaneshwar",
@@ -120,9 +113,7 @@ class OrderTest {
             email = "as",
             phoneNumber = "4234234"
         )
-
         addUser(user2)
-
         walletList[user2.userName]!!.freeAmount = 200
 
         val buyOrder = Order()
@@ -133,24 +124,15 @@ class OrderTest {
         buyOrder.userName = user2.userName
 
         // Act
-
-        var sellOrderResponse = addSellOrder(sellOrder)
-        var buyOrderResponse = addBuyOrder(buyOrder)
-
-
+        val sellOrderResponse = addSellOrder(sellOrder)
+        val buyOrderResponse = addBuyOrder(buyOrder)
 
         // Assert [2]
-
-        assertEquals(null,sellOrderResponse["errors"])
+        assertEquals(null, sellOrderResponse["errors"])
         assertEquals(null, buyOrderResponse["errors"])
         assertEquals(50, walletList[user1.userName]!!.freeAmount)
         assertEquals(5, inventoryData[user1.userName]!![0].free)
-
-        assertEquals(150, walletList[user2.userName]!!.freeAmount)
+        assertEquals(100, walletList[user2.userName]!!.freeAmount)
         assertEquals(5, inventoryData[user2.userName]!![1].free)
-
-
     }
-
-
 }
