@@ -130,7 +130,6 @@ class OrderController {
                 response["type"] = currentOrder.type
 
                 return HttpResponse.ok(response);
-
             }
 
             val response = mutableMapOf<String, MutableList<String>>();
