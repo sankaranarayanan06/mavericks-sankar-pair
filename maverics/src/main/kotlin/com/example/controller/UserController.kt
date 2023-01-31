@@ -6,7 +6,8 @@ import com.example.constants.vestings
 import com.example.model.Inventory
 import com.example.model.User
 import com.example.model.Wallet
-import com.example.model.allUsers
+import com.example.constants.allUsers
+import com.example.constants.*
 import com.example.model.*
 import com.example.validations.registerValidation
 import com.example.validations.user.UserValidation

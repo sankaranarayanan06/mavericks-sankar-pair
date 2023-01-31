@@ -1,6 +1,6 @@
 package com.example.validations.user
 
-import com.example.model.allUsers
+import com.example.constants.allUsers
 
 class UserValidation {
     companion object {
@@ -39,7 +39,7 @@ class UserValidation {
 
         private fun checkFirstNameExists(firstName: String): List<String> {
             return if(firstName.isEmpty()) {
-                listOf("Username cannot be empty")
+                listOf("First Name cannot be empty")
             } else listOf()
         }
 

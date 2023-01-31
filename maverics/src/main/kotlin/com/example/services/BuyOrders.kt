@@ -2,45 +2,47 @@ package com.example.services
 
 import com.example.constants.inventoryData
 import com.example.constants.orderList
-import com.example.constants.totalPlatformFees
 import com.example.constants.transactions
 import com.example.controller.walletList
 import com.example.model.Order
 import com.example.model.Transaction
-import java.math.BigInteger
 import kotlin.math.min
 
 
-fun performBuys(currentOrder: Order, username: String){
-    var n: Int = orderList.size
+fun performBuys(currentOrder: Order, username: String) {
+    val n: Int = orderList.size
     while (true) {
-        if (currentOrder.currentQuantity.toLong() == 0L) break;
+        if (currentOrder.currentQuantity == 0L) break
 
-        var minSellerPrice: Long = 1000000000000000;
-        var sellerID = -1;
+        var minSellerPrice: Long = 1000000000000000
+        var sellerID = -1
 
         // Find if seller with PEROFMANCE order fulfils the deal
-        for (orderNumber in 0..n - 1) {
-            var orderPrev = orderList[orderNumber]
+        for ((orderID, orderPrev) in orderList) {
 
             // Order should match with SELL and should not be filled
-            if ((orderPrev.esopType == "PERFORMANCE") && (orderPrev.orderId != currentOrder.orderId) && (orderPrev.status != "filled") && (currentOrder.type != orderPrev.type) && (currentOrder.price >= orderPrev.price)) {
+            if ((orderPrev.esopType == "PERFORMANCE") &&
+                (orderPrev.orderId != currentOrder.orderId) &&
+                (orderPrev.status != "filled") &&
+                (currentOrder.type != orderPrev.type) &&
+                (currentOrder.price >= orderPrev.price)
+            ) {
                 if (orderPrev.price < minSellerPrice) {
-                    minSellerPrice = orderPrev.price.toLong()
-                    sellerID = orderPrev.orderId
+                    minSellerPrice = orderPrev.price
+                    sellerID = orderID
                 }
             }
         }
 
         // If not found any performance esop seller then go for normal esop seller
         if (sellerID == -1) {
-            for (orderNumber in 0..n - 1) {
-                var orderPrev = orderList[orderNumber]
+            for (orderNumber in 0 until n) {
+                val orderPrev = orderList[orderNumber]
 
                 // Order should match with SELL and should not be filled
-                if ((orderPrev.orderId != currentOrder.orderId) && (orderPrev.status != "filled") && (currentOrder.type != orderPrev.type) && (currentOrder.price >= orderPrev.price)) {
-                    if (orderPrev.price < minSellerPrice) {
-                        minSellerPrice = orderPrev.price.toLong()
+                if ((orderPrev!!.orderId != currentOrder.orderId) && (orderPrev!!.status != "filled") && (currentOrder.type != orderPrev.type) && (currentOrder.price >= orderPrev.price)) {
+                    if (orderPrev!!.price < minSellerPrice) {
+                        minSellerPrice = orderPrev.price
                         sellerID = orderPrev.orderId
                     }
                 }
@@ -48,58 +50,64 @@ fun performBuys(currentOrder: Order, username: String){
         }
 
         if (sellerID != -1) {
-            performESOPVestings(orderList[sellerID].userName)
-            var transQuantity = min(orderList[sellerID].currentQuantity, currentOrder.currentQuantity)
+            performESOPVestings(orderList[sellerID]!!.userName)
+            val transQuantity = min(orderList[sellerID]!!.currentQuantity, currentOrder.currentQuantity)
 
-            orderList[sellerID].currentQuantity -= transQuantity
+            orderList[sellerID]!!.currentQuantity -= transQuantity
             currentOrder.currentQuantity -= transQuantity
 
-            var orderTotal = minSellerPrice * transQuantity
+            val orderTotal = minSellerPrice * transQuantity
 
-            var platformCharge = if (orderList[sellerID].esopType != "PERFORMANCE") (orderTotal * 2) / 100 else 0
+            val platformCharge = if (orderList[sellerID]!!.esopType != "PERFORMANCE") (orderTotal * 2) / 100 else 0
 
             addPlatformCharge(platformCharge)
 
             // Releasing extra amount from lock for partial matching scenario
-            walletList.get(username)!!.lockedAmount -= ((currentOrder.price - minSellerPrice) * transQuantity)
-            walletList.get(username)!!.freeAmount += ((currentOrder.price - minSellerPrice) * transQuantity)
+            walletList[username]!!.lockedAmount -= ((currentOrder.price - minSellerPrice) * transQuantity)
+            walletList[username]!!.freeAmount += ((currentOrder.price - minSellerPrice) * transQuantity)
 
             // Releasing lock amount worth actual transaction
-            walletList.get(username)!!.lockedAmount -= (transQuantity * minSellerPrice)
-            walletList.get(orderList.get(sellerID).userName)!!.freeAmount += (transQuantity * minSellerPrice - platformCharge)
+            walletList[username]!!.lockedAmount -= (transQuantity * minSellerPrice)
+            walletList[orderList[sellerID]!!.userName]!!.freeAmount += (transQuantity * minSellerPrice - platformCharge)
 
             // Reducing the esops from seller account
-            if (orderList.get(sellerID).esopType == "PERFORMANCE") {
-                inventoryData.get(orderList.get(sellerID).userName)!![0].locked -= (transQuantity)
+            if (orderList[sellerID]!!.esopType == "PERFORMANCE") {
+                inventoryData[orderList[sellerID]!!.userName]!![0].locked -= (transQuantity)
             } else {
-                inventoryData.get(orderList.get(sellerID).userName)!![1].locked -= (transQuantity)
+                inventoryData[orderList[sellerID]!!.userName]!![1].locked -= (transQuantity)
             }
 
             //Adding ESOP to buyers account
-            inventoryData.get(username)!![1].free += (transQuantity)
+            inventoryData[username]!![1].free += (transQuantity)
 
             // Updating buyers transactions
             if (!transactions.containsKey(currentOrder.orderId)) {
-                transactions.put(currentOrder.orderId, mutableListOf<Transaction>())
+                transactions[currentOrder.orderId] = mutableListOf()
             }
 
-            transactions.get(currentOrder.orderId)!!.add(Transaction(transQuantity, minSellerPrice, orderList[sellerID].esopType))
+            transactions[currentOrder.orderId]!!.add(
+                Transaction(
+                    transQuantity,
+                    minSellerPrice,
+                    orderList[sellerID]!!.esopType
+                )
+            )
 
             // Updating seller entries
             if (!transactions.containsKey(sellerID)) {
-                transactions.put(sellerID, mutableListOf<Transaction>())
+                transactions[sellerID] = mutableListOf()
             }
-            transactions.get(sellerID)!!.add(Transaction(transQuantity, minSellerPrice, orderList[sellerID].esopType))
+            transactions[sellerID]!!.add(Transaction(transQuantity, minSellerPrice, orderList[sellerID]!!.esopType))
 
             currentOrder.status = "partially filled"
-            orderList[sellerID].status = "partially filled"
+            orderList[sellerID]!!.status = "partially filled"
 
             if (currentOrder.currentQuantity == 0L) currentOrder.status = "filled"
-            if (orderList[sellerID].currentQuantity == 0L) orderList[sellerID].status = "filled"
+            if (orderList[sellerID]!!.currentQuantity == 0L) orderList[sellerID]!!.status = "filled"
 
 
         } else {
-            break;
+            break
         }
 
     }
