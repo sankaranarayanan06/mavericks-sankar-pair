@@ -15,18 +15,12 @@ fun performBuys(currentOrder: Order, username: String) {
         if (currentOrder.currentQuantity == BigInteger.ZERO) break
 
         var minSellerPrice: BigInteger = BigInteger.valueOf(Long.MAX_VALUE)
-        var sellerID = -1
+        var sellerID = Int.MIN_VALUE
+
 
         // Find if seller with PERFORMANCE order fulfils the deal
         for ((orderID, orderPrev) in orderList) {
-
-            // Order should match with SELL and should not be filled
-            if ((orderPrev.esopType == "PERFORMANCE") &&
-                (orderPrev.orderId != currentOrder.orderId) &&
-                (orderPrev.status != "filled") &&
-                (currentOrder.type != orderPrev.type) &&
-                (currentOrder.price >= orderPrev.price)
-            ) {
+            if ((orderPrev.esopType == "PERFORMANCE") && (orderPrev.orderId != currentOrder.orderId) && (orderPrev.status != "filled") && (currentOrder.type != orderPrev.type) && (currentOrder.price >= orderPrev.price)) {
                 if (orderPrev.price < minSellerPrice) {
                     minSellerPrice = orderPrev.price
                     sellerID = orderID
@@ -35,22 +29,19 @@ fun performBuys(currentOrder: Order, username: String) {
         }
 
         // If not found any performance esop seller then go for normal esop seller
-        if (sellerID == -1) {
-            for (orderNumber in 0 until n) {
-                val orderPrev = orderList[orderNumber]
-
-                // Order should match with SELL and should not be filled
-                if ((orderPrev!!.orderId != currentOrder.orderId) && (orderPrev!!.status != "filled") && (currentOrder.type != orderPrev.type) && (currentOrder.price >= orderPrev.price)) {
-                    if (orderPrev!!.price < minSellerPrice) {
-                        minSellerPrice = orderPrev!!.price
-                        sellerID = orderPrev!!.orderId
+        if (sellerID == Int.MIN_VALUE) {
+            for ((orderID, orderPrev) in orderList) {
+                if ((orderPrev.esopType == "NON_PERFORMANCE") && (orderPrev.orderId != currentOrder.orderId) && (orderPrev.status != "filled") && (currentOrder.type != orderPrev.type) && (currentOrder.price >= orderPrev.price)) {
+                    if (orderPrev.price < minSellerPrice) {
+                        minSellerPrice = orderPrev.price
+                        sellerID = orderID
                     }
                 }
             }
         }
 
         if (sellerID != Int.MIN_VALUE) {
-            performESOPVestings(orderList[sellerID]!!.userName)
+            // performESOPVestings(orderList[sellerID]!!.userName)
             val transQuantity = orderList[sellerID]!!.currentQuantity.min(currentOrder.currentQuantity)
 
             orderList[sellerID]!!.currentQuantity -= transQuantity
@@ -58,7 +49,10 @@ fun performBuys(currentOrder: Order, username: String) {
 
             val orderTotal = minSellerPrice * transQuantity
 
-            val platformCharge = if (orderList[sellerID]!!.esopType != "PERFORMANCE") (orderTotal * BigInteger.TWO) / BigInteger.valueOf(100) else BigInteger.ZERO
+            val platformCharge =
+                if (orderList[sellerID]!!.esopType != "PERFORMANCE") (orderTotal * BigInteger.TWO) / BigInteger.valueOf(
+                    100
+                ) else BigInteger.ZERO
 
             addPlatformCharge(platformCharge)
 
@@ -86,9 +80,7 @@ fun performBuys(currentOrder: Order, username: String) {
 
             transactions[currentOrder.orderId]!!.add(
                 Transaction(
-                    transQuantity,
-                    minSellerPrice,
-                    orderList[sellerID]!!.esopType
+                    transQuantity, minSellerPrice, orderList[sellerID]!!.esopType
                 )
             )
 

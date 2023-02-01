@@ -29,13 +29,12 @@ class OrderHistory() {
                     val listOfTransactions = mutableListOf<Transaction>()
                     for (transaction in transactions[orderID]!!) {
                         listOfTransactions.add(transaction)
-                        // quantity += eachTrans.first
                     }
 
                     if (order.type == "BUY") {
                         listOfOrders.add(
                             BuyOrderHistory(
-                                orderId = orderID + 1,
+                                orderId = orderID,
                                 price = order.price,
                                 quantity = order.placedQuantity,
                                 type = order.type,
