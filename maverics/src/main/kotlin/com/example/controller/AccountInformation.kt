@@ -3,7 +3,7 @@ package com.example.controller
 import com.example.constants.inventoryData
 import com.example.model.Inventory
 import com.example.services.*
-import com.example.validations.user.UserValidation
+import com.example.validations.ifUniqueUsername
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
@@ -14,7 +14,7 @@ class AccountInformation {
 
     @Get("/{username}/accountInformation")
     fun accountInformation(@PathVariable username: String): HttpResponse<*> {
-        if(UserValidation.isUserExist(username)) {
+        if(ifUniqueUsername(username)) {
 
             performESOPVestings(username)
 

@@ -7,7 +7,7 @@ import com.example.model.SellOrderHistory
 import com.example.model.Transaction
 import com.example.services.generateErrorResponse
 import com.example.services.performESOPVestings
-import com.example.validations.user.UserValidation
+import com.example.validations.ifUniqueUsername
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
@@ -18,7 +18,7 @@ import io.micronaut.http.annotation.PathVariable
 class OrderHistory() {
     @Get("/{username}/order")
     fun getOrderHistory(@PathVariable username: String): HttpResponse<*> {
-        if (UserValidation.isUserExist(username)) {
+        if (ifUniqueUsername(username)) {
             performESOPVestings(username)
             val listOfOrders = mutableListOf<Any>()
             for ((_,order) in orderList) {
