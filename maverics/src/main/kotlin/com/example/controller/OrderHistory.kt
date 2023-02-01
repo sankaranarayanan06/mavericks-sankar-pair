@@ -23,6 +23,7 @@ class OrderHistory() {
             val listOfOrders = mutableListOf<Any>()
             for ((_,order) in orderList) {
                 var orderID: Int
+
                 if (username == order.userName ) {
                     orderID = order.orderId
                     val listOfTransactions = mutableListOf<Transaction>()

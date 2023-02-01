@@ -40,8 +40,8 @@ fun performBuys(currentOrder: Order, username: String) {
                 val orderPrev = orderList[orderNumber]
 
                 // Order should match with SELL and should not be filled
-                if ((orderPrev!!.orderId != currentOrder.orderId) && (orderPrev!!.status != "filled") && (currentOrder.type != orderPrev.type) && (currentOrder.price >= orderPrev.price)) {
-                    if (orderPrev!!.price < minSellerPrice) {
+                if ((orderPrev!!.orderId != currentOrder.orderId) && (orderPrev.status != "filled") && (currentOrder.type != orderPrev.type) && (currentOrder.price >= orderPrev.price)) {
+                    if (orderPrev.price < minSellerPrice) {
                         minSellerPrice = orderPrev.price
                         sellerID = orderPrev.orderId
                     }
