@@ -61,7 +61,7 @@ class OrderController {
             } else if (currentOrder.type == "SELL") {
 
                 try {
-                    currentOrder.esopType = body["esopType"].stringValue
+                    currentOrder.esopType = body["esopType"]!!.stringValue
 
                 } catch (e: Exception) {
                     errorList.add("Enter ESOP type")
@@ -80,7 +80,7 @@ class OrderController {
             }
 
             val response = mutableMapOf<String, MutableList<String>>()
-            response["error"] = mutableListOf<String>("Invalid Order Type")
+            response["error"] = mutableListOf("Invalid Order Type")
             return HttpResponse.badRequest(response)
 
         } else {

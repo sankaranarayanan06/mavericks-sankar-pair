@@ -21,8 +21,8 @@ class InventoryController {
             performESOPVestings(username)
 
             val inventoryValidation = InventoryValidation()
-            var quantityToAdd: Long
-            var type: String
+            val quantityToAdd: Long
+            val type: String
             val inventoryError = mutableListOf<String>()
 
             try {
