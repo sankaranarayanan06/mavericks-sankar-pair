@@ -7,13 +7,27 @@ import java.math.BigInteger
 
 class WalletHandler{
     companion object {
-        fun releaseExtraAmount(username: String,amount: BigInteger){
-            walletList[username]!!.lockedAmount -= amount
-            walletList[username]!!.freeAmount += amount
+
+       fun addFreeAmountInWallet(username: String,amount: BigInteger){
+           walletList[username]!!.freeAmount += amount
+       }
+      fun discardedFreeAmountFromWallet(username: String,amount: BigInteger){
+          walletList[username]!!.freeAmount -= amount
+      }
+        fun addLockedAmountInWallet(username: String, amount: BigInteger){
+            walletList[username]!!.lockedAmount += amount
         }
 
-        fun releaseLockAmount(username: String,amount: BigInteger) {
+        fun discardLockedAmountFromWallet(username: String,amount: BigInteger){
             walletList[username]!!.lockedAmount -= amount
+        }
+        fun getFreeAmount(username: String): BigInteger{
+         return walletList[username]!!.freeAmount
+
+        }
+
+        fun getLockedAmount(username: String): BigInteger{
+            return walletList[username]!!.lockedAmount
         }
 
         fun addAmount(sellerID: Int,amount: BigInteger){
@@ -21,10 +35,7 @@ class WalletHandler{
             walletList[orderList[sellerID]!!.userName]!!.freeAmount += amount
         }
 
-        fun lockingAmountToPlaceOrder(username: String,amount: BigInteger){
-            walletList[username]!!.lockedAmount += amount
-            walletList[username]!!.freeAmount -= amount
-        }
+
 
         fun getWalletInfo(username: String): MutableMap<String, BigInteger> {
             val walletInfo = mutableMapOf<String, BigInteger>()
