@@ -29,6 +29,7 @@ class InventoryHandler {
 
         fun lockPerformanceInventory(quantity: BigInteger, userName: String) {
             inventoryData[userName]!![0].locked += quantity
+
         }
 
         fun getFreePerformanceInventory(userName: String): BigInteger {
