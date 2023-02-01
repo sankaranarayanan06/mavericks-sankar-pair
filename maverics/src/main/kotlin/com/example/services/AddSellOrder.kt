@@ -47,7 +47,7 @@ fun addSellOrder(order: Order): MutableMap<String, Any> {
         }
         "NON_PERFORMANCE" -> {
             inventoryData[order.userName]!![1].free -= order.currentQuantity
-            inventoryData[order.userName]!![0].locked += order.currentQuantity
+            inventoryData[order.userName]!![1].locked += order.currentQuantity
 
             performSells(order, username)
             return result
