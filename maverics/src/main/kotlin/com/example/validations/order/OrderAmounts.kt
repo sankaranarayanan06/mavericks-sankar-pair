@@ -18,9 +18,9 @@ fun ifSufficientQuantity(username: String, quantity: Long, orderType: String): B
     val inventoryList: MutableList<Inventory> = inventoryData[username]!!
     if (orderType == "PERFORMANCE") {
         return inventoryList[0].free >= quantity
-    } else {
-        return inventoryList[1].free >= quantity
     }
+    return inventoryList[1].free >= quantity
+
 }
 
 
@@ -28,7 +28,7 @@ fun orderValidation(orderError: MutableList<String>, quantity: Long, type: Strin
     if (BigInteger.valueOf(quantity) !in BigInteger.ONE..Limits.MAX_ORDER_QUANTITY) {
         orderError.add("Quantity out of Range. Max: ${Limits.MAX_ORDER_QUANTITY}, Min: 1")
     }
-    if (BigInteger.valueOf(price) !in BigInteger.ONE ..Limits.MAX_ORDER_PRICE) {
+    if (BigInteger.valueOf(price) !in BigInteger.ONE..Limits.MAX_ORDER_PRICE) {
         orderError.add("Price out of Range. Max: ${Limits.MAX_ORDER_PRICE}, Min: 1")
     }
     if (BigInteger.valueOf(quantity * price) !in BigInteger.ONE..Limits.MAX_ORDER_PRICE) {
@@ -39,13 +39,19 @@ fun orderValidation(orderError: MutableList<String>, quantity: Long, type: Strin
     }
 }
 
-fun orderoverflowValidation(orderError: MutableList<String>, username: String, quantity: Long, price: Long, type: String) {
-    if (BigInteger.valueOf(quantity * price + walletList[username]!!.freeAmount + walletList[username]!!.lockedAmount) > Limits.MAX_WALLET_AMOUNT && type == "SELL"){
+fun orderoverflowValidation(
+    orderError: MutableList<String>,
+    username: String,
+    quantity: Long,
+    price: Long,
+    type: String
+) {
+    if (BigInteger.valueOf(quantity * price + walletList[username]!!.freeAmount + walletList[username]!!.lockedAmount) > Limits.MAX_WALLET_AMOUNT && type == "SELL") {
         orderError.add("Cant create order. Wallet will overflow")
     }
 
     val inventorylist = inventoryData[username]!!
-    if(BigInteger.valueOf(quantity + inventorylist[0].free + inventorylist[1].free + inventorylist[0].locked + inventorylist[1].locked) > Limits.MAX_WALLET_AMOUNT && type == "BUY"){
+    if (BigInteger.valueOf(quantity + inventorylist[0].free + inventorylist[1].free + inventorylist[0].locked + inventorylist[1].locked) > Limits.MAX_WALLET_AMOUNT && type == "BUY") {
         orderError.add("Cant create order. Inventory will overflow")
     }
 }
