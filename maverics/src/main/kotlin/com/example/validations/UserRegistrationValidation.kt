@@ -5,7 +5,17 @@ import com.example.validations.user.UserValidation
 import io.micronaut.json.tree.JsonNode
 
 
-fun isEmailValid(email: String) = regex.getEmailRegex().toRegex().matches(email)
+fun isEmailValid(email: String): Boolean {
+    if(regex.getEmailRegex().toRegex().matches(email)){
+        val splitFrom = "@"
+        val emailParts = email.split(splitFrom)
+        if (emailParts[0].length > 64 || emailParts[1].length > 255) {
+            return false
+        }
+        return true
+    }
+    return false
+}
 
 fun checkUserName(username: String) = regex.getUsernameRegex().toRegex().matches(username)
 
