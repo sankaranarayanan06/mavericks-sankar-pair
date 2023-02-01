@@ -41,8 +41,12 @@ fun ifUniqueEmail(email: String): Boolean {
     return true
 }
 
-fun ifUniqueUsername(username: String): Boolean {
+fun isUniqueUsername(username: String): Boolean {
     return !allUsers.containsKey(username)
+}
+
+fun isUserExists(username: String): Boolean {
+    return allUsers.containsKey(username)
 }
 
 fun nullValidation(variable: Any?, variableName: String): MutableList<String> {
@@ -172,7 +176,7 @@ fun userNameValidation(username: JsonNode?): MutableList<String> {
         return userNameErrorValidationList
     }
 
-    if (!ifUniqueUsername(userName)) {
+    if (!isUniqueUsername(userName)) {
         userNameErrorValidationList.add("userName already exists")
     }
 

@@ -11,7 +11,7 @@ import io.micronaut.http.annotation.PathVariable
 import io.micronaut.http.annotation.Post
 import io.micronaut.json.tree.JsonObject
 import com.example.services.*
-import com.example.validations.ifUniqueUsername
+import com.example.validations.isUserExists
 import com.example.validations.order.orderoverflowValidation
 
 
@@ -20,7 +20,7 @@ class OrderController {
     @Post("/{username}/order")
     fun addNewOrder(@Body body: JsonObject, @PathVariable username: String): HttpResponse<*> {
         val errorList = mutableListOf<String>()
-        if (ifUniqueUsername(username)) {
+        if (isUserExists(username)) {
             performESOPVestings(username)
 
 

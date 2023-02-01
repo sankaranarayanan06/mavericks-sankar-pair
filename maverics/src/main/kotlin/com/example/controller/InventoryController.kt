@@ -6,7 +6,7 @@ import com.example.model.Message
 import com.example.services.addESOPVestings
 import com.example.services.performESOPVestings
 import com.example.validations.InventoryValidation
-import com.example.validations.ifUniqueUsername
+import com.example.validations.isUserExists
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.*
 import io.micronaut.json.tree.JsonObject
@@ -17,7 +17,7 @@ import java.math.BigInteger
 class InventoryController {
     @Post("/{username}/inventory")
     fun addEsopInInventory(@PathVariable username: String, @Body body: JsonObject): HttpResponse<*> {
-        if (ifUniqueUsername(username)) {
+        if (isUserExists(username)) {
             performESOPVestings(username)
 
             val inventoryValidation = InventoryValidation()
