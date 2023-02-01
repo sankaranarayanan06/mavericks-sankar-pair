@@ -87,7 +87,6 @@ class OrderController {
             errorList.add("User doesn't exist.")
             return generateErrorResponse(errorList)
         }
-
     }
 
     private fun getOrderFromBody(body: JsonObject, username: String): Order {
