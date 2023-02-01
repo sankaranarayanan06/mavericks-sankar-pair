@@ -8,6 +8,7 @@ import com.example.model.User
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.math.BigInteger
 
 
 class OrderTest {
@@ -34,13 +35,13 @@ class OrderTest {
         )
         addUser(user)
 
-        inventoryData[user.userName] = mutableListOf(Inventory(0, 0), Inventory(0, 0))
-        walletList[user.userName]!!.freeAmount = 200
+        inventoryData[user.userName] = mutableListOf(Inventory(BigInteger.ZERO, BigInteger.ZERO), Inventory(BigInteger.ZERO, BigInteger.ZERO))
+        walletList[user.userName]!!.freeAmount = BigInteger.valueOf(200)
 
         val buyOrder = Order()
-        buyOrder.currentQuantity = 1
-        buyOrder.placedQuantity = 1
-        buyOrder.price = 100
+        buyOrder.currentQuantity = BigInteger.ONE
+        buyOrder.placedQuantity = BigInteger.ONE
+        buyOrder.price = BigInteger.valueOf(100)
         buyOrder.type = "BUY"
         buyOrder.userName = user.userName
 
@@ -49,8 +50,8 @@ class OrderTest {
 
         // Assert [2]
         assertEquals(null, orderResponse["errors"])
-        assertEquals(100, walletList[user.userName]!!.lockedAmount)
-        assertEquals(100, walletList[user.userName]!!.freeAmount)
+        assertEquals(BigInteger.valueOf(100), walletList[user.userName]!!.lockedAmount)
+        assertEquals(BigInteger.valueOf(100), walletList[user.userName]!!.freeAmount)
 
     }
 
@@ -67,11 +68,11 @@ class OrderTest {
         )
         addUser(user)
 
-        inventoryData[user.userName] = mutableListOf(Inventory(10, 0), Inventory(0, 0))
+        inventoryData[user.userName] = mutableListOf(Inventory(BigInteger.TEN, BigInteger.ZERO), Inventory(BigInteger.ZERO, BigInteger.ZERO))
         val sellOrder = Order()
-        sellOrder.currentQuantity = 5
-        sellOrder.placedQuantity = 5
-        sellOrder.price = 100
+        sellOrder.currentQuantity = BigInteger.valueOf(5)
+        sellOrder.placedQuantity = BigInteger.valueOf(5)
+        sellOrder.price = BigInteger.valueOf(100)
         sellOrder.type = "SELL"
         sellOrder.esopType = "PERFORMANCE"
         sellOrder.userName = user.userName
@@ -81,8 +82,8 @@ class OrderTest {
 
         // Assert [2]
         assertEquals(null, orderResponse["errors"])
-        assertEquals(5, inventoryData[user.userName]!![0].free)
-        assertEquals(5, inventoryData[user.userName]!![0].locked)
+        assertEquals(BigInteger.valueOf(5), inventoryData[user.userName]!![0].free)
+        assertEquals(BigInteger.valueOf(5), inventoryData[user.userName]!![0].locked)
 
     }
 
@@ -99,9 +100,9 @@ class OrderTest {
         addUser(user1)
 
         val sellOrder = Order()
-        sellOrder.currentQuantity = 5
-        sellOrder.placedQuantity = 5
-        sellOrder.price = 10
+        sellOrder.currentQuantity = BigInteger.valueOf(5)
+        sellOrder.placedQuantity = BigInteger.valueOf(5)
+        sellOrder.price = BigInteger.TEN
         sellOrder.type = "SELL"
         sellOrder.esopType = "PERFORMANCE"
         sellOrder.userName = user1.userName
@@ -114,12 +115,12 @@ class OrderTest {
             phoneNumber = "4234234"
         )
         addUser(user2)
-        walletList[user2.userName]!!.freeAmount = 200
+        walletList[user2.userName]!!.freeAmount = BigInteger.valueOf(200)
 
         val buyOrder = Order()
-        buyOrder.currentQuantity = 5
-        buyOrder.placedQuantity = 5
-        buyOrder.price = 10
+        buyOrder.currentQuantity = BigInteger.valueOf(5)
+        buyOrder.placedQuantity = BigInteger.valueOf(5)
+        buyOrder.price = BigInteger.TEN
         buyOrder.type = "BUY"
         buyOrder.userName = user2.userName
 
@@ -130,9 +131,9 @@ class OrderTest {
         // Assert [2]
         assertEquals(null, sellOrderResponse["errors"])
         assertEquals(null, buyOrderResponse["errors"])
-        assertEquals(50, walletList[user1.userName]!!.freeAmount)
-        assertEquals(5, inventoryData[user1.userName]!![0].free)
-        assertEquals(100, walletList[user2.userName]!!.freeAmount)
-        assertEquals(5, inventoryData[user2.userName]!![1].free)
+        assertEquals(BigInteger.valueOf(50), walletList[user1.userName]!!.freeAmount)
+        assertEquals(BigInteger.valueOf(5), inventoryData[user1.userName]!![0].free)
+        assertEquals(BigInteger.valueOf(100), walletList[user2.userName]!!.freeAmount)
+        assertEquals(BigInteger.valueOf(5), inventoryData[user2.userName]!![1].free)
     }
 }
