@@ -6,7 +6,7 @@ class Regex {
 //    }
 
     fun getEmailRegex(): String {
-        return "^[A-Z0-9._%+-]+@[A-Z0-9.-]{2,63}+\\.[A-Z]{2,63}$"
+        return "([a-zA-Z0-9]+([+._-]?[a-zA-z0-9])*)[@]([a-zA-Z]+([-]?[a-zA-z0-9])+[.])+[a-zA-Z]{2,}"
     }
 
     fun getUsernameRegex(): String {
