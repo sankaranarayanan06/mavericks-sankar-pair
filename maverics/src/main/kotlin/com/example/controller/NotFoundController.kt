@@ -1,6 +1,5 @@
 package com.example.controller
 
-import com.example.constants.response
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
@@ -27,8 +26,10 @@ class NotFoundController {
                 .contentType(MediaType.TEXT_HTML)
         }
         errorList.add("Page not found")
+
+        val response = mutableMapOf<String, MutableList<String>>()
         response["errors"] = errorList
 
-        return HttpResponse.ok(response)
+        return HttpResponse.badRequest(response)
     }
 }

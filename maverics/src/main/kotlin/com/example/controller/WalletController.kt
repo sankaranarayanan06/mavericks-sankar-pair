@@ -1,5 +1,5 @@
 package com.example.controller
-import com.example.constants.response
+
 import com.example.model.Wallet
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Body
@@ -14,37 +14,40 @@ import com.example.validations.user.UserValidation
 import com.example.validations.WalletValidation
 
 
-var walletList = mutableMapOf<String,Wallet>()
+var walletList = mutableMapOf<String, Wallet>()
 
 
 @Controller("/user")
-class WalletController() {
+class WalletController {
     @Post("/{username}/wallet")
     fun addMoneyInWallet(@PathVariable username: String, @Body body: JsonObject): HttpResponse<*> {
         if (UserValidation.isUserExist(username)) {
             performESOPVestings(username)
             val walletValidation = WalletValidation()
-            var amount: Long = 0L
+            var amount: Long
             try {
-                amount = body["amount"].longValue
+                amount = body["amount"]!!.longValue
             } catch (e: Exception) {
-                response["error"] = mutableListOf<String>("Please enter amount(Number)")
+                val response = mutableMapOf<String, MutableList<String>>()
+                response["error"] = mutableListOf("Please enter amount(Number)")
                 return HttpResponse.ok(response)
             }
-            val wallet: Wallet = walletList.get(username)!!
-            var errorList = mutableListOf<String>()
+            val wallet: Wallet = walletList[username]!!
+            val errorList = mutableListOf<String>()
             errorList += walletValidation.validations(wallet.freeAmount, amount)
-            if(errorList.size > 0){
-                response["error"] = errorList;
-                return HttpResponse.ok(response);
+            if (errorList.size > 0) {
+                val response = mutableMapOf<String, MutableList<String>>()
+                response["error"] = errorList
+                return HttpResponse.ok(response)
             }
-            else{
-                wallet.freeAmount += amount
-                return HttpResponse.ok(Message("${amount} added to account."))
-            }
+
+            wallet.freeAmount += amount
+            return HttpResponse.ok(Message("$amount added to account."))
+
         } else {
-            response["error"] = mutableListOf<String>("User doesn't exist.")
-            return HttpResponse.badRequest(response);
+            val response = mutableMapOf<String, MutableList<String>>()
+            response["error"] = mutableListOf("User doesn't exist.")
+            return HttpResponse.badRequest(response)
         }
     }
 
@@ -52,25 +55,25 @@ class WalletController() {
     @Get("/{username}/wallet")
     fun getWalletBalance(@PathVariable username: String): HttpResponse<*> {
         if (UserValidation.isUserExist(username)) {
-            val userWallet = walletList[username];
+            val userWallet = walletList[username]
 
-            val response = mutableMapOf<String, Long>();
+            val response = mutableMapOf<String, Long>()
 
             if (userWallet != null) {
                 response["Free Balance"] = userWallet.freeAmount
-            };
+            }
 
             if (userWallet != null) {
                 response["Locked Balance"] = userWallet.lockedAmount
-            };
+            }
 
             return HttpResponse.ok(response)
         } else {
-            val response = mutableMapOf<String, MutableList<String>>();
-            var errorList = mutableListOf<String>("User doesn't exist.")
-            response["error"] = errorList;
+            val response = mutableMapOf<String, MutableList<String>>()
+            val errorList = mutableListOf("User doesn't exist")
+            response["error"] = errorList
 
-            return HttpResponse.badRequest(response);
+            return HttpResponse.badRequest(response)
         }
     }
 }
