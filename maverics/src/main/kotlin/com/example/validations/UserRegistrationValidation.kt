@@ -21,11 +21,11 @@ fun checkUserName(username: String) = regex.getUsernameRegex().toRegex().matches
 
 fun checkPhoneNumber(phoneNumber: String) = regex.getPhoneNumberRegex().toRegex().matches(phoneNumber)
 
-fun firstLastName(flname: String) = regex.firstLastNameRegex().toRegex().matches(flname)
+fun firstLastName(name: String) = regex.firstLastNameRegex().toRegex().matches(name)
 
 fun nullBoolean(variable: Any?) = variable == null
 
-fun nullvalidation(variable: Any?, variableName: String): MutableList<String> {
+fun nullValidation(variable: Any?, variableName: String): MutableList<String> {
     val nullValidationResponse = mutableListOf<String>()
     if (nullBoolean(variable)) {
         nullValidationResponse.add("$variableName Cannot be null")
@@ -62,7 +62,7 @@ fun emptyValidation(variable: String, variableName: String): MutableList<String>
 
 fun fieldValidation(variable: JsonNode?, validationName: String): MutableList<String> {
     val errorResponseList = mutableListOf<String>()
-    errorResponseList += nullvalidation(variable, validationName)
+    errorResponseList += nullValidation(variable, validationName)
     if (errorResponseList.size != 0) {
         println("null fail")
         return errorResponseList
