@@ -4,7 +4,6 @@ import com.example.services.getPlatformFees
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
-import com.example.services.getPlatformFees
 
 import java.math.BigInteger
 
