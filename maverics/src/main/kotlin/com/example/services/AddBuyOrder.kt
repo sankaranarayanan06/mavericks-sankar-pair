@@ -3,7 +3,6 @@ package com.example.services
 import com.example.model.Order
 import com.example.constants.orderList
 import com.example.constants.transactions
-import com.example.controller.walletList
 import com.example.validations.order.ifSufficientAmountInWallet
 
 
@@ -24,7 +23,8 @@ fun addBuyOrder(order: Order) : MutableMap<String,Any>
     transactions[order.orderId] = mutableListOf()
 
     // Locking amount for order placing
-    WalletHandler.lockingAmountToPlaceOrder(username,order.currentQuantity * order.price)
+    WalletHandler.addLockedAmountInWallet(username,(order.currentQuantity * order.price))
+    WalletHandler.discardedFreeAmountFromWallet(username,(order.currentQuantity * order.price))
 
     performBuys(order,username)
 

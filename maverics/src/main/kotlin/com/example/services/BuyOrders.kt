@@ -57,10 +57,11 @@ fun performBuys(currentOrder: Order, username: String) {
             addPlatformCharge(platformCharge)
 
             // Releasing extra amount from lock for partial matching scenario
-            WalletHandler.releaseExtraAmount(username,((currentOrder.price - minSellerPrice) * transQuantity))
+            WalletHandler.discardLockedAmountFromWallet(username,((currentOrder.price - minSellerPrice) * transQuantity))
+            WalletHandler.addFreeAmountInWallet(username,((currentOrder.price - minSellerPrice) * transQuantity))
 
             // Releasing lock amount worth actual transaction
-            WalletHandler.releaseLockAmount(username,transQuantity * minSellerPrice)
+            WalletHandler.discardLockedAmountFromWallet(username,transQuantity * minSellerPrice)
             WalletHandler.addAmount(sellerID,transQuantity * minSellerPrice - platformCharge)
 
             // Reducing the esops from seller account
