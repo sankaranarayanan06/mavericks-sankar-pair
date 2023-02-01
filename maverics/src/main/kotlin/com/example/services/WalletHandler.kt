@@ -10,6 +10,8 @@ class WalletHandler{
 
        fun addFreeAmountInWallet(username: String,amount: BigInteger){
            walletList[username]!!.freeAmount += amount
+           println(walletList[username]!!.freeAmount)
+
        }
       fun discardedFreeAmountFromWallet(username: String,amount: BigInteger){
           walletList[username]!!.freeAmount -= amount

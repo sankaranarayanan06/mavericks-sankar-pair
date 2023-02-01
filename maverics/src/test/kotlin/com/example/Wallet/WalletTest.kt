@@ -14,7 +14,7 @@ import java.math.BigInteger
 
 class WalletTest {
     @BeforeEach
-    fun createdUser(){
+    fun createdUser() {
         val user = User(
             firstName = "Anushka",
             lastName = "Joshi",
@@ -24,6 +24,7 @@ class WalletTest {
         )
         addUser(user)
     }
+
     @Test
     fun `It should test for insufficient amount in wallet`() {
 
@@ -38,14 +39,13 @@ class WalletTest {
 
         WalletHandler.addFreeAmountInWallet(buyerName, BigInteger.valueOf(90))
 
-        // Act [1]
         val orderResponse = addBuyOrder(buyOrder)
 
-        // Assert [2]
         Assertions.assertEquals("[Insufficient amount in wallet]", orderResponse["errors"].toString())
 
 
     }
+
     @Test
     fun `It should test wallet amount`() {
 
@@ -60,33 +60,33 @@ class WalletTest {
 
         WalletHandler.addFreeAmountInWallet(buyerName, BigInteger.valueOf(500))
 
+        val orderResponse = addBuyOrder(buyOrder)
 
-
-
-        // Assertion
+        Assertions.assertEquals(null, orderResponse["errors"])
         Assertions.assertEquals(BigInteger.valueOf(100), WalletHandler.getLockedAmount(buyerName))
         Assertions.assertEquals(BigInteger.valueOf(400), WalletHandler.getFreeAmount(buyerName))
 
     }
 
     @Test
-    fun `It should test for maximum wallet amount limit`(){
+    fun `It should test for maximum wallet amount limit`() {
         val buyerName = "03Anushka"
         val walletValidation = WalletValidation()
         val buyOrder = Order()
         buyOrder.currentQuantity = BigInteger.ONE
-        buyOrder.placedQuantity =  buyOrder.currentQuantity
+        buyOrder.placedQuantity = buyOrder.currentQuantity
         buyOrder.price = BigInteger.valueOf(100)
 
         WalletHandler.addFreeAmountInWallet(buyerName, Limits.MAX_WALLET_AMOUNT)
 
         var freeAmount = WalletHandler.getFreeAmount(buyerName)
-        val orderResponse = walletValidation.validations(freeAmount,buyOrder.currentQuantity*buyOrder.price)
+        val orderResponse = walletValidation.validations(freeAmount, buyOrder.currentQuantity * buyOrder.price)
 
 
-        Assertions.assertEquals("[Maximum wallet limit of amount ${Limits.MAX_WALLET_AMOUNT} would be exceeded]", orderResponse.toString())
-
-
+        Assertions.assertEquals(
+            "[Maximum wallet limit of amount ${Limits.MAX_WALLET_AMOUNT} would be exceeded]",
+            orderResponse.toString()
+        )
 
     }
 
