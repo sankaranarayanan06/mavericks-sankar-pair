@@ -2,7 +2,7 @@ package com.example.services
 
 import com.example.constants.inventoryData
 import com.example.model.Inventory
-import com.example.constants.allUsers
+
 
 fun getInventoryInfo(username: String): MutableList<Inventory> {
     val inventoryInfo: MutableList<Inventory> = mutableListOf(Inventory(type = "PERFORMANCE"), Inventory(type = "NON_PERFORMANCE"))

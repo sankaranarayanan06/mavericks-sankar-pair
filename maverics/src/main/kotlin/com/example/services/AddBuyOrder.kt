@@ -9,18 +9,18 @@ import com.example.validations.order.ifSufficientAmountInWallet
 
 fun addBuyOrder(order: Order) : MutableMap<String,Any>
 {
-    val result = HashMap<String, Any>();
+    val result = HashMap<String, Any>()
 
     val username = order.userName
-    val orderAmount = order.price * order.currentQuantity;
+    val orderAmount = order.price * order.currentQuantity
     if (!ifSufficientAmountInWallet(username, orderAmount)) {
         val errorList = mutableListOf<String>()
         errorList.add("Insufficient amount in wallet")
-        result["errors"] = errorList;
+        result["errors"] = errorList
         return result
     }
 
-    orderList[order.orderId] = order;
+    orderList[order.orderId] = order
     transactions[order.orderId] = mutableListOf()
 
     // Locking amount for order placing

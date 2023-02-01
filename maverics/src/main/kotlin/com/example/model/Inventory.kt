@@ -1,8 +1,3 @@
 package com.example.model
 
-
-class Inventory (free: Long = 0, locked: Long = 0, type: String = "PERFORMANCE")  {
-    var type: String = type;
-    var free = free;
-    var locked = locked;
-}
+class Inventory(var free: Long = 0, var locked: Long = 0, var type: String = "PERFORMANCE")

@@ -14,7 +14,7 @@ fun performBuys(currentOrder: Order, username: String) {
     while (true) {
         if (currentOrder.currentQuantity == 0L) break
 
-        var minSellerPrice: Long = 1000000000000000
+        var minSellerPrice: Long = Long.MAX_VALUE
         var sellerID = -1
 
         // Find if seller with PEROFMANCE order fulfils the deal
@@ -40,8 +40,8 @@ fun performBuys(currentOrder: Order, username: String) {
                 val orderPrev = orderList[orderNumber]
 
                 // Order should match with SELL and should not be filled
-                if ((orderPrev!!.orderId != currentOrder.orderId) && (orderPrev!!.status != "filled") && (currentOrder.type != orderPrev.type) && (currentOrder.price >= orderPrev.price)) {
-                    if (orderPrev!!.price < minSellerPrice) {
+                if ((orderPrev!!.orderId != currentOrder.orderId) && (orderPrev.status != "filled") && (currentOrder.type != orderPrev.type) && (currentOrder.price >= orderPrev.price)) {
+                    if (orderPrev.price < minSellerPrice) {
                         minSellerPrice = orderPrev.price
                         sellerID = orderPrev.orderId
                     }
@@ -49,7 +49,7 @@ fun performBuys(currentOrder: Order, username: String) {
             }
         }
 
-        if (sellerID != -1) {
+        if (sellerID != Int.MIN_VALUE) {
             performESOPVestings(orderList[sellerID]!!.userName)
             val transQuantity = min(orderList[sellerID]!!.currentQuantity, currentOrder.currentQuantity)
 

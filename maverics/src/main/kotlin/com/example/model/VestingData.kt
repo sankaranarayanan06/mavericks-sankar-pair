@@ -1,13 +1,10 @@
 package com.example.model
 
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
 
-class VestingData(quantity: Long, time: LocalDateTime, esopType: String) {
-    var quantity: Long = quantity
-    var time: LocalDateTime = time
-    var esopType: String = esopType
+import java.time.LocalDateTime
+
+
+class VestingData(var quantity: Long, var time: LocalDateTime, var esopType: String) {
     var timeValue = time.toString()
 
 }

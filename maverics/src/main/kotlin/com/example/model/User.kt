@@ -1,21 +1,15 @@
 package com.example.model
 
 
-import javax.validation.Valid
-import javax.validation.constraints.Email
+
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 
-class User(firstName: String, lastName: String, phoneNumber: String, email: String, username: String) {
-    @NotEmpty
-    var firstName = firstName
-    @NotNull @NotBlank @NotEmpty
-    var lastName = lastName
-    @NotEmpty @NotBlank @NotNull
-    var phoneNumber = phoneNumber
-    @NotEmpty @NotBlank @NotNull
-    var email:String = email
+class User(@field:NotEmpty var firstName: String,
+           @field:NotNull @field:NotBlank @field:NotEmpty var lastName: String,
+           @field:NotEmpty @field:NotBlank @field:NotNull var phoneNumber: String,
+           @field:NotEmpty @field:NotBlank @field:NotNull var email: String, username: String) {
     @NotEmpty @NotBlank @NotNull
     var userName = username
 }
