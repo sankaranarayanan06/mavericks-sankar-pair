@@ -10,6 +10,7 @@ import com.example.validations.ifUniqueUsername
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.*
 import io.micronaut.json.tree.JsonObject
+import java.math.BigInteger
 
 
 @Controller("/user")
@@ -20,19 +21,18 @@ class InventoryController {
             performESOPVestings(username)
 
             val inventoryValidation = InventoryValidation()
-            val quantityToAdd: Long
+            val quantityToAdd: BigInteger
             val type: String
             val inventoryError = mutableListOf<String>()
 
             try {
-                quantityToAdd = body["quantity"]?.longValue!!
+                quantityToAdd = BigInteger.valueOf(body["quantity"]?.longValue!!)
                 type = body["type"]?.stringValue!!
             } catch (e: Exception) {
                 val response = mutableMapOf<String, MutableList<String>>()
                 response["error"] = mutableListOf("Please enter both type(String) and quantity(Number)")
                 return HttpResponse.ok(response)
             }
-
 
             inventoryList = inventoryData[username]!!
             inventoryValidation.validation(inventoryError, inventoryList[0], inventoryList[1], quantityToAdd, type)

@@ -7,14 +7,14 @@ import com.example.model.Inventory
 import java.math.BigInteger
 
 
-fun ifSufficientAmountInWallet(username: String, amount: Long): Boolean {
+fun ifSufficientAmountInWallet(username: String, amount: BigInteger): Boolean {
     if (walletList[username]!!.freeAmount < amount) {
         return false
     }
     return true
 }
 
-fun ifSufficientQuantity(username: String, quantity: Long, orderType: String): Boolean {
+fun ifSufficientQuantity(username: String, quantity: BigInteger, orderType: String): Boolean {
     val inventoryList: MutableList<Inventory> = inventoryData[username]!!
     if (orderType == "PERFORMANCE") {
         return inventoryList[0].free >= quantity
@@ -42,16 +42,16 @@ fun orderValidation(orderError: MutableList<String>, quantity: Long, type: Strin
 fun orderoverflowValidation(
     orderError: MutableList<String>,
     username: String,
-    quantity: Long,
-    price: Long,
+    quantity: BigInteger,
+    price: BigInteger,
     type: String
 ) {
-    if (BigInteger.valueOf(quantity * price + walletList[username]!!.freeAmount + walletList[username]!!.lockedAmount) > Limits.MAX_WALLET_AMOUNT && type == "SELL") {
+    if (quantity * price + walletList[username]!!.freeAmount + walletList[username]!!.lockedAmount > Limits.MAX_WALLET_AMOUNT && type == "SELL") {
         orderError.add("Cant create order. Wallet will overflow")
     }
 
     val inventorylist = inventoryData[username]!!
-    if (BigInteger.valueOf(quantity + inventorylist[0].free + inventorylist[1].free + inventorylist[0].locked + inventorylist[1].locked) > Limits.MAX_WALLET_AMOUNT && type == "BUY") {
+    if (quantity + inventorylist[0].free + inventorylist[1].free + inventorylist[0].locked + inventorylist[1].locked > Limits.MAX_WALLET_AMOUNT && type == "BUY") {
         orderError.add("Cant create order. Inventory will overflow")
     }
 }

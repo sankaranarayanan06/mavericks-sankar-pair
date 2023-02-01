@@ -1,9 +1,11 @@
 package com.example.model
 
+import java.math.BigInteger
+
 class Order(
-    var price: Long = 0,
-    var currentQuantity: Long = 0,
-    var placedQuantity: Long = 0,
+    var price: BigInteger = BigInteger.ZERO,
+    var currentQuantity: BigInteger = BigInteger.ZERO,
+    var placedQuantity: BigInteger = BigInteger.ZERO,
     var status: String = "",
     var type: String = "",
     var esopType: String = "NON_PERFORMANCE",

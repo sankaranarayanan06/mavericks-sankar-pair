@@ -1,4 +1,6 @@
 package com.example.model
 
-class Wallet(var freeAmount:Long = 0, var lockedAmount:Long = 0) {
+import java.math.BigInteger
+
+class Wallet(var freeAmount: BigInteger = BigInteger.ZERO, var lockedAmount: BigInteger = BigInteger.ZERO) {
 }

@@ -34,8 +34,8 @@ class OrderController {
             orderoverflowValidation(
                 errorList,
                 username,
-                body["quantity"]!!.longValue,
-                body["price"]!!.longValue,
+                body["quantity"]!!.bigIntegerValue,
+                body["price"]!!.bigIntegerValue,
                 body["type"]!!.stringValue
             )
 
@@ -91,9 +91,9 @@ class OrderController {
 
     private fun getOrderFromBody(body: JsonObject, username: String): Order {
         return Order(
-            body["price"]!!.longValue,
-            body["quantity"]!!.longValue,
-            body["quantity"]!!.longValue,
+            body["price"]!!.bigIntegerValue,
+            body["quantity"]!!.bigIntegerValue,
+            body["quantity"]!!.bigIntegerValue,
             "unfilled",
             body["type"]!!.stringValue,
             userName = username

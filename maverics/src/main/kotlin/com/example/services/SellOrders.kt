@@ -6,14 +6,14 @@ import com.example.constants.transactions
 import com.example.controller.walletList
 import com.example.model.Order
 import com.example.model.Transaction
-import kotlin.math.min
+import java.math.BigInteger
 
 
 fun performSells(currentOrder: Order, sellerUser: String) {
 
     while (true) {
-        if (currentOrder.currentQuantity == 0L) break
-        var maxBuyerPrice: Long = Long.MIN_VALUE
+        if (currentOrder.currentQuantity == BigInteger.ZERO) break
+        var maxBuyerPrice: BigInteger = BigInteger.valueOf(Long.MIN_VALUE)
         var buyerOrderId = Int.MIN_VALUE
         for ((_, orderPrev) in orderList) {
 
@@ -27,12 +27,12 @@ fun performSells(currentOrder: Order, sellerUser: String) {
         if (buyerOrderId != Int.MIN_VALUE) {
             println(orderList[buyerOrderId]!!.orderId.toString() + " " + orderList[buyerOrderId]!!.currentQuantity)
 
-            val transQuantity: Long = min(orderList[buyerOrderId]!!.currentQuantity, currentOrder.currentQuantity)
+            val transQuantity: BigInteger = orderList[buyerOrderId]!!.currentQuantity.min(currentOrder.currentQuantity)
             orderList[buyerOrderId]!!.currentQuantity -= transQuantity
             currentOrder.currentQuantity -= transQuantity
 
             // Return amount for high buy low sell scenario
-            val returnAmount: Long = ((maxBuyerPrice - currentOrder.price) * transQuantity)
+            val returnAmount: BigInteger = ((maxBuyerPrice - currentOrder.price) * transQuantity)
             walletList[orderList[buyerOrderId]!!.userName]!!.lockedAmount -= returnAmount
             walletList[orderList[buyerOrderId]!!.userName]!!.freeAmount += returnAmount
 
@@ -41,7 +41,7 @@ fun performSells(currentOrder: Order, sellerUser: String) {
             // Add ESOPs to buyer account
             val orderTotal = transQuantity * currentOrder.price
             val platformCharge =
-                if (orderList[currentOrder.orderId]!!.esopType != "PERFORMANCE") (orderTotal * 2) / 100 else 0
+                if (orderList[currentOrder.orderId]!!.esopType != "PERFORMANCE") (orderTotal * BigInteger.TWO) / BigInteger.valueOf(100) else BigInteger.ZERO
 
             addPlatformCharge(platformCharge)
 
@@ -49,11 +49,11 @@ fun performSells(currentOrder: Order, sellerUser: String) {
             walletList[orderList[buyerOrderId]!!.userName]!!.lockedAmount -= (transQuantity * currentOrder.price)
 
 
-            inventoryData[orderList[buyerOrderId]!!.userName]!![1].free += (transQuantity)
+            inventoryData[orderList[buyerOrderId]!!.userName]!![1].free += transQuantity
             if (currentOrder.esopType == "PERFORMANCE")
-                inventoryData[sellerUser]!![0].locked -= (transQuantity)
+                inventoryData[sellerUser]!![0].locked -= transQuantity
             else
-                inventoryData[sellerUser]!![1].locked -= (transQuantity)
+                inventoryData[sellerUser]!![1].locked -= transQuantity
 
             if (!transactions.containsKey(currentOrder.orderId)) {
                 transactions[currentOrder.orderId] = mutableListOf()
@@ -73,8 +73,8 @@ fun performSells(currentOrder: Order, sellerUser: String) {
             orderList[buyerOrderId]!!.status = "partially filled"
 
 
-            if (currentOrder.currentQuantity == 0L) currentOrder.status = "filled"
-            if (orderList[buyerOrderId]!!.currentQuantity == 0L) orderList[buyerOrderId]!!.status = "filled"
+            if (currentOrder.currentQuantity == BigInteger.ZERO) currentOrder.status = "filled"
+            if (orderList[buyerOrderId]!!.currentQuantity == BigInteger.ZERO) orderList[buyerOrderId]!!.status = "filled"
 
         } else break
     }

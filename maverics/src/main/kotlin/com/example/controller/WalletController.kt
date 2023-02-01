@@ -12,6 +12,7 @@ import com.example.model.Message
 import com.example.services.performESOPVestings
 import com.example.validations.WalletValidation
 import com.example.validations.ifUniqueUsername
+import java.math.BigInteger
 
 
 var walletList = mutableMapOf<String, Wallet>()
@@ -24,9 +25,9 @@ class WalletController {
         if (ifUniqueUsername(username)) {
             performESOPVestings(username)
             val walletValidation = WalletValidation()
-            var amount: Long
+            var amount: BigInteger
             try {
-                amount = body["amount"]!!.longValue
+                amount = body["amount"]!!.bigIntegerValue
             } catch (e: Exception) {
                 val response = mutableMapOf<String, MutableList<String>>()
                 response["error"] = mutableListOf("Please enter amount(Number)")
@@ -57,7 +58,7 @@ class WalletController {
         if (ifUniqueUsername(username)) {
             val userWallet = walletList[username]
 
-            val response = mutableMapOf<String, Long>()
+            val response = mutableMapOf<String, BigInteger>()
 
             if (userWallet != null) {
                 response["Free Balance"] = userWallet.freeAmount

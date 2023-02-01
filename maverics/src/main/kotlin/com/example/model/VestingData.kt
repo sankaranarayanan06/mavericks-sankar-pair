@@ -1,10 +1,11 @@
 package com.example.model
 
 
+import java.math.BigInteger
 import java.time.LocalDateTime
 
 
-class VestingData(var quantity: Long, var time: LocalDateTime, var esopType: String) {
+class VestingData(var quantity: BigInteger, var time: LocalDateTime, var esopType: String) {
     var timeValue = time.toString()
 
 }

@@ -6,18 +6,18 @@ import com.example.constants.transactions
 import com.example.controller.walletList
 import com.example.model.Order
 import com.example.model.Transaction
-import kotlin.math.min
+import java.math.BigInteger
 
 
 fun performBuys(currentOrder: Order, username: String) {
     val n: Int = orderList.size
     while (true) {
-        if (currentOrder.currentQuantity == 0L) break
+        if (currentOrder.currentQuantity == BigInteger.ZERO) break
 
-        var minSellerPrice: Long = Long.MAX_VALUE
+        var minSellerPrice: BigInteger = BigInteger.valueOf(Long.MAX_VALUE)
         var sellerID = -1
 
-        // Find if seller with PEROFMANCE order fulfils the deal
+        // Find if seller with PERFORMANCE order fulfils the deal
         for ((orderID, orderPrev) in orderList) {
 
             // Order should match with SELL and should not be filled
@@ -51,14 +51,14 @@ fun performBuys(currentOrder: Order, username: String) {
 
         if (sellerID != Int.MIN_VALUE) {
             performESOPVestings(orderList[sellerID]!!.userName)
-            val transQuantity = min(orderList[sellerID]!!.currentQuantity, currentOrder.currentQuantity)
+            val transQuantity = orderList[sellerID]!!.currentQuantity.min(currentOrder.currentQuantity)
 
             orderList[sellerID]!!.currentQuantity -= transQuantity
             currentOrder.currentQuantity -= transQuantity
 
             val orderTotal = minSellerPrice * transQuantity
 
-            val platformCharge = if (orderList[sellerID]!!.esopType != "PERFORMANCE") (orderTotal * 2) / 100 else 0
+            val platformCharge = if (orderList[sellerID]!!.esopType != "PERFORMANCE") (orderTotal * BigInteger.TWO) / BigInteger.valueOf(100) else BigInteger.ZERO
 
             addPlatformCharge(platformCharge)
 
@@ -72,13 +72,13 @@ fun performBuys(currentOrder: Order, username: String) {
 
             // Reducing the esops from seller account
             if (orderList[sellerID]!!.esopType == "PERFORMANCE") {
-                inventoryData[orderList[sellerID]!!.userName]!![0].locked -= (transQuantity)
+                inventoryData[orderList[sellerID]!!.userName]!![0].locked -= transQuantity
             } else {
-                inventoryData[orderList[sellerID]!!.userName]!![1].locked -= (transQuantity)
+                inventoryData[orderList[sellerID]!!.userName]!![1].locked -= transQuantity
             }
 
             //Adding ESOP to buyers account
-            inventoryData[username]!![1].free += (transQuantity)
+            inventoryData[username]!![1].free += transQuantity
 
             // Updating buyers transactions
             if (!transactions.containsKey(currentOrder.orderId)) {
@@ -102,8 +102,8 @@ fun performBuys(currentOrder: Order, username: String) {
             currentOrder.status = "partially filled"
             orderList[sellerID]!!.status = "partially filled"
 
-            if (currentOrder.currentQuantity == 0L) currentOrder.status = "filled"
-            if (orderList[sellerID]!!.currentQuantity == 0L) orderList[sellerID]!!.status = "filled"
+            if (currentOrder.currentQuantity == BigInteger.ZERO) currentOrder.status = "filled"
+            if (orderList[sellerID]!!.currentQuantity == BigInteger.ZERO) orderList[sellerID]!!.status = "filled"
 
 
         } else {

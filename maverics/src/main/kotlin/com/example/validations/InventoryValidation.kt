@@ -9,16 +9,16 @@ class InventoryValidation {
         inventoryError: MutableList<String>,
         performance: Inventory,
         nonPerformance: Inventory,
-        quantityToAdd: Long,
+        quantityToAdd: BigInteger,
         type: String
     ) {
-        if (BigInteger.valueOf(performance.free + performance.locked + nonPerformance.free + nonPerformance.locked) > Limits.MAX_INVENTORY_QUANTITY) {
+        if (performance.free + performance.locked + nonPerformance.free + nonPerformance.locked > Limits.MAX_INVENTORY_QUANTITY) {
             inventoryError.add("ESOPs Quantity out of Range. Max: ${Limits.MAX_INVENTORY_QUANTITY}, Min: 1")
         }
-        if (BigInteger.valueOf(quantityToAdd) !in BigInteger.ONE..Limits.MAX_INVENTORY_QUANTITY) {
+        if (quantityToAdd !in BigInteger.ONE..Limits.MAX_INVENTORY_QUANTITY) {
             inventoryError.add("ESOPs Quantity out of Range. Max: ${Limits.MAX_INVENTORY_QUANTITY}, Min: 1")
         }
-        if (BigInteger.valueOf(performance.free + performance.locked + nonPerformance.free + nonPerformance.locked + quantityToAdd) > Limits.MAX_INVENTORY_QUANTITY) {
+        if (performance.free + performance.locked + nonPerformance.free + nonPerformance.locked + quantityToAdd > Limits.MAX_INVENTORY_QUANTITY) {
             inventoryError.add("Inventory limit of ${Limits.MAX_INVENTORY_QUANTITY} exceeded")
         }
         if (type != "PERFORMANCE" && type != "NON_PERFORMANCE") {
