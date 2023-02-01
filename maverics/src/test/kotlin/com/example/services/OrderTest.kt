@@ -45,7 +45,7 @@ class OrderTest {
         buyOrder.userName = user.userName
 
         // Act [1]
-        var orderResponse = addBuyOrder(buyOrder)
+        val orderResponse = addBuyOrder(buyOrder)
 
         // Assert [2]
         assertEquals(null, orderResponse["errors"])
@@ -77,7 +77,7 @@ class OrderTest {
         sellOrder.userName = user.userName
 
         // Act [1]
-        var orderResponse = addSellOrder(sellOrder)
+        val orderResponse = addSellOrder(sellOrder)
 
         // Assert [2]
         assertEquals(null, orderResponse["errors"])

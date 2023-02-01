@@ -35,7 +35,7 @@ fun performESOPVestings(username: String)
     {
         val vestingEntry = vestings[username]!![0]
 
-        if(vestingEntry.time.compareTo(systemTime) <= 0)
+        if(vestingEntry.time <= systemTime)
         {
             if(vestingEntry.esopType == "PERFORMANCE"){
                 inventoryData[username]!![0].free += vestingEntry.quantity

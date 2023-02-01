@@ -36,22 +36,26 @@ fun addSellOrder(order: Order): MutableMap<String, Any> {
     result["type"] = order.type
 
     // Locking
-    if (order.esopType == "PERFORMANCE") {
-        inventoryData[order.userName]!![0].free -= order.currentQuantity
-        inventoryData[order.userName]!![0].locked += order.currentQuantity
+    when (order.esopType) {
+        "PERFORMANCE" -> {
+            inventoryData[order.userName]!![0].free -= order.currentQuantity
+            inventoryData[order.userName]!![0].locked += order.currentQuantity
 
-        performSells(order, username)
-        return result
-    } else if (order.esopType == "NON_PERFORMANCE") {
-        inventoryData[order.userName]!![1].free -= order.currentQuantity
-        inventoryData[order.userName]!![0].locked += order.currentQuantity
+            performSells(order, username)
+            return result
+        }
+        "NON_PERFORMANCE" -> {
+            inventoryData[order.userName]!![1].free -= order.currentQuantity
+            inventoryData[order.userName]!![0].locked += order.currentQuantity
 
-        performSells(order, username)
-        return result
-    } else {
-        val error = mutableListOf("Invalid ESOP Type")
-        result["errors"] = error
-        return result
+            performSells(order, username)
+            return result
+        }
+        else -> {
+            val error = mutableListOf("Invalid ESOP Type")
+            result["errors"] = error
+            return result
+        }
     }
 
 }

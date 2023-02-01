@@ -24,7 +24,7 @@ class OrderHistory() {
             for ((key,order) in orderList) {
                 var orderID: Int
                 var quantity: Long = 0
-                if (username == order!!.userName ) {
+                if (username == order.userName ) {
                     orderID = order!!.orderId
                     var listOfTransactions = mutableListOf<Transaction>()
                     for (transaction in transactions[orderID]!!) {
