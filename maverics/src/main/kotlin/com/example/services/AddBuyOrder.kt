@@ -24,8 +24,7 @@ fun addBuyOrder(order: Order) : MutableMap<String,Any>
     transactions[order.orderId] = mutableListOf()
 
     // Locking amount for order placing
-    walletList[username]!!.lockedAmount += (order.currentQuantity * order.price)
-    walletList[username]!!.freeAmount -= (order.currentQuantity * order.price)
+    WalletHandler.lockingAmountToPlaceOrder(username,order.currentQuantity * order.price)
 
     performBuys(order,username)
 

@@ -40,10 +40,10 @@ fun performBuys(currentOrder: Order, username: String) {
                 val orderPrev = orderList[orderNumber]
 
                 // Order should match with SELL and should not be filled
-                if ((orderPrev!!.orderId != currentOrder.orderId) && (orderPrev.status != "filled") && (currentOrder.type != orderPrev.type) && (currentOrder.price >= orderPrev.price)) {
-                    if (orderPrev.price < minSellerPrice) {
-                        minSellerPrice = orderPrev.price
-                        sellerID = orderPrev.orderId
+                if ((orderPrev!!.orderId != currentOrder.orderId) && (orderPrev!!.status != "filled") && (currentOrder.type != orderPrev.type) && (currentOrder.price >= orderPrev.price)) {
+                    if (orderPrev!!.price < minSellerPrice) {
+                        minSellerPrice = orderPrev!!.price
+                        sellerID = orderPrev!!.orderId
                     }
                 }
             }
@@ -63,12 +63,11 @@ fun performBuys(currentOrder: Order, username: String) {
             addPlatformCharge(platformCharge)
 
             // Releasing extra amount from lock for partial matching scenario
-            walletList[username]!!.lockedAmount -= ((currentOrder.price - minSellerPrice) * transQuantity)
-            walletList[username]!!.freeAmount += ((currentOrder.price - minSellerPrice) * transQuantity)
+            WalletHandler.releaseExtraAmount(username,((currentOrder.price - minSellerPrice) * transQuantity))
 
             // Releasing lock amount worth actual transaction
-            walletList[username]!!.lockedAmount -= (transQuantity * minSellerPrice)
-            walletList[orderList[sellerID]!!.userName]!!.freeAmount += (transQuantity * minSellerPrice - platformCharge)
+            WalletHandler.releaseLockAmount(username,transQuantity * minSellerPrice)
+            WalletHandler.addAmount(sellerID,transQuantity * minSellerPrice - platformCharge)
 
             // Reducing the esops from seller account
             if (orderList[sellerID]!!.esopType == "PERFORMANCE") {
