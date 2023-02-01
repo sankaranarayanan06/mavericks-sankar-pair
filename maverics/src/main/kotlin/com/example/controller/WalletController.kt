@@ -11,7 +11,8 @@ import io.micronaut.json.tree.JsonObject
 import com.example.model.Message
 import com.example.services.performESOPVestings
 import com.example.validations.WalletValidation
-import com.example.validations.ifUniqueUsername
+import com.example.validations.isUniqueUsername
+import com.example.validations.isUserExists
 import java.math.BigInteger
 
 
@@ -22,7 +23,7 @@ var walletList = mutableMapOf<String, Wallet>()
 class WalletController {
     @Post("/{username}/wallet")
     fun addMoneyInWallet(@PathVariable username: String, @Body body: JsonObject): HttpResponse<*> {
-        if (ifUniqueUsername(username)) {
+        if (isUserExists(username)) {
             performESOPVestings(username)
             val walletValidation = WalletValidation()
             var amount: BigInteger
@@ -55,7 +56,7 @@ class WalletController {
 
     @Get("/{username}/wallet")
     fun getWalletBalance(@PathVariable username: String): HttpResponse<*> {
-        if (ifUniqueUsername(username)) {
+        if (isUniqueUsername(username)) {
             val userWallet = walletList[username]
 
             val response = mutableMapOf<String, BigInteger>()
