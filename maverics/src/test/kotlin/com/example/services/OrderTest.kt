@@ -99,6 +99,8 @@ class OrderTest {
         )
         addUser(user1)
 
+        InventoryHandler.addToPerformanceInventory(BigInteger.TEN, user1.userName)
+
         val sellOrder = Order()
         sellOrder.currentQuantity = BigInteger.valueOf(5)
         sellOrder.placedQuantity = BigInteger.valueOf(5)
@@ -106,6 +108,8 @@ class OrderTest {
         sellOrder.type = "SELL"
         sellOrder.esopType = "PERFORMANCE"
         sellOrder.userName = user1.userName
+
+        addSellOrder(sellOrder)
 
         val user2 = User(
             firstName = "Dnyaneshwar",
@@ -115,6 +119,7 @@ class OrderTest {
             phoneNumber = "4234234"
         )
         addUser(user2)
+
         walletList[user2.userName]!!.freeAmount = BigInteger.valueOf(200)
 
         val buyOrder = Order()
@@ -124,6 +129,8 @@ class OrderTest {
         buyOrder.type = "BUY"
         buyOrder.userName = user2.userName
 
+        addBuyOrder(buyOrder)
+
         // Act
         val sellOrderResponse = addSellOrder(sellOrder)
         val buyOrderResponse = addBuyOrder(buyOrder)
@@ -132,8 +139,8 @@ class OrderTest {
         assertEquals(null, sellOrderResponse["errors"])
         assertEquals(null, buyOrderResponse["errors"])
         assertEquals(BigInteger.valueOf(50), walletList[user1.userName]!!.freeAmount)
-        assertEquals(BigInteger.valueOf(5), inventoryData[user1.userName]!![0].free)
-        assertEquals(BigInteger.valueOf(100), walletList[user2.userName]!!.freeAmount)
-        assertEquals(BigInteger.valueOf(5), inventoryData[user2.userName]!![1].free)
+        assertEquals(BigInteger.valueOf(5), InventoryHandler.getFreePerformanceInventory(user1.userName))
+        assertEquals(BigInteger.valueOf(150), walletList[user2.userName]!!.freeAmount)
+        assertEquals(BigInteger.valueOf(5), InventoryHandler.getFreeNonPerformanceInventory(user2.userName))
     }
 }
