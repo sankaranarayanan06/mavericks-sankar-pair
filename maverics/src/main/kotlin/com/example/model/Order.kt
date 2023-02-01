@@ -6,7 +6,7 @@ class Order(
     var price: BigInteger = BigInteger.ZERO,
     var currentQuantity: BigInteger = BigInteger.ZERO,
     var placedQuantity: BigInteger = BigInteger.ZERO,
-    var status: String = "",
+    var status: String = "unfilled",
     var type: String = "",
     var esopType: String = "NON_PERFORMANCE",
     var userName: String = "",
