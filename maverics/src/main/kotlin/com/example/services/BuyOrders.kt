@@ -7,6 +7,7 @@ import com.example.controller.walletList
 import com.example.model.Order
 import com.example.model.Transaction
 import java.math.BigInteger
+import kotlin.math.min
 
 
 fun performBuys(currentOrder: Order, username: String) {
@@ -57,6 +58,8 @@ fun performBuys(currentOrder: Order, username: String) {
             addPlatformCharge(platformCharge)
 
             // Releasing extra amount from lock for partial matching scenario
+            println(currentOrder.price)
+            println(minSellerPrice)
             walletList[username]!!.lockedAmount -= ((currentOrder.price - minSellerPrice) * transQuantity)
             walletList[username]!!.freeAmount += ((currentOrder.price - minSellerPrice) * transQuantity)
 
