@@ -1,24 +1,17 @@
 package com.example.controller
 
-import com.example.constants.response
-import io.micronaut.http.HttpRequest;
-import io.micronaut.http.HttpResponse;
-import io.micronaut.http.HttpStatus;
-import io.micronaut.http.MediaType;
-import io.micronaut.http.annotation.Controller;
-import io.micronaut.http.annotation.Error;
-import io.micronaut.http.hateoas.JsonError;
-import io.micronaut.http.hateoas.Link;
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus
+import io.micronaut.http.MediaType
+import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Error
 import io.micronaut.views.ViewsRenderer
 
 var errorList  = mutableListOf<String>()
 @Controller("/notFound")
 class NotFoundController {
     private var viewsRenderer: ViewsRenderer<*>? = null
-
-    fun NotFoundController(viewsRenderer: ViewsRenderer<*>?) {
-        this.viewsRenderer = viewsRenderer
-    }
 
     @Error(status = HttpStatus.NOT_FOUND, global = true)
     fun notFound(request: HttpRequest<*>): HttpResponse<*>? {
@@ -33,8 +26,10 @@ class NotFoundController {
                 .contentType(MediaType.TEXT_HTML)
         }
         errorList.add("Page not found")
+
+        val response = mutableMapOf<String, MutableList<String>>()
         response["errors"] = errorList
 
-        return HttpResponse.ok(response)
+        return HttpResponse.badRequest(response)
     }
 }

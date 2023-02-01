@@ -7,7 +7,7 @@ import com.example.model.SellOrderHistory
 import com.example.model.Transaction
 import com.example.services.generateErrorResponse
 import com.example.services.performESOPVestings
-import com.example.validations.user.UserValidation
+import com.example.validations.ifUniqueUsername
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
@@ -17,29 +17,28 @@ import io.micronaut.http.annotation.PathVariable
 @Controller("/user")
 class OrderHistory() {
     @Get("/{username}/order")
-    fun getOrderHistroy(@PathVariable username: String): HttpResponse<*> {
-        if (UserValidation.isUserExist(username)) {
+    fun getOrderHistory(@PathVariable username: String): HttpResponse<*> {
+        if (ifUniqueUsername(username)) {
             performESOPVestings(username)
-            var listOfOrders = mutableListOf<Any>()
-            for ((key,order) in orderList) {
+            val listOfOrders = mutableListOf<Any>()
+            for ((_,order) in orderList) {
                 var orderID: Int
-                var quantity: Long = 0
-                if (username == order!!.userName ) {
-                    orderID = order!!.orderId
-                    var listOfTransactions = mutableListOf<Transaction>()
+                if (username == order.userName ) {
+                    orderID = order.orderId
+                    val listOfTransactions = mutableListOf<Transaction>()
                     for (transaction in transactions[orderID]!!) {
                         listOfTransactions.add(transaction)
                         // quantity += eachTrans.first
                     }
 
-                    if (order!!.type == "BUY") {
+                    if (order.type == "BUY") {
                         listOfOrders.add(
                             BuyOrderHistory(
                                 orderId = orderID + 1,
-                                price = order!!.price,
-                                quantity = order!!.placedQuantity,
-                                type = order!!.type,
-                                status = order!!.status,
+                                price = order.price,
+                                quantity = order.placedQuantity,
+                                type = order.type,
+                                status = order.status,
                                 filled = listOfTransactions
                             )
                         )
@@ -47,12 +46,12 @@ class OrderHistory() {
                         listOfOrders.add(
                             SellOrderHistory(
                                 orderId = orderID + 1,
-                                price = order!!.price,
-                                quantity = order!!.placedQuantity,
-                                type = order!!.type,
-                                status = order!!.status,
+                                price = order.price,
+                                quantity = order.placedQuantity,
+                                type = order.type,
+                                status = order.status,
                                 filled = listOfTransactions,
-                                esopType = order!!.esopType
+                                esopType = order.esopType
                             )
                         )
                     }
@@ -63,7 +62,7 @@ class OrderHistory() {
             return HttpResponse.ok(listOfOrders)
         }
 
-        var errorList = mutableListOf<String>("User doesn't exist.")
+        val errorList = mutableListOf("User doesn't exist.")
 
         return generateErrorResponse(errorList)
 

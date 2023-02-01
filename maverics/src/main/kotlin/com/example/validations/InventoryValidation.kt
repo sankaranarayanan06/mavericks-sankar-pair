@@ -1,21 +1,28 @@
 package com.example.validations
 
-import com.example.constants.Amounts
+import com.example.constants.Limits
 import com.example.model.Inventory
+import java.math.BigInteger
 
 class InventoryValidation {
-    fun validation(inventoryError: MutableList<String>, performance: Inventory, nonPerformance: Inventory, quantityToAdd: Long, type: String) {
-        if (performance.free + performance.locked + nonPerformance.free + nonPerformance.locked > Amounts.MAX_INVENTORY_QUANTITY) {
-            inventoryError.add("ESOP Quantity out of Range. Max: ${Amounts.MAX_INVENTORY_QUANTITY}, Min: 1")
+    fun validation(
+        inventoryError: MutableList<String>,
+        performance: Inventory,
+        nonPerformance: Inventory,
+        quantityToAdd: Long,
+        type: String
+    ) {
+        if (BigInteger.valueOf(performance.free + performance.locked + nonPerformance.free + nonPerformance.locked) > Limits.MAX_INVENTORY_QUANTITY) {
+            inventoryError.add("ESOPs Quantity out of Range. Max: ${Limits.MAX_INVENTORY_QUANTITY}, Min: 1")
         }
-        if (quantityToAdd !in 1..Amounts.MAX_INVENTORY_QUANTITY) {
-            inventoryError.add("ESOP Quantity out of Range. Max: ${Amounts.MAX_INVENTORY_QUANTITY}, Min: 1")
+        if (BigInteger.valueOf(quantityToAdd) !in BigInteger.ONE..Limits.MAX_INVENTORY_QUANTITY) {
+            inventoryError.add("ESOPs Quantity out of Range. Max: ${Limits.MAX_INVENTORY_QUANTITY}, Min: 1")
         }
-        if (performance.free + performance.locked + nonPerformance.free + nonPerformance.locked + quantityToAdd > Amounts.MAX_INVENTORY_QUANTITY) {
-            inventoryError.add("Inventory limit of ${Amounts.MAX_INVENTORY_QUANTITY} exceeded")
+        if (BigInteger.valueOf(performance.free + performance.locked + nonPerformance.free + nonPerformance.locked + quantityToAdd) > Limits.MAX_INVENTORY_QUANTITY) {
+            inventoryError.add("Inventory limit of ${Limits.MAX_INVENTORY_QUANTITY} exceeded")
         }
         if (type != "PERFORMANCE" && type != "NON_PERFORMANCE") {
-            inventoryError.add("Wrong ESOP type")
+            inventoryError.add("Unknown ESOP type")
         }
     }
 }

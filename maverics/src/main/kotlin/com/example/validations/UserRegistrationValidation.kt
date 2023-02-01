@@ -1,7 +1,7 @@
 package com.example.validations
 
+import com.example.constants.allUsers
 import com.example.constants.regex
-import com.example.validations.user.UserValidation
 import io.micronaut.json.tree.JsonNode
 
 
@@ -18,11 +18,34 @@ fun checkUserName(username: String) = regex.getUsernameRegex().toRegex().matches
 
 fun checkPhoneNumber(phoneNumber: String) = regex.getPhoneNumberRegex().toRegex().matches(phoneNumber)
 
-fun firstLastName(flname: String) = regex.firstLastNameRegex().toRegex().matches(flname)
+fun validateName(name: String) = regex.firstLastNameRegex().toRegex().matches(name)
 
 fun nullBoolean(variable: Any?) = variable == null
 
-fun nullvalidation(variable: Any?, variableName: String): MutableList<String> {
+
+fun ifUniquePhoneNumber(phoneNumber: String): Boolean {
+    for (user in allUsers.keys) {
+        if (allUsers[user]?.phoneNumber == phoneNumber) {
+            return false
+        }
+    }
+    return true
+}
+
+fun ifUniqueEmail(email: String): Boolean {
+    for (user in allUsers.keys) {
+        if (allUsers[user]?.email == email) {
+            return false
+        }
+    }
+    return true
+}
+
+fun ifUniqueUsername(username: String): Boolean {
+    return !allUsers.containsKey(username)
+}
+
+fun nullValidation(variable: Any?, variableName: String): MutableList<String> {
     val nullValidationResponse = mutableListOf<String>()
     if (nullBoolean(variable)) {
         nullValidationResponse.add("$variableName Cannot be null")
@@ -59,7 +82,7 @@ fun emptyValidation(variable: String, variableName: String): MutableList<String>
 
 fun fieldValidation(variable: JsonNode?, validationName: String): MutableList<String> {
     val errorResponseList = mutableListOf<String>()
-    errorResponseList += nullvalidation(variable, validationName)
+    errorResponseList += nullValidation(variable, validationName)
     if (errorResponseList.size != 0) {
         println("null fail")
         return errorResponseList
@@ -93,7 +116,7 @@ fun emailValidation(email: JsonNode?): MutableList<String> {
         return emailErrorValidationList
     }
 
-    if (!UserValidation.ifUniqueEmail(emailId)) {
+    if (!ifUniqueEmail(emailId)) {
         emailErrorValidationList.add("Email Already exists")
         return emailErrorValidationList
     }
@@ -102,20 +125,19 @@ fun emailValidation(email: JsonNode?): MutableList<String> {
 
 
 // Phone Number
-fun phoneNumberValidation(phonenumber: JsonNode?): MutableList<String> {
+fun phoneNumberValidation(phoneNumber: JsonNode?): MutableList<String> {
     val phoneNumberErrorValidationList = mutableListOf<String>()
-    phoneNumberErrorValidationList += fieldValidation(phonenumber, "phoneNumber")
+    phoneNumberErrorValidationList += fieldValidation(phoneNumber, "phoneNumber")
     if (phoneNumberErrorValidationList.size != 0) {
         return phoneNumberErrorValidationList
     }
 
-    val phoneNumber = phonenumber!!.stringValue
-    if (!checkPhoneNumber(phoneNumber)) {
+    if (!checkPhoneNumber(phoneNumber!!.stringValue)) {
         phoneNumberErrorValidationList.add("Invalid phone number")
         return phoneNumberErrorValidationList
     }
 
-    if (!UserValidation.ifUniquePhoneNumber(phoneNumber)) {
+    if (!ifUniquePhoneNumber(phoneNumber.stringValue)) {
         phoneNumberErrorValidationList.add("User with given phone number already exists")
     }
 
@@ -123,14 +145,14 @@ fun phoneNumberValidation(phonenumber: JsonNode?): MutableList<String> {
 }
 
 // First Last Name
-fun firstLastNameValidation(flname: JsonNode?, variableName: String): MutableList<String> {
+fun validateNames(name: JsonNode?, variableName: String): MutableList<String> {
     val firstLastNameErrorValidationList = mutableListOf<String>()
-    firstLastNameErrorValidationList += fieldValidation(flname, variableName)
+    firstLastNameErrorValidationList += fieldValidation(name, variableName)
     if (firstLastNameErrorValidationList.size != 0) {
         return firstLastNameErrorValidationList
     }
 
-    if (firstLastName(flname!!.stringValue)) {
+    if (validateName(name!!.stringValue)) {
         firstLastNameErrorValidationList.add("$variableName is not valid")
     }
     return firstLastNameErrorValidationList
@@ -150,7 +172,7 @@ fun userNameValidation(username: JsonNode?): MutableList<String> {
         return userNameErrorValidationList
     }
 
-    if (!UserValidation.ifUniqueUsername(userName)) {
+    if (!ifUniqueUsername(userName)) {
         userNameErrorValidationList.add("userName already exists")
     }
 
@@ -159,20 +181,13 @@ fun userNameValidation(username: JsonNode?): MutableList<String> {
 
 
 fun registerValidation(
-    username: JsonNode?,
-    firstname: JsonNode?,
-    lastname: JsonNode?,
-    phonenumber: JsonNode?,
-    email: JsonNode?
+    userName: JsonNode?, firstName: JsonNode?, lastName: JsonNode?, phoneNumber: JsonNode?, email: JsonNode?
 ): MutableList<String> {
     val registerValidationResponse = mutableListOf<String>()
-    registerValidationResponse += firstLastNameValidation(firstname, "firstName")
-    registerValidationResponse += firstLastNameValidation(lastname, "lastName")
-    registerValidationResponse += userNameValidation(username)
+    registerValidationResponse += validateNames(firstName, "firstName")
+    registerValidationResponse += validateNames(lastName, "lastName")
+    registerValidationResponse += userNameValidation(userName)
     registerValidationResponse += emailValidation(email)
-    registerValidationResponse += phoneNumberValidation(phonenumber)
+    registerValidationResponse += phoneNumberValidation(phoneNumber)
     return registerValidationResponse
 }
-
-
-

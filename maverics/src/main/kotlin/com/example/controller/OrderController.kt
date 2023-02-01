@@ -2,7 +2,6 @@ package com.example.controller
 
 import com.example.constants.*
 import com.example.model.Order
-import com.example.validations.user.UserValidation
 
 import com.example.validations.order.orderValidation
 import io.micronaut.http.HttpResponse
@@ -12,6 +11,7 @@ import io.micronaut.http.annotation.PathVariable
 import io.micronaut.http.annotation.Post
 import io.micronaut.json.tree.JsonObject
 import com.example.services.*
+import com.example.validations.ifUniqueUsername
 import com.example.validations.order.orderoverflowValidation
 
 
@@ -20,7 +20,7 @@ class OrderController {
     @Post("/{username}/order")
     fun addNewOrder(@Body body: JsonObject, @PathVariable username: String): HttpResponse<*> {
         val errorList = mutableListOf<String>()
-        if (UserValidation.isUserExist(username)) {
+        if (ifUniqueUsername(username)) {
             performESOPVestings(username)
 
 
@@ -61,7 +61,7 @@ class OrderController {
             } else if (currentOrder.type == "SELL") {
 
                 try {
-                    currentOrder.esopType = body["esopType"].stringValue
+                    currentOrder.esopType = body["esopType"]!!.stringValue
 
                 } catch (e: Exception) {
                     errorList.add("Enter ESOP type")
@@ -80,7 +80,7 @@ class OrderController {
             }
 
             val response = mutableMapOf<String, MutableList<String>>()
-            response["error"] = mutableListOf<String>("Invalid Order Type")
+            response["error"] = mutableListOf("Invalid Order Type")
             return HttpResponse.badRequest(response)
 
         } else {
