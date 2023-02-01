@@ -14,6 +14,6 @@ class Order(
     val orderId: Int = orderIdCounter++
 
     companion object {
-        var orderIdCounter = 0
+        var orderIdCounter = 1
     }
 }
