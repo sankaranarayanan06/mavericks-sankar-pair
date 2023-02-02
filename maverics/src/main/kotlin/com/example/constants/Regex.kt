@@ -6,7 +6,7 @@ class Regex {
     }
 
     fun getUsernameRegex(): String {
-        return "^(@#$%^*/!&|.)$"
+        return "(@#$%^*/!&|.)$"
     }
 
     fun firstLastNameRegex(): String {
