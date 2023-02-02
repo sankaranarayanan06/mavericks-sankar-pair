@@ -8,6 +8,7 @@ import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import jakarta.inject.Inject
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 @MicronautTest
@@ -17,6 +18,10 @@ class UserControllerTest {
     @field:Client("/")
     lateinit var client: HttpClient
 
+    @BeforeEach
+    fun clearUserData(){
+        allUsers.clear()
+    }
 
     @Test
     fun `should register valid user`() {
