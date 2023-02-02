@@ -4,15 +4,18 @@ import com.example.constants.allUsers
 import com.example.constants.regex
 import io.micronaut.json.tree.JsonNode
 
-
 fun isEmailValid(email: String): Boolean {
-    val splitFrom = "@"
-    val emailParts = email.split(splitFrom)
-    if (emailParts[1].length > 64 || emailParts[0].length > 255) {
-        return false
+    if(regex.getEmailRegex().toRegex().matches(email)){
+        val splitFrom = "@"
+        val emailParts = email.split(splitFrom)
+        if (emailParts[0].length > 64 || emailParts[1].length > 255) {
+            return false
+        }
+        return true
     }
-    return regex.getEmailRegex().toRegex().matches(email)
+    return false
 }
+
 
 fun checkUserName(username: String) = regex.getUsernameRegex().toRegex().matches(username)
 
@@ -88,18 +91,15 @@ fun fieldValidation(variable: JsonNode?, validationName: String): MutableList<St
     val errorResponseList = mutableListOf<String>()
     errorResponseList += nullValidation(variable, validationName)
     if (errorResponseList.size != 0) {
-        println("null fail")
         return errorResponseList
     }
     errorResponseList += typeValidation(variable, validationName)
     if (errorResponseList.size != 0) {
-        println("type fail")
         return errorResponseList
     }
     val phoneNumber: String = variable!!.stringValue
     errorResponseList += emptyValidation(phoneNumber, validationName)
     if (errorResponseList.size != 0) {
-        println("empty fail")
         return errorResponseList
     }
     return errorResponseList

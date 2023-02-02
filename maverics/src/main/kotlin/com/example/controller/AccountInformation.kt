@@ -27,7 +27,7 @@ class AccountInformation {
 
             response += getUserInfo(username)
 
-            response["wallet"] = getWalletInfo(username)
+            response["wallet"] = WalletHandler.getWalletInfo(username)
             response["inventory"] = InventoryHandler.getInventoryInfo(username)
             response["pendingVestings"] = getPendingVestingInfo(username)
             response["vestingHistory"] = getVestingHistory(username)

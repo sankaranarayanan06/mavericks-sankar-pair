@@ -30,7 +30,7 @@ class OrderTest {
         val user = User(
             firstName = "Dnyaneshwar",
             lastName = "Ware",
-            username = "dnyaneshwar",
+            userName = "dnyaneshwar",
             email = "as",
             phoneNumber = "4234234"
         )
@@ -63,7 +63,7 @@ class OrderTest {
         val user = User(
             firstName = "Dnyaneshwar",
             lastName = "Ware",
-            username = "dnyaneshwar",
+            userName = "dnyaneshwar",
             email = "as",
             phoneNumber = "4234234"
         )
@@ -98,7 +98,7 @@ class OrderTest {
         val user1 = User(
             firstName = "Dnyaneshwar",
             lastName = "Ware",
-            username = "user1",
+            userName = "user1",
             email = "as",
             phoneNumber = "4234234"
         )
@@ -119,7 +119,7 @@ class OrderTest {
         val user2 = User(
             firstName = "Dnyaneshwar",
             lastName = "Ware",
-            username = "user2",
+            userName = "user2",
             email = "as",
             phoneNumber = "4234234"
         )
@@ -157,7 +157,7 @@ class OrderTest {
         val user1 = User(
             firstName = "Amaan",
             lastName = "Shaikh",
-            username = "user1",
+            userName = "user1",
             email = "amaanshaikh@gmail.com",
             phoneNumber = "9764919739"
         )
@@ -176,7 +176,7 @@ class OrderTest {
         val user2 = User(
             firstName = "Dnyaneshwar",
             lastName = "Ware",
-            username = "user2",
+            userName = "user2",
             email = "dnyaneshwarware@gmail.com",
             phoneNumber = "9021118815"
         )
@@ -215,7 +215,7 @@ class OrderTest {
         val user1 = User(
             firstName = "Dnyaneshwar",
             lastName = "Ware",
-            username = "user2",
+            userName = "user2",
             email = "dnyaneshwarware@gmail.com",
             phoneNumber = "9021118815"
         )
@@ -235,7 +235,7 @@ class OrderTest {
         val user2 = User(
             firstName = "Amaan",
             lastName = "Shaikh",
-            username = "user1",
+            userName = "user1",
             email = "amaanshaikh@gmail.com",
             phoneNumber = "9764919739"
         )
@@ -270,6 +270,3 @@ class OrderTest {
         assertEquals("partially filled", orderList[buyOrder.orderId]!!.status)
     }
 }
-
-
-
