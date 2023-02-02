@@ -71,12 +71,12 @@ class UserControllerTest {
 
 
     @Test
-    fun `empty username in invalid`() {
+    fun `empty lastname and firstname in invalid`() {
         val request = HttpRequest.POST(
             "/user/register", """
             {
                 "firstName": "",
-                "lastName": "Bal",
+                "lastName": "",
                 "userName": "sat_yam",
                 "email": "amaans@a1234567890a1123456789090a1.ai", 
                 "phoneNumber": "9876543210"
@@ -88,6 +88,58 @@ class UserControllerTest {
             client.toBlocking().retrieve(request)
         }
 
-        assertEquals("""{"errors":["firstName cannot be empty"]}""", exception.response.body())
+        assertEquals(
+            """{"errors":["firstName cannot be empty","lastName cannot be empty"]}""",
+            exception.response.body()
+        )
+    }
+
+
+    @Test
+    fun `empty username in invalid`() {
+        val request = HttpRequest.POST(
+            "/user/register", """
+            {
+                "firstName": "sat",
+                "lastName": "bal",
+                "userName": "",
+                "email": "amaans@a1234567890a1123456789090a1.ai", 
+                "phoneNumber": "9876543210"
+            }
+        """.trimIndent()
+        )
+
+        val exception: HttpClientResponseException = assertThrows {
+            client.toBlocking().retrieve(request)
+        }
+
+        assertEquals(
+            """{"errors":["userName cannot be empty"]}""",
+            exception.response.body()
+        )
+    }
+
+    @Test
+    fun `empty email in invalid`() {
+        val request = HttpRequest.POST(
+            "/user/register", """
+            {
+                "firstName": "sat",
+                "lastName": "bal",
+                "userName": "sat_bal",
+                "email": "", 
+                "phoneNumber": "9876543210"
+            }
+        """.trimIndent()
+        )
+
+        val exception: HttpClientResponseException = assertThrows {
+            client.toBlocking().retrieve(request)
+        }
+
+        assertEquals(
+            """{"errors":["email cannot be empty"]}""",
+            exception.response.body()
+        )
     }
 }
