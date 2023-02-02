@@ -34,23 +34,23 @@ class OrderTest {
         )
         addUser(user)
 
-        inventoryData[user.userName] = mutableListOf(Inventory(0, 0), Inventory(0, 0))
-        walletList[user.userName]!!.freeAmount = 200
+        inventoryData[user.username] = mutableListOf(Inventory(0, 0), Inventory(0, 0))
+        walletList[user.username]!!.freeAmount = 200
 
         val buyOrder = Order()
         buyOrder.currentQuantity = 1
         buyOrder.placedQuantity = 1
         buyOrder.price = 100
         buyOrder.type = "BUY"
-        buyOrder.userName = user.userName
+        buyOrder.userName = user.username
 
         // Act [1]
         var orderResponse = addBuyOrder(buyOrder)
 
         // Assert [2]
         assertEquals(null, orderResponse["errors"])
-        assertEquals(100, walletList[user.userName]!!.lockedAmount)
-        assertEquals(100, walletList[user.userName]!!.freeAmount)
+        assertEquals(100, walletList[user.username]!!.lockedAmount)
+        assertEquals(100, walletList[user.username]!!.freeAmount)
 
     }
 
@@ -67,22 +67,22 @@ class OrderTest {
         )
         addUser(user)
 
-        inventoryData[user.userName] = mutableListOf(Inventory(10, 0), Inventory(0, 0))
+        inventoryData[user.username] = mutableListOf(Inventory(10, 0), Inventory(0, 0))
         val sellOrder = Order()
         sellOrder.currentQuantity = 5
         sellOrder.placedQuantity = 5
         sellOrder.price = 100
         sellOrder.type = "SELL"
         sellOrder.esopType = "PERFORMANCE"
-        sellOrder.userName = user.userName
+        sellOrder.userName = user.username
 
         // Act [1]
         var orderResponse = addSellOrder(sellOrder)
 
         // Assert [2]
         assertEquals(null, orderResponse["errors"])
-        assertEquals(5, inventoryData[user.userName]!![0].free)
-        assertEquals(5, inventoryData[user.userName]!![0].locked)
+        assertEquals(5, inventoryData[user.username]!![0].free)
+        assertEquals(5, inventoryData[user.username]!![0].locked)
 
     }
 
@@ -104,7 +104,7 @@ class OrderTest {
         sellOrder.price = 10
         sellOrder.type = "SELL"
         sellOrder.esopType = "PERFORMANCE"
-        sellOrder.userName = user1.userName
+        sellOrder.userName = user1.username
 
         val user2 = User(
             firstName = "Dnyaneshwar",
@@ -114,14 +114,14 @@ class OrderTest {
             phoneNumber = "4234234"
         )
         addUser(user2)
-        walletList[user2.userName]!!.freeAmount = 200
+        walletList[user2.username]!!.freeAmount = 200
 
         val buyOrder = Order()
         buyOrder.currentQuantity = 5
         buyOrder.placedQuantity = 5
         buyOrder.price = 10
         buyOrder.type = "BUY"
-        buyOrder.userName = user2.userName
+        buyOrder.userName = user2.username
 
         // Act
         val sellOrderResponse = addSellOrder(sellOrder)
@@ -130,9 +130,9 @@ class OrderTest {
         // Assert [2]
         assertEquals(null, sellOrderResponse["errors"])
         assertEquals(null, buyOrderResponse["errors"])
-        assertEquals(50, walletList[user1.userName]!!.freeAmount)
-        assertEquals(5, inventoryData[user1.userName]!![0].free)
-        assertEquals(100, walletList[user2.userName]!!.freeAmount)
-        assertEquals(5, inventoryData[user2.userName]!![1].free)
+        assertEquals(50, walletList[user1.username]!!.freeAmount)
+        assertEquals(5, inventoryData[user1.username]!![0].free)
+        assertEquals(100, walletList[user2.username]!!.freeAmount)
+        assertEquals(5, inventoryData[user2.username]!![1].free)
     }
 }
