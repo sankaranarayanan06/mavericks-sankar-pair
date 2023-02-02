@@ -10,6 +10,7 @@ import jakarta.inject.Inject
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import com.fasterxml.jackson.databind.ObjectMapper as ObjectMapper
 
 @MicronautTest
 class UserControllerTest {
@@ -19,31 +20,21 @@ class UserControllerTest {
     lateinit var client: HttpClient
 
     @BeforeEach
-    fun clearUserData(){
+    fun clearUserData() {
         allUsers.clear()
     }
 
     @Test
-    fun `should register valid user`() {
+    fun `should register valid user`(objectMapper: ObjectMapper) {
+        val user = User("Satyam", "Bal", "9876543210", "amaans@a1234567890a1123456789090a1.ai", "sat_yam")
         val request = HttpRequest.POST(
-            "/user/register", """
-            {
-                "firstName": "Satyam",
-                "lastName": "Bal",
-                "userName": "sat_yam",
-                "email": "amaans@a1234567890a1123456789090a1.ai", 
-                "phoneNumber": "9876543210"
-            }
-        """.trimIndent()
+            "/user/register", objectMapper.writeValueAsString(user)
         )
 
         val response = client.toBlocking().retrieve(request)
 
-        val expected = User("Satyam", "Bal", "9876543210", "amaans@a1234567890a1123456789090a1.ai", "sat_yam")
-
-        assertEquals(expected, allUsers["sat_yam"])
+        assertEquals(user, allUsers["sat_yam"])
         assertEquals(1, allUsers.size)
         assertEquals("""["User added successfully"]""", response)
     }
-
 }
