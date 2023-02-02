@@ -40,7 +40,7 @@ class WalletController {
             if (errorList.size > 0) {
                 val response = mutableMapOf<String, MutableList<String>>()
                 response["error"] = errorList
-                return HttpResponse.ok(response)
+                return HttpResponse.badRequest(response)
             }
 
             wallet.freeAmount += amount
