@@ -5,17 +5,27 @@ import com.example.validations.user.UserValidation
 import io.micronaut.json.tree.JsonNode
 
 
-fun isEmailValid(email: String) = regex.getEmailRegex().toRegex().matches(email)
+fun isEmailValid(email: String): Boolean {
+    if(regex.getEmailRegex().toRegex().matches(email)){
+        val splitFrom = "@"
+        val emailParts = email.split(splitFrom)
+        if (emailParts[0].length > 64 || emailParts[1].length > 255) {
+            return false
+        }
+        return true
+    }
+    return false
+}
 
 fun checkUserName(username: String) = regex.getUsernameRegex().toRegex().matches(username)
 
 fun checkPhoneNumber(phoneNumber: String) = regex.getPhoneNumberRegex().toRegex().matches(phoneNumber)
 
-fun firstLastName(flname: String) = regex.firstLastNameRegex().toRegex().matches(flname)
+fun firstLastName(name: String) = regex.firstLastNameRegex().toRegex().matches(name)
 
 fun nullBoolean(variable: Any?) = variable == null
 
-fun nullvalidation(variable: Any?, variableName: String): MutableList<String> {
+fun nullValidation(variable: Any?, variableName: String): MutableList<String> {
     val nullValidationResponse = mutableListOf<String>()
     if (nullBoolean(variable)) {
         nullValidationResponse.add("$variableName Cannot be null")
@@ -52,20 +62,17 @@ fun emptyValidation(variable: String, variableName: String): MutableList<String>
 
 fun fieldValidation(variable: JsonNode?, validationName: String): MutableList<String> {
     val errorResponseList = mutableListOf<String>()
-    errorResponseList += nullvalidation(variable, validationName)
+    errorResponseList += nullValidation(variable, validationName)
     if (errorResponseList.size != 0) {
-        println("null fail")
         return errorResponseList
     }
     errorResponseList += typeValidation(variable, validationName)
     if (errorResponseList.size != 0) {
-        println("type fail")
         return errorResponseList
     }
     val phoneNumber: String = variable!!.stringValue
     errorResponseList += emptyValidation(phoneNumber, validationName)
     if (errorResponseList.size != 0) {
-        println("empty fail")
         return errorResponseList
     }
     return errorResponseList
