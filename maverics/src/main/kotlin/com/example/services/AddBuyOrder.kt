@@ -6,8 +6,7 @@ import com.example.constants.transactions
 import com.example.validations.order.ifSufficientAmountInWallet
 
 
-fun addBuyOrder(order: Order) : MutableMap<String,Any>
-{
+fun addBuyOrder(order: Order): MutableMap<String, Any> {
     val result = HashMap<String, Any>()
 
     val username = order.userName
@@ -23,16 +22,16 @@ fun addBuyOrder(order: Order) : MutableMap<String,Any>
     transactions[order.orderId] = mutableListOf()
 
     // Locking amount for order placing
-    WalletHandler.addLockedAmountInWallet(username,(order.currentQuantity * order.price))
-    WalletHandler.discardedFreeAmountFromWallet(username,(order.currentQuantity * order.price))
+    WalletHandler.addLockedAmountInWallet(username, (order.currentQuantity * order.price))
+    WalletHandler.discardedFreeAmountFromWallet(username, (order.currentQuantity * order.price))
 
-    performBuys(order,username)
+    performBuys(order, username)
 
+    result["orderId"] = order.orderId
     result["userName"] = order.userName
     result["quantity"] = order.placedQuantity
     result["price"] = order.price
     result["type"] = order.type
-
     return result
 
 }
