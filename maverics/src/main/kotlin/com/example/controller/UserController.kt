@@ -44,15 +44,15 @@ class UserController {
             val email = body["email"]!!.stringValue
             val username = body["userName"]!!.stringValue
             val newUser = User(firstName, lastName, phoneNumber, email, username)
-            val successBody = mutableListOf<String>()
+            val response = mutableMapOf<String, String>()
 
             allUsers[username] = newUser
             inventoryData[username] = mutableListOf(Inventory(type = "PERFORMANCE"), Inventory(type = "NON_PERFORMANCE"))
             walletList[username] = Wallet()
             vestings[username] = mutableListOf()
             vestingHistory[username] = mutableListOf()
-            successBody.add("User added successfully")
-            return HttpResponse.ok(successBody)
+            response["message"] = "User $username registered successfully"
+            return HttpResponse.ok(response)
         } catch (e: Exception) {
             e.printStackTrace()
             errorResponse["error"] = (listOf("An unknown error occurred.").toMutableList())
