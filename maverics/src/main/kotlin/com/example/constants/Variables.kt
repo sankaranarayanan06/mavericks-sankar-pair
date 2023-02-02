@@ -9,8 +9,6 @@ var inventoryList: MutableList<Inventory> = mutableListOf()
 
 var inventoryData = HashMap<String, MutableList<Inventory>>()
 
-val response = mutableMapOf<String, MutableList<String>>();
-
 var orderList = mutableMapOf<Int, Order>()
 
 var transactions: MutableMap<Int, MutableList<Transaction>> = mutableMapOf()

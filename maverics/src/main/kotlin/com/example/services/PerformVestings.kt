@@ -2,22 +2,21 @@ package com.example.services
 
 import com.example.constants.*
 import com.example.model.VestingData
+import java.math.BigInteger
 import java.time.LocalDateTime
 
-fun addESOPVestings(username: String, quantity: Long, esopType: String){
+fun addESOPVestings(username: String, quantity: BigInteger, esopType: String){
 
-    println(quantity)
-
-    var previousQuantity: Long = 0
-    var totalPercentage: Long = 0
+    var previousQuantity: BigInteger = BigInteger.ZERO
+    var totalPercentage: BigInteger = BigInteger.ZERO
 
     val systemTime = LocalDateTime.now()
 
     for(i in 0 until vestingPercentages.size)
     {
-        totalPercentage += vestingPercentages[i]
+        totalPercentage += vestingPercentages[i].toBigInteger()
 
-        val expectedQuantity = (quantity * totalPercentage) / 100
+        val expectedQuantity = (quantity * totalPercentage) / BigInteger.valueOf(100)
 
         val currentDayQuantity = expectedQuantity - previousQuantity
 
@@ -35,7 +34,7 @@ fun performESOPVestings(username: String)
     {
         val vestingEntry = vestings[username]!![0]
 
-        if(vestingEntry.time.compareTo(systemTime) <= 0)
+        if(vestingEntry.time <= systemTime)
         {
             if(vestingEntry.esopType == "PERFORMANCE"){
                 inventoryData[username]!![0].free += vestingEntry.quantity

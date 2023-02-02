@@ -1,8 +1,9 @@
 package com.example.model
 
+import java.math.BigInteger
 
-class Inventory (free: Long = 0, locked: Long = 0, type: String = "PERFORMANCE")  {
-    var type: String = type;
-    var free = free;
-    var locked = locked;
-}
+class Inventory(
+    var free: BigInteger = BigInteger.ZERO,
+    var locked: BigInteger = BigInteger.ZERO,
+    var type: String = "PERFORMANCE"
+)

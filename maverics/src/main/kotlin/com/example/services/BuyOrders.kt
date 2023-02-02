@@ -6,27 +6,22 @@ import com.example.constants.transactions
 import com.example.controller.walletList
 import com.example.model.Order
 import com.example.model.Transaction
+import java.math.BigInteger
 import kotlin.math.min
 
 
 fun performBuys(currentOrder: Order, username: String) {
     val n: Int = orderList.size
     while (true) {
-        if (currentOrder.currentQuantity == 0L) break
+        if (currentOrder.currentQuantity == BigInteger.ZERO) break
 
-        var minSellerPrice: Long = 1000000000000000
-        var sellerID = -1
+        var minSellerPrice: BigInteger = BigInteger.valueOf(Long.MAX_VALUE)
+        var sellerID = Int.MIN_VALUE
 
-        // Find if seller with PEROFMANCE order fulfils the deal
+
+        // Find if seller with PERFORMANCE order fulfils the deal
         for ((orderID, orderPrev) in orderList) {
-
-            // Order should match with SELL and should not be filled
-            if ((orderPrev.esopType == "PERFORMANCE") &&
-                (orderPrev.orderId != currentOrder.orderId) &&
-                (orderPrev.status != "filled") &&
-                (currentOrder.type != orderPrev.type) &&
-                (currentOrder.price >= orderPrev.price)
-            ) {
+            if ((orderPrev.esopType == "PERFORMANCE") && (orderPrev.orderId != currentOrder.orderId) && (orderPrev.status != "filled") && (currentOrder.type != orderPrev.type) && (currentOrder.price >= orderPrev.price)) {
                 if (orderPrev.price < minSellerPrice) {
                     minSellerPrice = orderPrev.price
                     sellerID = orderID
@@ -35,50 +30,52 @@ fun performBuys(currentOrder: Order, username: String) {
         }
 
         // If not found any performance esop seller then go for normal esop seller
-        if (sellerID == -1) {
-            for (orderNumber in 0 until n) {
-                val orderPrev = orderList[orderNumber]
-
-                // Order should match with SELL and should not be filled
-                if ((orderPrev!!.orderId != currentOrder.orderId) && (orderPrev!!.status != "filled") && (currentOrder.type != orderPrev.type) && (currentOrder.price >= orderPrev.price)) {
-                    if (orderPrev!!.price < minSellerPrice) {
+        if (sellerID == Int.MIN_VALUE) {
+            for ((orderID, orderPrev) in orderList) {
+                if ((orderPrev.esopType == "NON_PERFORMANCE") && (orderPrev.orderId != currentOrder.orderId) && (orderPrev.status != "filled") && (currentOrder.type != orderPrev.type) && (currentOrder.price >= orderPrev.price)) {
+                    if (orderPrev.price < minSellerPrice) {
                         minSellerPrice = orderPrev.price
-                        sellerID = orderPrev.orderId
+                        sellerID = orderID
                     }
                 }
             }
         }
 
-        if (sellerID != -1) {
-            performESOPVestings(orderList[sellerID]!!.userName)
-            val transQuantity = min(orderList[sellerID]!!.currentQuantity, currentOrder.currentQuantity)
+        if (sellerID != Int.MIN_VALUE) {
+            // performESOPVestings(orderList[sellerID]!!.userName)
+            val transQuantity = orderList[sellerID]!!.currentQuantity.min(currentOrder.currentQuantity)
 
             orderList[sellerID]!!.currentQuantity -= transQuantity
             currentOrder.currentQuantity -= transQuantity
 
             val orderTotal = minSellerPrice * transQuantity
 
-            val platformCharge = if (orderList[sellerID]!!.esopType != "PERFORMANCE") (orderTotal * 2) / 100 else 0
+            val platformCharge =
+                if (orderList[sellerID]!!.esopType != "PERFORMANCE") (orderTotal * BigInteger.TWO) / BigInteger.valueOf(
+                    100
+                ) else BigInteger.ZERO
 
             addPlatformCharge(platformCharge)
 
             // Releasing extra amount from lock for partial matching scenario
-            walletList[username]!!.lockedAmount -= ((currentOrder.price - minSellerPrice) * transQuantity)
-            walletList[username]!!.freeAmount += ((currentOrder.price - minSellerPrice) * transQuantity)
+
+            WalletHandler.discardLockedAmountFromWallet(username,((currentOrder.price - minSellerPrice) * transQuantity))
+            WalletHandler.addFreeAmountInWallet(username,((currentOrder.price - minSellerPrice) * transQuantity))
+
 
             // Releasing lock amount worth actual transaction
-            walletList[username]!!.lockedAmount -= (transQuantity * minSellerPrice)
-            walletList[orderList[sellerID]!!.userName]!!.freeAmount += (transQuantity * minSellerPrice - platformCharge)
+            WalletHandler.discardLockedAmountFromWallet(username,transQuantity * minSellerPrice)
+            WalletHandler.addAmount(sellerID,transQuantity * minSellerPrice - platformCharge)
 
             // Reducing the esops from seller account
             if (orderList[sellerID]!!.esopType == "PERFORMANCE") {
-                inventoryData[orderList[sellerID]!!.userName]!![0].locked -= (transQuantity)
+                inventoryData[orderList[sellerID]!!.userName]!![0].locked -= transQuantity
             } else {
-                inventoryData[orderList[sellerID]!!.userName]!![1].locked -= (transQuantity)
+                inventoryData[orderList[sellerID]!!.userName]!![1].locked -= transQuantity
             }
 
             //Adding ESOP to buyers account
-            inventoryData[username]!![1].free += (transQuantity)
+            inventoryData[username]!![1].free += transQuantity
 
             // Updating buyers transactions
             if (!transactions.containsKey(currentOrder.orderId)) {
@@ -87,9 +84,7 @@ fun performBuys(currentOrder: Order, username: String) {
 
             transactions[currentOrder.orderId]!!.add(
                 Transaction(
-                    transQuantity,
-                    minSellerPrice,
-                    orderList[sellerID]!!.esopType
+                    transQuantity, minSellerPrice, orderList[sellerID]!!.esopType
                 )
             )
 
@@ -102,8 +97,8 @@ fun performBuys(currentOrder: Order, username: String) {
             currentOrder.status = "partially filled"
             orderList[sellerID]!!.status = "partially filled"
 
-            if (currentOrder.currentQuantity == 0L) currentOrder.status = "filled"
-            if (orderList[sellerID]!!.currentQuantity == 0L) orderList[sellerID]!!.status = "filled"
+            if (currentOrder.currentQuantity == BigInteger.ZERO) currentOrder.status = "filled"
+            if (orderList[sellerID]!!.currentQuantity == BigInteger.ZERO) orderList[sellerID]!!.status = "filled"
 
 
         } else {

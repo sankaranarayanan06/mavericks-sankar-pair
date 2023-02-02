@@ -1,6 +1,9 @@
 package com.example.model
 
+import java.math.BigInteger
+
 class Transaction(
-    var quantity:Long=0,
-    var price: Long =0,
-    var esopType: String)
+    var quantity: BigInteger = BigInteger.ZERO,
+    var price: BigInteger = BigInteger.ZERO,
+    var esopType: String
+)

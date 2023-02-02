@@ -10,7 +10,6 @@ import com.example.constants.allUsers
 import com.example.constants.*
 import com.example.model.*
 import com.example.validations.registerValidation
-import com.example.validations.user.UserValidation
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
@@ -40,24 +39,24 @@ class UserController {
             }
 
             val firstName = body["firstName"]!!.stringValue
-            var lastName = body["lastName"]!!.stringValue
-            var phoneNumber = body["phoneNumber"]!!.stringValue
-            var email = body["email"]!!.stringValue
-            var username = body["userName"]!!.stringValue
+            val lastName = body["lastName"]!!.stringValue
+            val phoneNumber = body["phoneNumber"]!!.stringValue
+            val email = body["email"]!!.stringValue
+            val username = body["userName"]!!.stringValue
             val newUser = User(firstName, lastName, phoneNumber, email, username)
             val successBody = mutableListOf<String>()
 
             allUsers[username] = newUser
             inventoryData[username] = mutableListOf(Inventory(type = "PERFORMANCE"), Inventory(type = "NON_PERFORMANCE"))
             walletList[username] = Wallet()
-            vestings.put(username, mutableListOf())
-            vestingHistory.put(username, mutableListOf())
+            vestings[username] = mutableListOf()
+            vestingHistory[username] = mutableListOf()
             successBody.add("User added successfully")
             return HttpResponse.ok(successBody)
         } catch (e: Exception) {
             e.printStackTrace()
             errorResponse["error"] = (listOf("An unknown error occurred.").toMutableList())
-            return HttpResponse.badRequest(errorResponse);
+            return HttpResponse.badRequest(errorResponse)
         }
     }
 }

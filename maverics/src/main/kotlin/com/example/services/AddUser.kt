@@ -11,10 +11,10 @@ import com.example.model.Wallet
 
 
 fun addUser(newUser: User){
-    val username = newUser.username
+    val username = newUser.userName
     allUsers[username] = newUser
     inventoryData[username] = mutableListOf(Inventory(type = "PERFORMANCE"), Inventory(type = "NON_PERFORMANCE"))
     walletList[username] = Wallet()
-    vestings.put(username, mutableListOf())
-    vestingHistory.put(username, mutableListOf())
+    vestings[username] = mutableListOf()
+    vestingHistory[username] = mutableListOf()
 }

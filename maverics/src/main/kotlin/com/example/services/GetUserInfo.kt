@@ -1,8 +1,6 @@
 package com.example.services
 
 import com.example.constants.allUsers
-import com.example.constants.response
-import com.example.constants.allUsers
 
 
 fun getUserInfo(username: String): MutableMap<String, Any> {

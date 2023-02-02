@@ -2,41 +2,42 @@ package com.example.controller
 
 import com.example.constants.inventoryData
 import com.example.constants.inventoryList
-import com.example.constants.response
 import com.example.model.Message
 import com.example.services.addESOPVestings
 import com.example.services.performESOPVestings
 import com.example.validations.InventoryValidation
-import com.example.validations.user.UserValidation
+import com.example.validations.isUserExists
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.*
 import io.micronaut.json.tree.JsonObject
+import java.math.BigInteger
 
 
 @Controller("/user")
 class InventoryController {
     @Post("/{username}/inventory")
     fun addEsopInInventory(@PathVariable username: String, @Body body: JsonObject): HttpResponse<*> {
-        if (UserValidation.isUserExist(username)) {
+        if (isUserExists(username)) {
             performESOPVestings(username)
 
             val inventoryValidation = InventoryValidation()
-            var quantityToAdd: Long
-            var type: String
+            val quantityToAdd: BigInteger
+            val type: String
             val inventoryError = mutableListOf<String>()
 
             try {
-                quantityToAdd = body["quantity"]?.longValue!!
+                quantityToAdd = BigInteger.valueOf(body["quantity"]?.longValue!!)
                 type = body["type"]?.stringValue!!
             } catch (e: Exception) {
+                val response = mutableMapOf<String, MutableList<String>>()
                 response["error"] = mutableListOf("Please enter both type(String) and quantity(Number)")
                 return HttpResponse.ok(response)
             }
 
-
             inventoryList = inventoryData[username]!!
             inventoryValidation.validation(inventoryError, inventoryList[0], inventoryList[1], quantityToAdd, type)
             if (inventoryError.size > 0) {
+                val response = mutableMapOf<String, MutableList<String>>()
                 response["error"] = inventoryError
                 return HttpResponse.ok(response)
             }
@@ -56,9 +57,10 @@ class InventoryController {
             return HttpResponse.ok(Message("$quantityToAdd $type ESOPs added to account"))
         } else {
 
-            val errorList = mutableListOf("User doesn't exist.")
-            response["error"] = errorList
+            val errorList = mutableListOf("User doesn't exist")
 
+            val response = mutableMapOf<String, MutableList<String>>()
+            response["error"] = errorList
             return HttpResponse.badRequest(response)
         }
     }
