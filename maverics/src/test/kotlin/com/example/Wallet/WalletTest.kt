@@ -18,7 +18,7 @@ class WalletTest {
         val user = User(
             firstName = "Anushka",
             lastName = "Joshi",
-            username = "03Anushka",
+            userName = "03Anushka",
             email = "anushka@sahaj.ai",
             phoneNumber = "9359290177"
         )

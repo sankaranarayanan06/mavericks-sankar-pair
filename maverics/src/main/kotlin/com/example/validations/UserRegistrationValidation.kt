@@ -12,6 +12,7 @@ fun isEmailValid(email: String): Boolean {
         return false
     }
     return regex.getEmailRegex().toRegex().matches(email)
+    
 }
 
 fun checkUserName(username: String) = regex.getUsernameRegex().toRegex().matches(username)
@@ -88,18 +89,15 @@ fun fieldValidation(variable: JsonNode?, validationName: String): MutableList<St
     val errorResponseList = mutableListOf<String>()
     errorResponseList += nullValidation(variable, validationName)
     if (errorResponseList.size != 0) {
-        println("null fail")
         return errorResponseList
     }
     errorResponseList += typeValidation(variable, validationName)
     if (errorResponseList.size != 0) {
-        println("type fail")
         return errorResponseList
     }
     val phoneNumber: String = variable!!.stringValue
     errorResponseList += emptyValidation(phoneNumber, validationName)
     if (errorResponseList.size != 0) {
-        println("empty fail")
         return errorResponseList
     }
     return errorResponseList

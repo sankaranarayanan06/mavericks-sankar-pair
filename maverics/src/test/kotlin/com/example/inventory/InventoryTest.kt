@@ -31,7 +31,7 @@ class InventoryTest {
         val user = User(
             firstName = "Dnyaneshwar",
             lastName = "Ware",
-            username = "dnyaneshwar",
+            userName = "dnyaneshwar",
             email = "as",
             phoneNumber = "4234234"
         )
@@ -48,7 +48,7 @@ class InventoryTest {
         val user = User(
             firstName = "Dnyaneshwar",
             lastName = "Ware",
-            username = "dnyaneshwar",
+            userName = "dnyaneshwar",
             email = "as",
             phoneNumber = "4234234"
         )
@@ -65,7 +65,7 @@ class InventoryTest {
         val user = User(
             firstName = "Dnyaneshwar",
             lastName = "Ware",
-            username = "dnyaneshwar",
+            userName = "dnyaneshwar",
             email = "as",
             phoneNumber = "4234234"
         )
@@ -82,7 +82,7 @@ class InventoryTest {
         val user = User(
             firstName = "Dnyaneshwar",
             lastName = "Ware",
-            username = "dnyaneshwar",
+            userName = "dnyaneshwar",
             email = "as",
             phoneNumber = "4234234"
         )
@@ -99,7 +99,7 @@ class InventoryTest {
         val user = User(
             firstName = "Dnyaneshwar",
             lastName = "Ware",
-            username = "dnyaneshwar",
+            userName = "dnyaneshwar",
             email = "as",
             phoneNumber = "4234234"
         )
