@@ -23,7 +23,7 @@ fun validateName(name: String) = regex.firstLastNameRegex().toRegex().matches(na
 fun nullBoolean(variable: Any?) = variable == null
 
 
-fun ifUniquePhoneNumber(phoneNumber: String): Boolean {
+fun isUniquePhoneNumber(phoneNumber: String): Boolean {
     for (user in allUsers.keys) {
         if (allUsers[user]?.phoneNumber == phoneNumber) {
             return false
@@ -32,7 +32,7 @@ fun ifUniquePhoneNumber(phoneNumber: String): Boolean {
     return true
 }
 
-fun ifUniqueEmail(email: String): Boolean {
+fun isUniqueEmail(email: String): Boolean {
     for (user in allUsers.keys) {
         if (allUsers[user]?.email == email) {
             return false
@@ -120,7 +120,7 @@ fun emailValidation(email: JsonNode?): MutableList<String> {
         return emailErrorValidationList
     }
 
-    if (!ifUniqueEmail(emailId)) {
+    if (!isUniqueEmail(emailId)) {
         emailErrorValidationList.add("Email Already exists")
         return emailErrorValidationList
     }
@@ -141,7 +141,7 @@ fun phoneNumberValidation(phoneNumber: JsonNode?): MutableList<String> {
         return phoneNumberErrorValidationList
     }
 
-    if (!ifUniquePhoneNumber(phoneNumber.stringValue)) {
+    if (!isUniquePhoneNumber(phoneNumber.stringValue)) {
         phoneNumberErrorValidationList.add("User with given phone number already exists")
     }
 
