@@ -1,4 +1,4 @@
-package com.example.controller.userController
+package com.example.controller
 
 import com.example.constants.allUsers
 import com.example.model.User
@@ -16,6 +16,7 @@ class UserControllerTest {
     @Inject
     @field:Client("/")
     lateinit var client: HttpClient
+
 
     @Test
     fun `should register valid user`() {

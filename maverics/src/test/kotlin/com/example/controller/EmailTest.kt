@@ -1,4 +1,4 @@
-package com.example.controller.userController
+package com.example.controller
 
 import com.example.validations.isEmailValid
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
