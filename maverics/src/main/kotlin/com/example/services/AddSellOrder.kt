@@ -4,9 +4,9 @@ import com.example.constants.inventoryData
 import com.example.constants.orderList
 import com.example.constants.transactions
 import com.example.model.Order
+import com.example.model.SellOrderResponse
 import com.example.validations.isValidESOPType
 import com.example.validations.order.ifSufficientQuantity
-import java.math.BigInteger
 
 
 fun addSellOrder(order: Order): MutableMap<String, Any> {
@@ -27,14 +27,10 @@ fun addSellOrder(order: Order): MutableMap<String, Any> {
         return result
     }
 
-
     orderList[order.orderId] = order
     transactions[order.orderId] = mutableListOf()
 
-    result["userName"] = order.userName
-    result["quantity"] = order.placedQuantity
-    result["price"] = order.price
-    result["type"] = order.type
+    result["orderDetails"] = SellOrderResponse(order)
 
     // Locking
     when (order.esopType) {
@@ -45,6 +41,7 @@ fun addSellOrder(order: Order): MutableMap<String, Any> {
             performSells(order, username)
             return result
         }
+
         "NON_PERFORMANCE" -> {
             inventoryData[order.userName]!![1].free -= order.currentQuantity
             inventoryData[order.userName]!![1].locked += order.currentQuantity
@@ -52,6 +49,7 @@ fun addSellOrder(order: Order): MutableMap<String, Any> {
             performSells(order, username)
             return result
         }
+
         else -> {
             val error = mutableListOf("Invalid ESOP Type")
             result["errors"] = error

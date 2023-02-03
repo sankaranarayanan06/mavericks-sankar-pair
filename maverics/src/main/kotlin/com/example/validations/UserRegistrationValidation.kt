@@ -4,6 +4,8 @@ import com.example.constants.allUsers
 import com.example.constants.regex
 import io.micronaut.json.tree.JsonNode
 
+const val USERNAME_NOT_CONTAIN = """(@#${'$'}%^*/!&|.)"""
+
 fun isEmailValid(email: String): Boolean {
     if(regex.getEmailRegex().toRegex().matches(email)){
         val splitFrom = "@"
@@ -16,8 +18,14 @@ fun isEmailValid(email: String): Boolean {
     return false
 }
 
-
-fun checkUserName(username: String) = regex.getUsernameRegex().toRegex().matches(username)
+fun checkUserName(username: String):Boolean{
+    for(char in USERNAME_NOT_CONTAIN){
+        if (char in username){
+            return true
+        }
+    }
+    return false
+}
 
 fun checkPhoneNumber(phoneNumber: String) = regex.getPhoneNumberRegex().toRegex().matches(phoneNumber)
 
