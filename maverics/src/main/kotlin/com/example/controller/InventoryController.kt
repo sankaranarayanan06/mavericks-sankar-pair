@@ -54,7 +54,7 @@ class InventoryController {
 
             inventoryData[username] = inventoryList
 
-            return HttpResponse.ok(Message("$quantityToAdd $type ESOPs added to account"))
+            return HttpResponse.ok(Message("$quantityToAdd ${if (type == "PERFORMANCE") "PERFORMANCE" else ""}ESOPs added to account"))
         } else {
 
             val errorList = mutableListOf("User doesn't exist")
