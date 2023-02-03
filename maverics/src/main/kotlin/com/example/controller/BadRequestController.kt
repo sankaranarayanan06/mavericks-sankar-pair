@@ -11,7 +11,7 @@ class BadRequestController {
     @Error(global = true)
     fun invalidJson(request: HttpRequest<*>, e: JsonParseException): Any {
         val response = mutableMapOf<String, MutableList<String>>()
-        response["errors"] = mutableListOf("Invalid JSON: Please send a request body body in proper JSON format")
+        response["errors"] = mutableListOf("Invalid JSON: Please send a request body in proper JSON format")
         return HttpResponse.badRequest(response)
     }
 
@@ -19,7 +19,7 @@ class BadRequestController {
     fun emptyBody(request: HttpRequest<*>, e: Exception): HttpResponse<*>{
         val response = mutableMapOf<String, MutableList<String>>()
         if (request.body.isEmpty) {
-            response["errors"] = mutableListOf("EMPTY BODY: Please send a request body")
+            response["errors"] = mutableListOf("Empty Body: Please send a request body")
         }
         return HttpResponse.badRequest(response)
     }
