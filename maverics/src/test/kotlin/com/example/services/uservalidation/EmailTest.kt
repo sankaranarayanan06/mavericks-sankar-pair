@@ -1,7 +1,11 @@
-package com.example.controller
+package com.example.services.uservalidation
 
+import com.example.services.createUser
 import com.example.validations.isEmailValid
+import com.example.validations.isUniqueEmail
+import com.example.validations.isUniqueUsername
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
@@ -99,5 +103,26 @@ class EmailTest {
 
         // Assertion
         assertFalse(emailValidation)
+    }
+
+    @Test
+    fun `email is not already exists in valid`() {
+        // Arrange
+        val userName = "sat"
+        val userName2 = "yam"
+        createUser("Satyam", "Baldawa", "8983517226", "email@gmail.com", userName)
+
+        val userNameValidation = isUniqueEmail(userName2)
+
+        Assertions.assertTrue(userNameValidation)
+    }
+
+    @Test
+    fun `email if already exists in invalid`() {
+        createUser("Satyam", "Baldawa", "8983517226", "email@gmail.com", "Sat")
+
+        val userNameValidation = isUniqueEmail("email@gmail.com")
+
+        assertFalse(userNameValidation)
     }
 }
