@@ -1,5 +1,6 @@
 package com.example.controller
 
+import com.example.model.ErrorResponse
 import com.fasterxml.jackson.core.JsonParseException
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
@@ -10,17 +11,19 @@ import io.micronaut.http.annotation.Error
 class BadRequestController {
     @Error(global = true)
     fun invalidJson(request: HttpRequest<*>, e: JsonParseException): Any {
-        val response = mutableMapOf<String, MutableList<String>>()
-        response["errors"] = mutableListOf("Invalid JSON: Please send a request body in proper JSON format")
-        return HttpResponse.badRequest(response)
+        return if (request.body.isEmpty) {
+            HttpResponse.badRequest(ErrorResponse(listOf("Invalid JSON: Please send a request body in proper JSON format")))
+        } else {
+            HttpResponse.badRequest(ErrorResponse(listOf<String>()))
+        }
     }
 
     @Error(global = true)
     fun emptyBody(request: HttpRequest<*>, e: Exception): HttpResponse<*>{
-        val response = mutableMapOf<String, MutableList<String>>()
-        if (request.body.isEmpty) {
-            response["errors"] = mutableListOf("Empty Body: Please send a request body")
+        return if (request.body.isEmpty) {
+            HttpResponse.badRequest(ErrorResponse(listOf("Empty Body: Send a request body")))
+        } else {
+            HttpResponse.badRequest(ErrorResponse(listOf<String>()))
         }
-        return HttpResponse.badRequest(response)
     }
 }
