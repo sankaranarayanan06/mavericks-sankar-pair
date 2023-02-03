@@ -2,9 +2,9 @@ package com.example.validations
 
 import com.example.constants.allUsers
 import com.example.constants.regex
-import com.example.model.User
 import io.micronaut.json.tree.JsonNode
-import java.util.regex.Pattern
+
+const val USERNAME_NOT_CONTAIN = """(@#${'$'}%^*/!&|.)"""
 
 fun isEmailValid(email: String): Boolean {
     if(regex.getEmailRegex().toRegex().matches(email)){
@@ -19,15 +19,13 @@ fun isEmailValid(email: String): Boolean {
 }
 
 fun checkUserName(username: String):Boolean{
-    for(char in """(@#${'$'}%^*/!&|.)"""){
+    for(char in USERNAME_NOT_CONTAIN){
         if (char in username){
             return true
         }
     }
     return false
 }
-
-//fun checkUserName(username: String) = !regex.getUsernameRegex().toRegex().containsMatchIn(username) && regex.getSpecialRegex().toRegex().containsMatchIn(username)
 
 fun checkPhoneNumber(phoneNumber: String) = regex.getPhoneNumberRegex().toRegex().matches(phoneNumber)
 
