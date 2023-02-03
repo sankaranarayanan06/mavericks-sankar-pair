@@ -10,9 +10,12 @@ import com.example.constants.allUsers
 import com.example.constants.*
 import com.example.model.*
 import com.example.validations.registerValidation
+import com.fasterxml.jackson.core.JsonParseException
+import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Error
 import io.micronaut.http.annotation.Post
 import io.micronaut.json.tree.JsonObject
 
@@ -47,7 +50,8 @@ class UserController {
             val response = mutableMapOf<String, String>()
 
             allUsers[username] = newUser
-            inventoryData[username] = mutableListOf(Inventory(type = "PERFORMANCE"), Inventory(type = "NON_PERFORMANCE"))
+            inventoryData[username] =
+                mutableListOf(Inventory(type = "PERFORMANCE"), Inventory(type = "NON_PERFORMANCE"))
             walletList[username] = Wallet()
             vestings[username] = mutableListOf()
             vestingHistory[username] = mutableListOf()
