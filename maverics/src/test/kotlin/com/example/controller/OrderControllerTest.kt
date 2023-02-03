@@ -54,12 +54,12 @@ class OrderControllerTest {
     @Test
     fun `Place a valid sell order`(objectMapper: ObjectMapper) {
         // Arrange
-        inventoryData[buyerUser.userName] =
-            mutableListOf(Inventory(BigInteger.ZERO, BigInteger.ZERO), Inventory(BigInteger.ZERO, BigInteger.ZERO))
-
         InventoryHandler.addToNonPerformanceInventory(BigInteger.valueOf(100), sellerUser.userName)
 
         val sellOrder = OrderRequest("SELL", BigInteger.TEN, BigInteger.TEN, esopType = "NON_PERFORMANCE")
+        val expectedResponse = SellOrderResponse(orderId = 1, price = BigInteger.TEN, quantity = BigInteger.TEN, status = "unfilled", type = "SELL", esopType = "NON_PERFORMANCE",)
+
+
         // Act
         val request = HttpRequest.POST(
             "/user/${buyerUser.userName}/order", objectMapper.writeValueAsString(sellOrder)
@@ -67,12 +67,10 @@ class OrderControllerTest {
 
         // Assert
         val response = client.toBlocking().retrieve(request)
-        val expectedStringValue =
-            "{\"orderId\":1,\"price\":10,\"quantity\":10,\"status\":\"unfilled\",\"type\":\"SELL\",\"esopType\":\"NON_PERFORMANCE\"}"
 
 
         assertEquals(
-            objectMapper.readValue(expectedStringValue, SellOrderResponse::class.java),
+            expectedResponse,
             objectMapper.readValue(response.toString(), SellOrderResponse::class.java)
         )
     }
@@ -80,8 +78,7 @@ class OrderControllerTest {
     @Test
     fun `Place a valid buy order`(objectMapper: ObjectMapper) {
         // Arrange
-        inventoryData[buyerUser.userName] =
-            mutableListOf(Inventory(BigInteger.ZERO, BigInteger.ZERO), Inventory(BigInteger.ZERO, BigInteger.ZERO))
+
         walletList[buyerUser.userName]!!.freeAmount = BigInteger.valueOf(200)
 
 
@@ -107,8 +104,6 @@ class OrderControllerTest {
     @Test
     fun `place a buy order with insufficient amount in user wallet`(objectMapper: ObjectMapper) {
         // Arrange
-        inventoryData[buyerUser.userName] =
-            mutableListOf(Inventory(BigInteger.ZERO, BigInteger.ZERO), Inventory(BigInteger.ZERO, BigInteger.ZERO))
         walletList[buyerUser.userName]!!.freeAmount = BigInteger.valueOf(20)
         val buyOrder = OrderRequest("BUY", BigInteger.TEN, BigInteger.TEN)
 
