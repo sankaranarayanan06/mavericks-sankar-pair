@@ -63,7 +63,7 @@ fun isUserExists(username: String): Boolean {
 fun nullValidation(variable: Any?, variableName: String): MutableList<String> {
     val nullValidationResponse = mutableListOf<String>()
     if (nullBoolean(variable)) {
-        nullValidationResponse.add("$variableName Cannot be null")
+        nullValidationResponse.add("$variableName cannot be null")
     }
     return nullValidationResponse
 }
