@@ -35,6 +35,6 @@ class UserControllerTest {
 
         assertEquals(user, allUsers["sat_yam"])
         assertEquals(1, allUsers.size)
-        assertEquals("""["User added successfully"]""", response)
+        assertEquals("""{"message":"User sat_yam registered successfully"}""", response)
     }
 }
