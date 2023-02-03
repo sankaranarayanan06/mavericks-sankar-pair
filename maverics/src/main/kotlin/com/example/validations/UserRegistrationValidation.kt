@@ -180,7 +180,7 @@ fun userNameValidation(username: JsonNode?): MutableList<String> {
 
     val userName = username!!.stringValue
     if (checkUserName(userName)) {
-        userNameErrorValidationList.add("Invalid userName")
+        userNameErrorValidationList.add("""Invalid userName. username should not contain (@#${'$'}%^*/!&|.)""")
         return userNameErrorValidationList
     }
 

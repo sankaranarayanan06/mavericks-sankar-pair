@@ -36,7 +36,6 @@ class UserNameTest {
         for (userName in userNames) {
             // Act
             val userNameValidation = checkUserName(userName)
-
             assertTrue(userNameValidation)
         }
     }
