@@ -1,14 +1,8 @@
 package com.example.controller
 
-import com.example.constants.inventoryData
-import com.example.constants.vestingHistory
-import com.example.constants.vestings
-import com.example.model.Inventory
-import com.example.model.User
-import com.example.model.Wallet
-import com.example.constants.allUsers
 import com.example.constants.*
 import com.example.model.*
+import com.example.services.createUser
 import com.example.validations.registerValidation
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Body
@@ -46,11 +40,7 @@ class UserController {
             val newUser = User(firstName, lastName, phoneNumber, email, username)
             val response = mutableMapOf<String, String>()
 
-            allUsers[username] = newUser
-            inventoryData[username] = mutableListOf(Inventory(type = "PERFORMANCE"), Inventory(type = "NON_PERFORMANCE"))
-            walletList[username] = Wallet()
-            vestings[username] = mutableListOf()
-            vestingHistory[username] = mutableListOf()
+            createUser(firstName, lastName, phoneNumber, email, username)
             response["message"] = "User $username registered successfully"
             return HttpResponse.ok(response)
         } catch (e: Exception) {
