@@ -7,7 +7,6 @@ import com.example.model.Order
 import com.example.model.SellOrderResponse
 import com.example.validations.isValidESOPType
 import com.example.validations.order.ifSufficientQuantity
-import java.math.BigInteger
 
 
 fun addSellOrder(order: Order): MutableMap<String, Any> {
@@ -28,7 +27,6 @@ fun addSellOrder(order: Order): MutableMap<String, Any> {
         return result
     }
 
-    println(order.orderId)
     orderList[order.orderId] = order
     transactions[order.orderId] = mutableListOf()
 
