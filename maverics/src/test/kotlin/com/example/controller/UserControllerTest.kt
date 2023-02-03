@@ -1,7 +1,6 @@
 package com.example.controller
 
 import com.example.constants.allUsers
-import com.example.model.BuyOrderResponse
 import com.example.model.User
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.client.HttpClient
@@ -51,6 +50,6 @@ class UserControllerTest {
         val exception:HttpClientResponseException = assertThrows {
             client.toBlocking().retrieve(request)
         }
-        assertEquals("""{"errors":["userName cannot be null"]}""""", exception.response.body())
+        assertEquals("""{"errors":["userName cannot be null"]}""", exception.response.body())
     }
 }
