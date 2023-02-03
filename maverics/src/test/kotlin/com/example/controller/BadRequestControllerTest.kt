@@ -1,6 +1,7 @@
 package com.example.controller
 
 import com.example.model.ErrorResponse
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.client.HttpClient
 import io.micronaut.http.client.annotation.Client
@@ -12,18 +13,19 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 @MicronautTest
-class BadControllerTest {
+class BadRequestControllerTest {
     @Inject
     @field:Client("/")
     lateinit var client: HttpClient
 
     @Test
-    fun `It should test empty body`() {
+    fun `It should test empty body`(mapper: ObjectMapper) {
         val request = HttpRequest.POST(
             "/user/register", ""
         )
 
-        val expectedResponse = ErrorResponse(listOf("Empty Body: Send a request body"))
+        val expectedResponse = mapper.writeValueAsString(ErrorResponse(listOf("Empty Body: Send a request body")))
+
         val x = assertThrows<HttpClientResponseException> { client.toBlocking().retrieve(request) }
         assertEquals(expectedResponse, x.response.body())
 
@@ -31,12 +33,13 @@ class BadControllerTest {
 
 
     @Test
-    fun `It should test invalid JSON`() {
+    fun `It should test invalid JSON`(mapper: ObjectMapper) {
         val request = HttpRequest.POST(
             "/user/register", "{"
         )
 
-        val expectedResponse = ErrorResponse(listOf("Empty Body: Send a request body")).toString()
+        val expectedResponse =
+            mapper.writeValueAsString(ErrorResponse(listOf("Invalid JSON: Please send a request body in proper JSON format")))
         val x = assertThrows<HttpClientResponseException> { client.toBlocking().retrieve(request) }
         assertEquals(expectedResponse, x.response.body())
 
