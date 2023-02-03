@@ -26,8 +26,8 @@ class BadRequestControllerTest {
 
         val expectedResponse = mapper.writeValueAsString(ErrorResponse(listOf("Empty Body: Send a request body")))
 
-        val x = assertThrows<HttpClientResponseException> { client.toBlocking().retrieve(request) }
-        assertEquals(expectedResponse, x.response.body())
+        val exception = assertThrows<HttpClientResponseException> { client.toBlocking().retrieve(request) }
+        assertEquals(expectedResponse, exception.response.body())
 
     }
 
@@ -40,8 +40,8 @@ class BadRequestControllerTest {
 
         val expectedResponse =
             mapper.writeValueAsString(ErrorResponse(listOf("Invalid JSON: Please send a request body in proper JSON format")))
-        val x = assertThrows<HttpClientResponseException> { client.toBlocking().retrieve(request) }
-        assertEquals(expectedResponse, x.response.body())
+        val exception = assertThrows<HttpClientResponseException> { client.toBlocking().retrieve(request) }
+        assertEquals(expectedResponse, exception.response.body())
 
     }
 }
