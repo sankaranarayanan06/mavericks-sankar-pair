@@ -10,8 +10,8 @@ class Order(
     var type: String = "",
     var esopType: String = "NON_PERFORMANCE",
     var userName: String = "",
-) {
     val orderId: Int = orderIdCounter++
+) {
 
     companion object {
         var orderIdCounter = 1

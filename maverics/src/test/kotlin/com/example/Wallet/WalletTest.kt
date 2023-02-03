@@ -15,6 +15,7 @@ import java.math.BigInteger
 class WalletTest {
     @BeforeEach
     fun createdUser() {
+        Order.orderIdCounter = 1
         val user = User(
             firstName = "Anushka",
             lastName = "Joshi",

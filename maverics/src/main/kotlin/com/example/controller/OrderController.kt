@@ -51,18 +51,16 @@ class OrderController {
 
                 val response = addBuyOrder(currentOrder)
 
-                if (response.containsKey("errors")) {
+                if (response is HashMap<*, *> && response.containsKey("errors")) {
                     return HttpResponse.badRequest(response["errors"])
                 }
 
-
-                return HttpResponse.ok(response)
+                return HttpResponse.ok(response["orderDetails"])
 
             } else if (currentOrder.type == "SELL") {
 
                 try {
                     currentOrder.esopType = body["esopType"]!!.stringValue
-
                 } catch (e: Exception) {
                     errorList.add("Enter ESOP type")
                     return generateErrorResponse(errorList)
@@ -74,9 +72,7 @@ class OrderController {
                     return HttpResponse.badRequest(response["errors"])
                 }
 
-
-
-                return HttpResponse.ok(response)
+                return HttpResponse.ok(response["orderDetails"])
             }
 
             val response = mutableMapOf<String, MutableList<String>>()
