@@ -27,14 +27,14 @@ class OrderControllerTest {
     lateinit var client: HttpClient
 
 
-    val buyer = User(
+    private val buyerUser = User(
         firstName = "Dnyaneshwar",
         lastName = "Ware",
         userName = "dnyaneshwar",
         email = "as",
         phoneNumber = "4234234"
     )
-    val seller = User(
+    private val sellerUser = User(
         firstName = "Dnyaneshwar",
         lastName = "Ware",
         userName = "dnyaneshwar",
@@ -44,53 +44,53 @@ class OrderControllerTest {
 
     @BeforeEach
     fun clearData() {
+        Order.orderIdCounter = 1
         allUsers.clear()
         orderList.clear()
-
-        addUser(buyer)
-        addUser(seller)
+        addUser(buyerUser)
+        addUser(sellerUser)
     }
 
     @Test
     fun `Place a valid sell order`(objectMapper: ObjectMapper) {
         // Arrange
-        inventoryData[buyer.userName] =
+        inventoryData[buyerUser.userName] =
             mutableListOf(Inventory(BigInteger.ZERO, BigInteger.ZERO), Inventory(BigInteger.ZERO, BigInteger.ZERO))
 
-        InventoryHandler.addToNonPerformanceInventory(BigInteger.valueOf(100), seller.userName)
+        InventoryHandler.addToNonPerformanceInventory(BigInteger.valueOf(100), sellerUser.userName)
 
         val sellOrder = OrderRequest("SELL", BigInteger.TEN, BigInteger.TEN, esopType = "NON_PERFORMANCE")
-        val expected = Order(price = sellOrder.price, type = sellOrder.type, orderId = 1, placedQuantity = BigInteger.TEN, currentQuantity = BigInteger.TEN)
         // Act
         val request = HttpRequest.POST(
-            "/user/${buyer.userName}/order", objectMapper.writeValueAsString(sellOrder)
+            "/user/${buyerUser.userName}/order", objectMapper.writeValueAsString(sellOrder)
         )
 
         // Assert
         val response = client.toBlocking().retrieve(request)
-       // "{\"quantity\":10,\"orderId\":1,\"price\":10,\"userName\":\"dnyaneshwar\",\"type\":\"BUY\"}"
+        val expectedStringValue =
+            "{\"orderId\":1,\"price\":10,\"quantity\":10,\"status\":\"unfilled\",\"type\":\"SELL\",\"esopType\":\"NON_PERFORMANCE\"}"
 
 
         assertEquals(
-            objectMapper.writeValueAsString(expected),
-            response
+            objectMapper.readValue(expectedStringValue, SellOrderResponse::class.java),
+            objectMapper.readValue(response.toString(), SellOrderResponse::class.java)
         )
     }
 
     @Test
     fun `Place a valid buy order`(objectMapper: ObjectMapper) {
         // Arrange
-        inventoryData[buyer.userName] =
+        inventoryData[buyerUser.userName] =
             mutableListOf(Inventory(BigInteger.ZERO, BigInteger.ZERO), Inventory(BigInteger.ZERO, BigInteger.ZERO))
-        walletList[buyer.userName]!!.freeAmount = BigInteger.valueOf(200)
+        walletList[buyerUser.userName]!!.freeAmount = BigInteger.valueOf(200)
 
 
         val buyOrder = OrderRequest("BUY", BigInteger.TEN, BigInteger.TEN)
 
-        val buyOrderResponse = BuyOrderResponse(BigInteger.TEN,BigInteger.TEN,"unfilled","BUY",1)
+        val buyOrderResponse = BuyOrderResponse(BigInteger.TEN, BigInteger.TEN, "unfilled", "BUY", 1)
         // Act
         val request = HttpRequest.POST(
-            "/user/${buyer.userName}/order", objectMapper.writeValueAsString(buyOrder)
+            "/user/${buyerUser.userName}/order", objectMapper.writeValueAsString(buyOrder)
         )
 
         // Assert
@@ -98,7 +98,7 @@ class OrderControllerTest {
 
         assertEquals(
             buyOrderResponse,
-            objectMapper.readValue(response,BuyOrderResponse::class.java)
+            objectMapper.readValue(response, BuyOrderResponse::class.java)
         )
 
 
@@ -107,14 +107,14 @@ class OrderControllerTest {
     @Test
     fun `place a buy order with insufficient amount in user wallet`(objectMapper: ObjectMapper) {
         // Arrange
-        inventoryData[buyer.userName] =
+        inventoryData[buyerUser.userName] =
             mutableListOf(Inventory(BigInteger.ZERO, BigInteger.ZERO), Inventory(BigInteger.ZERO, BigInteger.ZERO))
-        walletList[buyer.userName]!!.freeAmount = BigInteger.valueOf(20)
+        walletList[buyerUser.userName]!!.freeAmount = BigInteger.valueOf(20)
         val buyOrder = OrderRequest("BUY", BigInteger.TEN, BigInteger.TEN)
 
         // Act
         val request = HttpRequest.POST(
-            "/user/${buyer.userName}/order", objectMapper.writeValueAsString(buyOrder)
+            "/user/${buyerUser.userName}/order", objectMapper.writeValueAsString(buyOrder)
         )
 
         // Assert
