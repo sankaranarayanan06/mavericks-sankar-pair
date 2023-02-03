@@ -12,7 +12,7 @@ class BadRequestController {
     @Error(global = true)
     fun invalidJson(request: HttpRequest<*>, e: JsonParseException): Any {
         return if (request.body.isEmpty) {
-            HttpResponse.badRequest(ErrorResponse(listOf("Invalid JSON: Send a request body in proper JSON format")))
+            HttpResponse.badRequest(ErrorResponse(listOf("Invalid JSON: Send a request body in valid JSON format")))
         } else {
             HttpResponse.badRequest(ErrorResponse(listOf<String>()))
         }
