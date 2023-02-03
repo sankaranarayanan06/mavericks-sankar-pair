@@ -1,7 +1,6 @@
 package com.example.controller
 
 import com.example.constants.allUsers
-import com.example.constants.inventoryData
 import com.example.constants.orderList
 import com.example.model.*
 import com.example.services.InventoryHandler
@@ -57,7 +56,7 @@ class OrderControllerTest {
         InventoryHandler.addToNonPerformanceInventory(BigInteger.valueOf(100), sellerUser.userName)
 
         val sellOrder = OrderRequest("SELL", BigInteger.TEN, BigInteger.TEN, esopType = "NON_PERFORMANCE")
-        val expectedResponse = SellOrderResponse(orderId = 1, price = BigInteger.TEN, quantity = BigInteger.TEN, status = "unfilled", type = "SELL", esopType = "NON_PERFORMANCE",)
+        val expectedResponse = SellOrderResponse(orderId = 1, price = BigInteger.TEN, quantity = BigInteger.TEN, status = "unfilled", type = "SELL", esopType = "NON_PERFORMANCE")
 
 
         // Act
@@ -78,21 +77,17 @@ class OrderControllerTest {
     @Test
     fun `Place a valid buy order`(objectMapper: ObjectMapper) {
         // Arrange
-
         walletList[buyerUser.userName]!!.freeAmount = BigInteger.valueOf(200)
-
-
         val buyOrder = OrderRequest("BUY", BigInteger.TEN, BigInteger.TEN)
-
         val buyOrderResponse = BuyOrderResponse(BigInteger.TEN, BigInteger.TEN, "unfilled", "BUY", 1)
+
         // Act
         val request = HttpRequest.POST(
             "/user/${buyerUser.userName}/order", objectMapper.writeValueAsString(buyOrder)
         )
-
-        // Assert
         val response = client.toBlocking().retrieve(request)
 
+        // Assert
         assertEquals(
             buyOrderResponse,
             objectMapper.readValue(response, BuyOrderResponse::class.java)
