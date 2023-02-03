@@ -5,7 +5,4 @@ import java.math.BigInteger
 import java.time.LocalDateTime
 
 
-class VestingData(var quantity: BigInteger, var time: LocalDateTime, var esopType: String) {
-    var timeValue = time.toString()
-
-}
+class VestingData(var quantity: BigInteger, var time: LocalDateTime, var esopType: String)
