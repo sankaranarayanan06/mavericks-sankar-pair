@@ -51,6 +51,6 @@ class UserControllerTest {
         val exception:HttpClientResponseException = assertThrows {
             client.toBlocking().retrieve(request)
         }
-        assertEquals("""{"errors":["userName Cannot be null"]}""", exception.response.body())
+        assertEquals("""{"errors":["userName cannot be null"]}""""", exception.response.body())
     }
 }
