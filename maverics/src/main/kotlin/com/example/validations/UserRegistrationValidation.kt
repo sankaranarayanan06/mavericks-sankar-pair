@@ -129,7 +129,7 @@ fun emailValidation(email: JsonNode?): MutableList<String> {
     }
 
     if (!isUniqueEmail(emailId)) {
-        emailErrorValidationList.add("Email Already exists")
+        emailErrorValidationList.add("Email already exists")
         return emailErrorValidationList
     }
     return emailErrorValidationList
@@ -180,7 +180,7 @@ fun userNameValidation(username: JsonNode?): MutableList<String> {
 
     val userName = username!!.stringValue
     if (checkUserName(userName)) {
-        userNameErrorValidationList.add("Invalid userName")
+        userNameErrorValidationList.add("""Invalid userName. username should not contain (, @, # , ${'$'}, %, ^, *, /, !, &, |, .)""")
         return userNameErrorValidationList
     }
 
