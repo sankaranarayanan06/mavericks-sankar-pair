@@ -3,10 +3,11 @@ package com.example.services
 import com.example.model.Order
 import com.example.constants.orderList
 import com.example.constants.transactions
+import com.example.model.BuyOrderResponse
 import com.example.validations.order.ifSufficientAmountInWallet
 
 
-fun addBuyOrder(order: Order): MutableMap<String, Any> {
+fun addBuyOrder(order: Order): MutableMap<String,Any> {
     val result = HashMap<String, Any>()
 
     val username = order.userName
@@ -27,11 +28,7 @@ fun addBuyOrder(order: Order): MutableMap<String, Any> {
 
     performBuys(order, username)
 
-    result["orderId"] = order.orderId
-    result["userName"] = order.userName
-    result["quantity"] = order.placedQuantity
-    result["price"] = order.price
-    result["type"] = order.type
-    return result
+    result["orderDetails"] = BuyOrderResponse(order)
 
+    return result
 }
