@@ -4,6 +4,7 @@ import com.example.constants.Limits
 import com.example.constants.inventoryData
 import com.example.controller.walletList
 import com.example.model.Inventory
+import com.example.model.Order
 import java.math.BigInteger
 
 
@@ -55,3 +56,32 @@ fun orderoverflowValidation(
         orderError.add("Cant create order. Inventory will overflow")
     }
 }
+
+fun validateOrder(
+    currentOrder: Order,
+    username: String
+): MutableList<String> {
+    val errorList = mutableListOf<String>()
+    orderValidation(
+        errorList,
+        currentOrder.placedQuantity,
+        currentOrder.type,
+        currentOrder.price
+    )
+
+    orderoverflowValidation(
+        errorList,
+        username,
+        currentOrder.placedQuantity,
+        currentOrder.price,
+        currentOrder.type
+    )
+
+    if(currentOrder.type == "BUY"){
+        if (!ifSufficientAmountInWallet(username, currentOrder.placedQuantity * currentOrder.price)) {
+            errorList.add("Insufficient amount in wallet")
+        }
+    }
+    return errorList
+}
+
