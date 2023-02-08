@@ -3,16 +3,15 @@ package com.example.services
 import com.example.constants.inventoryData
 import com.example.constants.orderList
 import com.example.constants.transactions
+import com.example.dto.OrderDTO
 import com.example.model.Order
 import com.example.model.OrderResponse
 
 class OrderService {
 
-    fun placeBuyOrder(order: Order): MutableMap<String, OrderResponse> {
-        val result = mutableMapOf<String, OrderResponse>()
-
-        val username = order.userName
-        val orderAmount = order.price * order.currentQuantity
+    fun placeBuyOrder(body: OrderDTO,username:String): OrderResponse {
+        val order = Order(body.price,body.quantity,body.type,username)
+        val orderAmount = order.price * order.placedQuantity
 
         orderList[order.orderId] = order
         transactions[order.orderId] = mutableListOf()
@@ -23,37 +22,35 @@ class OrderService {
 
         performBuys(order, username)
 
-        result["orderDetails"] = OrderResponse(order)
-        print(result)
-        return result
+        return OrderResponse(order)
     }
 
-    fun placeSellOrder(order: Order): MutableMap<String, OrderResponse> {
-        val username = order.userName
-        val result = mutableMapOf<String, OrderResponse>()
+    fun placeSellOrder(body: OrderDTO,username:String): OrderResponse {
+        val order = Order(body.price,body.quantity,body.type,username)
+        if (body.esopType == "PERFORMANCE") {
+            order.esopType = "PERFORMANCE"
+        }
 
         mutableListOf<String>()
         orderList[order.orderId] = order
         transactions[order.orderId] = mutableListOf()
 
-        result["orderDetails"] = OrderResponse(order)
-
         // Locking
         when (order.esopType) {
             "PERFORMANCE" -> {
-                inventoryData[order.userName]!![0].free -= order.currentQuantity
-                inventoryData[order.userName]!![0].locked += order.currentQuantity
+                inventoryData[order.userName]!![0].free -= order.placedQuantity
+                inventoryData[order.userName]!![0].locked += order.placedQuantity
 
                 performSells(order, username)
             }
 
             "NON_PERFORMANCE" -> {
-                inventoryData[order.userName]!![1].free -= order.currentQuantity
-                inventoryData[order.userName]!![1].locked += order.currentQuantity
+                inventoryData[order.userName]!![1].free -= order.placedQuantity
+                inventoryData[order.userName]!![1].locked += order.placedQuantity
 
                 performSells(order, username)
             }
         }
-        return result
+        return OrderResponse(order)
     }
 }
