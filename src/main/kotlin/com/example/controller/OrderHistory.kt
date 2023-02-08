@@ -3,6 +3,7 @@ package com.example.controller
 import com.example.constants.orderList
 import com.example.constants.transactions
 import com.example.model.BuyOrderHistory
+import com.example.model.ErrorResponse
 import com.example.model.SellOrderHistory
 import com.example.model.Transaction
 import com.example.services.generateErrorResponse
@@ -62,9 +63,7 @@ class OrderHistory() {
             return HttpResponse.ok(listOfOrders)
         }
 
-        val errorList = mutableListOf("User doesn't exist.")
-
-        return generateErrorResponse(errorList)
+        return HttpResponse.badRequest(ErrorResponse(listOf("User doesn't exist.")))
 
     }
 }
