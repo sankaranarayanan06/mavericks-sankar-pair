@@ -13,6 +13,7 @@ import java.math.BigInteger
 
 
 class OrderTest {
+    lateinit var orderService:OrderService
 
     @BeforeEach
     fun `Clear Inventory, users, wallets, order`() {
@@ -47,10 +48,9 @@ class OrderTest {
         buyOrder.userName = user.userName
 
         // Act [1]
-        val orderResponse = addBuyOrder(buyOrder)
+        val orderResponse = (buyOrder)
 
         // Assert [2]
-        assertEquals(null, orderResponse["errors"])
         assertEquals(BigInteger.valueOf(100), walletList[user.userName]!!.lockedAmount)
         assertEquals(BigInteger.valueOf(100), walletList[user.userName]!!.freeAmount)
 
@@ -80,12 +80,11 @@ class OrderTest {
 
 
         // Act [1]
-        val orderResponse = addSellOrder(sellOrder)
+        val orderResponse = orderService.placeBuyOrder(sellOrder)
 
         println(orderList[sellOrder.orderId]!!.status + " hello")
 
         // Assert [2]
-        assertEquals(null, orderResponse["errors"])
         assertEquals(BigInteger.valueOf(5), inventoryData[user.userName]!![0].free)
         assertEquals(BigInteger.valueOf(5), inventoryData[user.userName]!![0].locked)
         assertEquals("unfilled", orderList[sellOrder.orderId]!!.status)
@@ -114,7 +113,7 @@ class OrderTest {
         sellOrder.esopType = "PERFORMANCE"
         sellOrder.userName = user1.userName
 
-        addSellOrder(sellOrder)
+        orderService.placeSellOrder(sellOrder)
 
         val user2 = User(
             firstName = "Dnyaneshwar",

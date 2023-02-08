@@ -3,8 +3,8 @@ package com.example.Wallet
 import com.example.constants.Limits
 import com.example.model.Order
 import com.example.model.User
+import com.example.services.OrderService
 import com.example.services.WalletHandler
-import com.example.services.addBuyOrder
 import com.example.services.addUser
 import com.example.validations.WalletValidation
 import org.junit.jupiter.api.Assertions
@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test
 import java.math.BigInteger
 
 class WalletTest {
+    lateinit var orderService: OrderService
     @BeforeEach
     fun createdUser() {
         Order.orderIdCounter = 1
@@ -40,7 +41,7 @@ class WalletTest {
 
         WalletHandler.addFreeAmountInWallet(buyerName, BigInteger.valueOf(90))
 
-        val orderResponse = addBuyOrder(buyOrder)
+        val orderResponse = orderService.(buyOrder)
 
         Assertions.assertEquals("[Insufficient amount in wallet]", orderResponse["errors"].toString())
 
