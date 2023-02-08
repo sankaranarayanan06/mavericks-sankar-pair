@@ -24,14 +24,14 @@ fun ifSufficientQuantity(username: String, quantity: BigInteger, orderType: Stri
 }
 
 
-fun orderValidation(orderError: MutableList<String>, quantity: Long, type: String, price: Long) {
-    if (BigInteger.valueOf(quantity) !in BigInteger.ONE..Limits.MAX_ORDER_QUANTITY) {
+fun orderValidation(orderError: MutableList<String>, quantity: BigInteger, type: String, price: BigInteger) {
+    if (quantity !in BigInteger.ONE..Limits.MAX_ORDER_QUANTITY) {
         orderError.add("Quantity out of Range. Max: ${Limits.MAX_ORDER_QUANTITY}, Min: 1")
     }
-    if (BigInteger.valueOf(price) !in BigInteger.ONE..Limits.MAX_ORDER_PRICE) {
+    if (price !in BigInteger.ONE..Limits.MAX_ORDER_PRICE) {
         orderError.add("Price out of Range. Max: ${Limits.MAX_ORDER_PRICE}, Min: 1")
     }
-    if (BigInteger.valueOf(quantity * price) !in BigInteger.ONE..Limits.MAX_ORDER_PRICE) {
+    if (quantity * price !in BigInteger.ONE..Limits.MAX_ORDER_PRICE) {
         orderError.add("Total Price [Quantity * Price] out of Range. Max: ${Limits.MAX_ORDER_PRICE}, Min: 1")
     }
     if (type != "SELL" && type != "BUY") {
