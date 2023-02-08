@@ -2,18 +2,16 @@ package com.example.model
 
 import java.math.BigInteger
 
-data class BuyOrderResponse(
-    var price: BigInteger,
+data class OrderResponse(
+    val orderId: Int,
     var quantity: BigInteger,
-    var status: String,
     var type: String,
-    val orderId: Int
+    var price: BigInteger
 ) {
     constructor(order: Order) : this(
-        price = order.price,
+        orderId = order.orderId,
         quantity = order.placedQuantity,
-        status = order.status,
         type = order.type,
-        orderId = order.orderId
+        price = order.price
     )
 }
