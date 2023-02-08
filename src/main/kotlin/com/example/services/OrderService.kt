@@ -3,13 +3,13 @@ package com.example.services
 import com.example.constants.inventoryData
 import com.example.constants.orderList
 import com.example.constants.transactions
-import com.example.model.BuyOrderResponse
 import com.example.model.Order
-import com.example.model.SellOrderResponse
+import com.example.model.OrderResponse
 
 class OrderService {
-    fun placeBuyOrder(order: Order): MutableMap<String, BuyOrderResponse> {
-        val result = mutableMapOf<String, BuyOrderResponse>()
+
+    fun placeBuyOrder(order: Order): MutableMap<String, OrderResponse> {
+        val result = mutableMapOf<String, OrderResponse>()
 
         val username = order.userName
         val orderAmount = order.price * order.currentQuantity
@@ -23,23 +23,20 @@ class OrderService {
 
         performBuys(order, username)
 
-        result["orderDetails"] = BuyOrderResponse(order)
+        result["orderDetails"] = OrderResponse(order)
         print(result)
         return result
-
     }
-    fun placeSellOrder(order: Order): MutableMap<String,SellOrderResponse> {
+
+    fun placeSellOrder(order: Order): MutableMap<String, OrderResponse> {
         val username = order.userName
-        val result = mutableMapOf<String, SellOrderResponse>()
+        val result = mutableMapOf<String, OrderResponse>()
 
         mutableListOf<String>()
-
-
-
         orderList[order.orderId] = order
         transactions[order.orderId] = mutableListOf()
 
-        result["orderDetails"] = SellOrderResponse(order)
+        result["orderDetails"] = OrderResponse(order)
 
         // Locking
         when (order.esopType) {
@@ -55,10 +52,7 @@ class OrderService {
                 inventoryData[order.userName]!![1].locked += order.currentQuantity
 
                 performSells(order, username)
-
             }
-
-
         }
         return result
     }
