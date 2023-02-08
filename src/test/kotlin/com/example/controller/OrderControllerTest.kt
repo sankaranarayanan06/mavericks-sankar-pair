@@ -79,7 +79,7 @@ class OrderControllerTest {
         // Arrange
         walletList[buyerUser.userName]!!.freeAmount = BigInteger.valueOf(200)
         val buyOrder = OrderRequest("BUY", BigInteger.TEN, BigInteger.TEN)
-        val buyOrderResponse = BuyOrderResponse(BigInteger.TEN, BigInteger.TEN, "unfilled", "BUY", 1)
+        val buyOrderResponse = OrderResponse(1,BigInteger.TEN, "BUY", BigInteger.TEN)
 
         // Act
         val request = HttpRequest.POST(
@@ -90,7 +90,7 @@ class OrderControllerTest {
         // Assert
         assertEquals(
             buyOrderResponse,
-            objectMapper.readValue(response, BuyOrderResponse::class.java)
+            objectMapper.readValue(response, OrderResponse::class.java)
         )
 
 
