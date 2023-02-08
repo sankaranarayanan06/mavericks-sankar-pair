@@ -6,11 +6,11 @@ class Order(
     var price: BigInteger = BigInteger.ZERO,
     var placedQuantity: BigInteger = BigInteger.ZERO,
     var type: String = "",
-    var userName: String = ""
+    var userName: String = "",
+    var esopType: String = "NON_PERFORMANCE"
 ) {
     var currentQuantity: BigInteger = BigInteger.ZERO
     var status: String = "unfilled"
-    var esopType = if(type == "SELL") "NON_PERFORMANCE" else ""
     val orderId: Int = orderIdCounter++
 
     companion object {
