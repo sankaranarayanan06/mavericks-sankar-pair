@@ -16,4 +16,19 @@ class Order(
     companion object {
         var orderIdCounter = 1
     }
+
+    fun updateStatus(){
+        if (this.currentQuantity == BigInteger.ZERO){
+            status = "filled"
+        }else{
+            status = "partially filled"
+        }
+    }
+
+    fun getMinimumQuantity(seller: Order): BigInteger {
+        if(currentQuantity < seller.currentQuantity){
+            return currentQuantity
+        }
+        return seller.currentQuantity
+    }
 }

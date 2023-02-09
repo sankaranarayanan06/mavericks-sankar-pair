@@ -9,75 +9,73 @@ import com.example.model.Transaction
 import java.math.BigInteger
 
 class PerformOrder {
-    fun performSells(currentOrder: Order, sellerUser: String) {
+    fun performSells(seller: Order, sellerUser: String) {
         while (true) {
-            if (currentOrder.currentQuantity == BigInteger.ZERO) break
+            if (seller.currentQuantity == BigInteger.ZERO) break
             var maxBuyerPrice: BigInteger = BigInteger.valueOf(Long.MIN_VALUE)
             var buyerOrderId = Int.MIN_VALUE
-            for ((_, orderPrev) in orderList) {
-                if ((orderPrev.orderId != currentOrder.orderId) && (orderPrev.status != "filled") && (currentOrder.type != orderPrev.type) && (currentOrder.price <= orderPrev.price)) {
-                    if (orderPrev.price > maxBuyerPrice) {
-                        maxBuyerPrice = orderPrev.price
-                        buyerOrderId = orderPrev.orderId
+            for ((_, buyOrder) in orderList) {
+                if ((buyOrder.orderId != seller.orderId) && (buyOrder.status != "filled") && (seller.type != buyOrder.type) && (seller.price <= buyOrder.price)) {
+                    if (buyOrder.price > maxBuyerPrice) {
+                        maxBuyerPrice = buyOrder.price
+                        buyerOrderId = buyOrder.orderId
                     }
                 }
             }
             if (buyerOrderId != Int.MIN_VALUE) {
-                println(orderList[buyerOrderId]!!.orderId.toString() + " " + orderList[buyerOrderId]!!.currentQuantity)
+                val buyer = orderList[buyerOrderId]!!
 
-                val transQuantity: BigInteger = orderList[buyerOrderId]!!.currentQuantity.min(currentOrder.currentQuantity)
-                orderList[buyerOrderId]!!.currentQuantity -= transQuantity
-                currentOrder.currentQuantity -= transQuantity
+                val orderExecutionQuantity: BigInteger = buyer.getMinimumQuantity(seller)
+
+                buyer.currentQuantity -= orderExecutionQuantity
+                seller.currentQuantity -= orderExecutionQuantity
 
                 // Return amount for high buy low sell scenario
-                val returnAmount: BigInteger = ((maxBuyerPrice - currentOrder.price) * transQuantity)
-                walletList[orderList[buyerOrderId]!!.userName]!!.lockedAmount -= returnAmount
-                walletList[orderList[buyerOrderId]!!.userName]!!.freeAmount += returnAmount
+                val returnAmount: BigInteger = ((maxBuyerPrice - seller.price) * orderExecutionQuantity)
+                walletList[buyer.userName]!!.lockedAmount -= returnAmount
+                walletList[buyer.userName]!!.freeAmount += returnAmount
 
                 // Get seller amount added to seller's account
                 // Reduce the locked amount from buyer account
                 // Add ESOPs to buyer account
-                val orderTotal = transQuantity * currentOrder.price
+                val orderTotal = orderExecutionQuantity * seller.price
                 val platformCharge =
-                    if (orderList[currentOrder.orderId]!!.esopType != "PERFORMANCE") (orderTotal * BigInteger.TWO) / BigInteger.valueOf(
+                    if (orderList[seller.orderId]!!.esopType != "PERFORMANCE") (orderTotal * BigInteger.TWO) / BigInteger.valueOf(
                         100
                     ) else BigInteger.ZERO
-
                 addPlatformCharge(platformCharge)
 
-                walletList[sellerUser]!!.freeAmount += (transQuantity * currentOrder.price - platformCharge)
-                walletList[orderList[buyerOrderId]!!.userName]!!.lockedAmount -= (transQuantity * currentOrder.price)
+                walletList[sellerUser]!!.freeAmount += (orderExecutionQuantity * seller.price - platformCharge)
+                walletList[buyer.userName]!!.lockedAmount -= (orderExecutionQuantity * seller.price)
 
 
-                inventoryData[orderList[buyerOrderId]!!.userName]!![1].free += transQuantity
-                if (currentOrder.esopType == "PERFORMANCE")
-                    inventoryData[sellerUser]!![0].locked -= transQuantity
+                inventoryData[buyer.userName]!![1].free += orderExecutionQuantity
+                if (seller.esopType == "PERFORMANCE")
+                    inventoryData[sellerUser]!![0].locked -= orderExecutionQuantity
                 else
-                    inventoryData[sellerUser]!![1].locked -= transQuantity
+                    inventoryData[sellerUser]!![1].locked -= orderExecutionQuantity
 
-                if (!transactions.containsKey(currentOrder.orderId)) {
-                    transactions[currentOrder.orderId] = mutableListOf()
+                if (!transactions.containsKey(seller.orderId)) {
+                    transactions[seller.orderId] = mutableListOf()
                 }
 
-                transactions[currentOrder.orderId]!!
-                    .add(Transaction(transQuantity, currentOrder.price, orderList[currentOrder.orderId]!!.esopType))
+                transactions[seller.orderId]!!
+                    .add(Transaction(orderExecutionQuantity, seller.price, orderList[seller.orderId]!!.esopType))
 
-                if (!transactions.containsKey(orderList[buyerOrderId]!!.orderId)) {
-                    transactions[orderList[buyerOrderId]!!.orderId] = mutableListOf()
+                if (!transactions.containsKey(buyer.orderId)) {
+                    transactions[buyer.orderId] = mutableListOf()
                 }
 
                 transactions[buyerOrderId]!!
-                    .add(Transaction(transQuantity, currentOrder.price, orderList[currentOrder.orderId]!!.esopType))
+                    .add(Transaction(orderExecutionQuantity, seller.price, orderList[seller.orderId]!!.esopType))
 
-                currentOrder.status = "partially filled"
-                orderList[buyerOrderId]!!.status = "partially filled"
+                seller.updateStatus()
+                orderList[buyerOrderId]?.updateStatus()
 
+            } else{
+                break
+            }
 
-                if (currentOrder.currentQuantity == BigInteger.ZERO) currentOrder.status = "filled"
-                if (orderList[buyerOrderId]!!.currentQuantity == BigInteger.ZERO) orderList[buyerOrderId]!!.status =
-                    "filled"
-
-            } else break
         }
     }
 
@@ -110,7 +108,6 @@ class PerformOrder {
 
                 }
             }
-
             if (sellerID != Int.MIN_VALUE) {
                 // performESOPVestings(orderList[sellerID]!!.userName)
                 val transQuantity = orderList[sellerID]!!.currentQuantity.min(currentOrder.currentQuantity)
@@ -133,12 +130,10 @@ class PerformOrder {
                 updateTransactionDetails(currentOrder.orderId,transQuantity,minSellerPrice)
                 updateTransactionDetails(sellerID,transQuantity,minSellerPrice)
 
-                currentOrder.status = "partially filled"
-                orderList[sellerID]!!.status = "partially filled"
-
-                if (currentOrder.currentQuantity == BigInteger.ZERO) currentOrder.status = "filled"
-                if (orderList[sellerID]!!.currentQuantity == BigInteger.ZERO) orderList[sellerID]!!.status = "filled"
-
+                //Update Status of the order
+                val seller = orderList[sellerID]
+                seller?.updateStatus()
+                currentOrder.updateStatus()
 
             } else {
                 break
