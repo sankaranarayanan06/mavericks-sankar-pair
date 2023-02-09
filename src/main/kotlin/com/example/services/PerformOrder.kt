@@ -11,17 +11,20 @@ import java.math.BigInteger
 class PerformOrder {
     fun performSells(seller: Order, sellerUser: String) {
         while (true) {
-            if (seller.currentQuantity == BigInteger.ZERO) break
+            if (seller.currentQuantity == BigInteger.ZERO){
+                break
+            }
+            
             var maxBuyerPrice: BigInteger = BigInteger.valueOf(Long.MIN_VALUE)
             var buyerOrderId = Int.MIN_VALUE
+
             for ((_, buyOrder) in orderList) {
-                if ((buyOrder.orderId != seller.orderId) && (buyOrder.status != "filled") && (seller.type != buyOrder.type) && (seller.price <= buyOrder.price)) {
-                    if (buyOrder.price > maxBuyerPrice) {
-                        maxBuyerPrice = buyOrder.price
-                        buyerOrderId = buyOrder.orderId
-                    }
+                if (seller.checkIfOrderCanBeMatched(buyOrder,maxBuyerPrice)) {
+                    maxBuyerPrice = buyOrder.price
+                    buyerOrderId = buyOrder.orderId
                 }
             }
+
             if (buyerOrderId != Int.MIN_VALUE) {
                 val buyer = orderList[buyerOrderId]!!
 
