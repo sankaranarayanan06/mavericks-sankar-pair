@@ -4,9 +4,10 @@ import com.example.constants.allUsers
 import com.example.constants.inventoryData
 import com.example.constants.orderList
 import com.example.controller.walletList
-import com.example.dto.OrderDTO
-import com.example.model.*
-import org.junit.jupiter.api.Assertions.*
+import com.example.model.Inventory
+import com.example.model.Order
+import com.example.model.User
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.math.BigInteger
@@ -23,7 +24,7 @@ class OrderServiceTest{
     @Test
     fun `it should place a buy order`(){
         createUser("anushka","joshi","1234567890","aushka@sahaj.ai","anushka")
-        val dto = OrderDTO(BigInteger.valueOf(10),BigInteger.valueOf(10),"BUY","")
+        val dto = Order(BigInteger.valueOf(10),BigInteger.valueOf(10),"BUY","anushka")
         val expectedResponse = 1
         val username = "anushka"
 
@@ -35,11 +36,11 @@ class OrderServiceTest{
     @Test
     fun `it should place a sell order`(){
         createUser("sankar","m","1234568790","sankar@sahaj.ai","sankar")
-        val dto = OrderDTO(BigInteger.valueOf(10),BigInteger.valueOf(10),"BUY","PERFORMANCE")
+        val dto = Order(BigInteger.valueOf(10),BigInteger.valueOf(10),"BUY","sankar","PERFORMANCE")
         val expectedResponse = 1
         val username = "sankar"
 
-        orderService.placeSellOrder(dto, username)
+        orderService.placeSellOrder(dto,dto.esopType,username)
 
         assertEquals(expectedResponse,orderList.size)
     }
@@ -47,17 +48,17 @@ class OrderServiceTest{
     fun `it should match the buy order for existing sell order`(){
         createUser("anushka","joshi","6427847644","anushkaj@sahaj.ai","anushka")
         val sellerName = "anushka"
-        val sellOrderDetails = OrderDTO(BigInteger.valueOf(10),BigInteger.valueOf(10),"SELL","PERFORMANCE")
+        val sellOrderDetails = Order(BigInteger.valueOf(10),BigInteger.valueOf(10),"SELL","anushka","PERFORMANCE")
         InventoryHandler.addToPerformanceInventory(BigInteger.valueOf(10),sellerName)
 
 
 
         createUser("sankar","m","1234568790","sankar@sahaj.ai","sankar")
-        val buyOrderDetails = OrderDTO(BigInteger.valueOf(10),BigInteger.valueOf(10),"BUY","")
+        val buyOrderDetails = Order(BigInteger.valueOf(10),BigInteger.valueOf(10),"BUY","sankar")
         val buyerName = "sankar"
         WalletHandler.addFreeAmountInWallet(buyerName,BigInteger.valueOf(500))
 
-        orderService.placeSellOrder(sellOrderDetails,sellerName)
+        orderService.placeSellOrder(sellOrderDetails,sellOrderDetails.esopType,sellerName)
         orderService.placeBuyOrder(buyOrderDetails, buyerName)
 
         assertEquals(BigInteger.valueOf(100),WalletHandler.getFreeAmount(sellerName))
@@ -81,9 +82,9 @@ class OrderServiceTest{
         InventoryHandler.addToPerformanceInventory(BigInteger.TEN, user1.userName)
 
         inventoryData[user1.userName] = mutableListOf(Inventory(BigInteger.TEN, BigInteger.ZERO), Inventory(BigInteger.ZERO, BigInteger.ZERO))
-        val sellOrder = OrderDTO(BigInteger.valueOf(10), BigInteger.valueOf(5), "SELL", "PERFORMANCE")
+        val sellOrder = Order(BigInteger.valueOf(10), BigInteger.valueOf(5), "SELL", "user1","PERFORMANCE")
         val sellerName = "user1"
-        orderService.placeSellOrder(sellOrder, sellerName)
+        orderService.placeSellOrder(sellOrder,sellOrder.esopType,sellerName)
 
 
         val user2 = User(
@@ -97,7 +98,7 @@ class OrderServiceTest{
 
         walletList[user2.userName]!!.freeAmount = BigInteger.valueOf(500)
 
-        val buyOrder = OrderDTO(BigInteger.valueOf(10), BigInteger.valueOf(5), "BUY","")
+        val buyOrder = Order(BigInteger.valueOf(10), BigInteger.valueOf(5), "BUY","user2")
         val buyerName = "user2"
 
 
@@ -126,9 +127,9 @@ class OrderServiceTest{
         InventoryHandler.addToPerformanceInventory(BigInteger.TEN, user1.userName)
 
         inventoryData[user1.userName] = mutableListOf(Inventory(BigInteger.TEN, BigInteger.ZERO), Inventory(BigInteger.ZERO, BigInteger.ZERO,"NON_PERFORMANCE"))
-        val sellOrder = OrderDTO(BigInteger.valueOf(10), BigInteger.valueOf(5), "SELL", "PERFORMANCE")
+        val sellOrder = Order(BigInteger.valueOf(10), BigInteger.valueOf(5), "SELL", "user1","PERFORMANCE")
         val sellerName = "user1"
-        val sellOrderResponse = orderService.placeSellOrder(sellOrder, sellerName)
+        val sellOrderResponse = orderService.placeSellOrder(sellOrder, sellOrder.esopType,sellerName)
 
 
         val user2 = User(
@@ -142,7 +143,7 @@ class OrderServiceTest{
 
         walletList[user2.userName]!!.freeAmount = BigInteger.valueOf(500)
 
-        val buyOrder = OrderDTO(BigInteger.valueOf(10), BigInteger.valueOf(10), "BUY","")
+        val buyOrder = Order(BigInteger.valueOf(10), BigInteger.valueOf(10), "BUY","user2")
         val buyerName = "user2"
 
 
@@ -170,7 +171,7 @@ class OrderServiceTest{
         )
         addUser(buyer)
         walletList[buyer.userName]!!.freeAmount = BigInteger.valueOf(500)
-        val buyOrder = OrderDTO(BigInteger.valueOf(10), BigInteger.valueOf(10), "BUY", "")
+        val buyOrder = Order(BigInteger.valueOf(10), BigInteger.valueOf(10), "BUY", "buyer")
         val buyerName = "buyer"
         val buyOrderResponse = orderService.placeBuyOrder(buyOrder, buyerName)
 
@@ -183,9 +184,9 @@ class OrderServiceTest{
         )
         addUser(seller)
         InventoryHandler.addToPerformanceInventory(BigInteger.valueOf(30), seller.userName)
-        val sellOrder = OrderDTO(BigInteger.valueOf(10), BigInteger.valueOf(20), "SELL", "PERFORMANCE")
+        val sellOrder = Order(BigInteger.valueOf(10), BigInteger.valueOf(20), "SELL", "seller","PERFORMANCE")
         val sellerName = "seller"
-        val sellOrderResponse = orderService.placeSellOrder(sellOrder, sellerName)
+        val sellOrderResponse = orderService.placeSellOrder(sellOrder, sellOrder.esopType,sellerName)
 
 
         // Assert [2]

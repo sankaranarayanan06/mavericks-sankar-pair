@@ -1,7 +1,6 @@
 package com.example.wallet
 
 import com.example.constants.Limits
-import com.example.dto.OrderDTO
 import com.example.model.Order
 import com.example.model.User
 import com.example.services.OrderService
@@ -45,7 +44,7 @@ class WalletTest {
     fun `It should test wallet amount`() {
         val buyerName = "03Anushka"
         WalletHandler.addFreeAmountInWallet(buyerName, BigInteger.valueOf(500))
-        val order = OrderDTO(BigInteger.valueOf(100),BigInteger.ONE,"BUY","")
+        val order = Order(BigInteger.valueOf(100),BigInteger.ONE,"BUY",buyerName)
 
         orderService.placeBuyOrder(order,buyerName)
 
