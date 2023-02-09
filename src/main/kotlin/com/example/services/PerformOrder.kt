@@ -14,19 +14,11 @@ class PerformOrder {
             if (seller.currentQuantity == BigInteger.ZERO){
                 break
             }
-            
-            var maxBuyerPrice: BigInteger = BigInteger.valueOf(Long.MIN_VALUE)
-            var buyerOrderId = Int.MIN_VALUE
 
-            for ((_, buyOrder) in orderList) {
-                if (seller.checkIfOrderCanBeMatched(buyOrder,maxBuyerPrice)) {
-                    maxBuyerPrice = buyOrder.price
-                    buyerOrderId = buyOrder.orderId
-                }
-            }
-
-            if (buyerOrderId != Int.MIN_VALUE) {
-                val buyer = orderList[buyerOrderId]!!
+            val buyerOrderId = findBestBuyOrder(seller)
+            if(buyerOrderId != null){
+                val buyer = orderList[buyerOrderId]
+                val buyPrice = buyer!!.price
 
                 val orderExecutionQuantity: BigInteger = buyer.getMinimumQuantity(seller)
 
@@ -34,21 +26,17 @@ class PerformOrder {
                 seller.currentQuantity -= orderExecutionQuantity
 
                 // Return amount for high buy low sell scenario
-                val returnAmount: BigInteger = ((maxBuyerPrice - seller.price) * orderExecutionQuantity)
+                val returnAmount: BigInteger = ((buyPrice - seller.price) * orderExecutionQuantity)
                 walletList[buyer.userName]!!.lockedAmount -= returnAmount
                 walletList[buyer.userName]!!.freeAmount += returnAmount
 
                 // Get seller amount added to seller's account
                 // Reduce the locked amount from buyer account
                 // Add ESOPs to buyer account
-                val orderTotal = orderExecutionQuantity * seller.price
-                val platformCharge =
-                    if (orderList[seller.orderId]!!.esopType != "PERFORMANCE") (orderTotal * BigInteger.TWO) / BigInteger.valueOf(
-                        100
-                    ) else BigInteger.ZERO
+                val platformCharge = calculatePlatformFee(seller, orderExecutionQuantity * seller.price)
                 addPlatformCharge(platformCharge)
 
-                walletList[sellerUser]!!.freeAmount += (orderExecutionQuantity * seller.price - platformCharge)
+                walletList[sellerUser]!!.freeAmount += (orderExecutionQuantity * seller.price - platformCharge!!)
                 walletList[buyer.userName]!!.lockedAmount -= (orderExecutionQuantity * seller.price)
 
 
@@ -80,6 +68,30 @@ class PerformOrder {
             }
 
         }
+    }
+
+    private fun findBestBuyOrder(seller: Order): Int?{
+        val buyList = orderList.filter { (orderId,order) -> order.type == "BUY"}
+        if(buyList.size <= 0){
+            return null
+        }
+        var maxBuyer = BigInteger.ZERO
+        var orderId:Int = 0
+        for ((id,order) in buyList){
+            if(order.price > maxBuyer){
+                maxBuyer = order.price
+                orderId = id
+            }
+        }
+        return orderId
+    }
+
+    private fun calculatePlatformFee(seller: Order, orderTotal: BigInteger): BigInteger? {
+        val platformCharge =
+            if (orderList[seller.orderId]!!.esopType != "PERFORMANCE") (orderTotal * BigInteger.TWO) / BigInteger.valueOf(
+                100
+            ) else BigInteger.ZERO
+        return platformCharge
     }
 
     fun performBuys(currentOrder: Order, username: String) {
@@ -119,6 +131,7 @@ class PerformOrder {
                 currentOrder.currentQuantity -= transQuantity
 
                 val orderTotal = minSellerPrice * transQuantity
+
 
                 val platformCharge =
                     if (orderList[sellerID]!!.esopType != "PERFORMANCE") (orderTotal * BigInteger.TWO) / BigInteger.valueOf(
