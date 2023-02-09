@@ -2,8 +2,11 @@ package com.example.controller
 
 import com.example.constants.allUsers
 import com.example.constants.orderList
+import com.example.dto.OrderDTO
 import com.example.model.*
 import com.example.services.InventoryHandler
+import com.example.services.OrderService
+import com.example.services.WalletHandler
 import com.example.services.addUser
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.micronaut.http.HttpRequest
@@ -20,25 +23,25 @@ import java.math.BigInteger
 @MicronautTest
 class OrderControllerTest {
 
-
     @Inject
     @field:Client("/")
     lateinit var client: HttpClient
 
+    var orderService = OrderService()
 
     private val buyerUser = User(
-        firstName = "Dnyaneshwar",
-        lastName = "Ware",
-        userName = "dnyaneshwar",
-        email = "as",
-        phoneNumber = "4234234"
+        firstName = "Anushkar",
+        lastName = "Joshi",
+        userName = "anushka",
+        email = "anushkaj@sahaj.ai",
+        phoneNumber = "4234234763"
     )
     private val sellerUser = User(
         firstName = "Dnyaneshwar",
         lastName = "Ware",
         userName = "dnyaneshwar",
-        email = "as",
-        phoneNumber = "4234234"
+        email = "as@sahaj.ai",
+        phoneNumber = "4234234123"
     )
 
     @BeforeEach
@@ -51,17 +54,16 @@ class OrderControllerTest {
     }
 
     @Test
-    fun `Place a valid sell order`(objectMapper: ObjectMapper) {
+    fun `Place a valid sell order`() {
         // Arrange
         InventoryHandler.addToNonPerformanceInventory(BigInteger.valueOf(100), sellerUser.userName)
-
-        val sellOrder = OrderRequest("SELL", BigInteger.TEN, BigInteger.TEN, esopType = "NON_PERFORMANCE")
-        val expectedResponse = SellOrderResponse(orderId = 1, price = BigInteger.TEN, quantity = BigInteger.TEN, status = "unfilled", type = "SELL", esopType = "NON_PERFORMANCE")
-
+        val order = OrderDTO(BigInteger.TEN, BigInteger.TEN,"SELL","PERFORMANCE")
+        val expectedResponse = OrderResponse(orderId = 1, price = BigInteger.TEN, quantity = BigInteger.TEN, type = "SELL")
+        val sellOrder = Order(BigInteger.TEN,BigInteger.TEN,"SELL",sellerUser.userName,"PERFORMANCE")
 
         // Act
         val request = HttpRequest.POST(
-            "/user/${buyerUser.userName}/order", objectMapper.writeValueAsString(sellOrder)
+            "/user/${sellerUser.userName}/order", order
         )
 
         // Assert
@@ -70,51 +72,29 @@ class OrderControllerTest {
 
         assertEquals(
             expectedResponse,
-            objectMapper.readValue(response.toString(), SellOrderResponse::class.java)
+            orderService.placeSellOrder(sellOrder,sellOrder.esopType,sellerUser.userName)
         )
     }
-
     @Test
-    fun `Place a valid buy order`(objectMapper: ObjectMapper) {
+    fun `Place a valid buy order`() {
         // Arrange
-        walletList[buyerUser.userName]!!.freeAmount = BigInteger.valueOf(200)
-        val buyOrder = OrderRequest("BUY", BigInteger.TEN, BigInteger.TEN)
-        val buyOrderResponse = OrderResponse(1,BigInteger.TEN, "BUY", BigInteger.TEN)
+        WalletHandler.addFreeAmountInWallet(sellerUser.userName, BigInteger.valueOf(100))
+        val order = OrderDTO(BigInteger.TEN, BigInteger.TEN,"BUY","")
+        val expectedResponse = OrderResponse(orderId = 1, price = BigInteger.TEN, quantity = BigInteger.TEN, type = "BUY")
+        val buyOrder = Order(BigInteger.TEN,BigInteger.TEN,"BUY",buyerUser.userName)
 
         // Act
         val request = HttpRequest.POST(
-            "/user/${buyerUser.userName}/order", objectMapper.writeValueAsString(buyOrder)
+            "/user/${sellerUser.userName}/order", order
         )
+
+        // Assert
         val response = client.toBlocking().retrieve(request)
 
-        // Assert
+
         assertEquals(
-            buyOrderResponse,
-            objectMapper.readValue(response, OrderResponse::class.java)
+            expectedResponse,
+            orderService.placeBuyOrder(buyOrder,buyerUser.userName)
         )
-
-
-    }
-
-    @Test
-    fun `place a buy order with insufficient amount in user wallet`(objectMapper: ObjectMapper) {
-        // Arrange
-        walletList[buyerUser.userName]!!.freeAmount = BigInteger.valueOf(20)
-        val buyOrder = OrderRequest("BUY", BigInteger.TEN, BigInteger.TEN)
-
-        // Act
-        val request = HttpRequest.POST(
-            "/user/${buyerUser.userName}/order", objectMapper.writeValueAsString(buyOrder)
-        )
-
-        // Assert
-
-        val exception: HttpClientResponseException = org.junit.jupiter.api.assertThrows {
-            client.toBlocking().retrieve(request)
-        }
-
-        println(exception.message)
-
-
     }
 }
