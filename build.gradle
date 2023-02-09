@@ -25,7 +25,7 @@ dependencies {
     runtimeOnly("ch.qos.logback:logback-classic")
     implementation("io.micronaut:micronaut-validation")
     implementation("io.micronaut.views:micronaut-views-velocity")
-
+    implementation("com.google.code.gson:gson:2.8.9")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
 
 }
