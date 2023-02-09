@@ -2,6 +2,7 @@ package com.example.controller
 
 import com.example.constants.*
 import com.example.dto.OrderDTO
+import com.example.exception.ErrorResponseBodyException
 import com.example.model.Order
 import com.example.model.OrderResponse
 import com.example.model.ResponseBody
@@ -16,27 +17,28 @@ import io.micronaut.http.annotation.Post
 
 
 @Controller("/user")
-class OrderController() {
+class OrderController {
 
-    var orderService =  OrderService()
+    private var orderService = OrderService()
+
     @Post("/{username}/order")
-    fun addNewOrder(@Body body:OrderDTO, @PathVariable username: String): HttpResponse<ResponseBody> {
+    fun addNewOrder(@Body body: OrderDTO, @PathVariable username: String): HttpResponse<ResponseBody> {
         if (!isUserExists(username)) {
-            return HttpResponse
-                .badRequest(ResponseBody(listOf("User does not exist."),null))
+            throw ErrorResponseBodyException(listOf("User does not exist."))
         }
 
-        val currentOrder = Order(body.price,body.quantity,body.type,username)
+        val currentOrder = Order(body.price, body.quantity, body.type, username)
         val errors = validateOrder(currentOrder, username)
         if (errors.size > 0) {
-            return HttpResponse.badRequest(ResponseBody(errors,null))
+            throw ErrorResponseBodyException(errors)
         }
 
         val response: OrderResponse = if (currentOrder.type == "BUY") {
-            orderService.placeBuyOrder(body,username)
+            orderService.placeBuyOrder(currentOrder, username)
         } else {
-            orderService.placeSellOrder(body, username)
+            orderService.placeSellOrder(currentOrder, body.esopType!!, username)
         }
-        return HttpResponse.ok(ResponseBody(null,response))
+
+        return HttpResponse.ok(ResponseBody(response))
     }
 }
