@@ -4,8 +4,11 @@ import com.example.constants.inventoryData
 import com.example.constants.orderList
 import com.example.constants.transactions
 import com.example.dto.OrderDTO
+import com.example.exception.ErrorResponseBodyException
 import com.example.model.Order
 import com.example.model.OrderResponse
+import com.example.validations.isUserExists
+import com.example.validations.order.validateOrder
 
 class OrderService {
 
@@ -50,5 +53,24 @@ class OrderService {
             }
         }
         return OrderResponse(order)
+    }
+
+    fun placeOrder(orderRequest: OrderDTO,username: String): OrderResponse{
+        if (!isUserExists(username)) {
+            throw ErrorResponseBodyException("User does not exist.")
+        }
+
+        val currentOrder = Order(orderRequest.price, orderRequest.quantity, orderRequest.type, username)
+        val errors = validateOrder(currentOrder, username)
+        if (errors.size > 0) {
+            throw ErrorResponseBodyException(errors)
+        }
+
+        val response: OrderResponse = if (currentOrder.type == "BUY") {
+            placeBuyOrder(currentOrder, username)
+        } else {
+            placeSellOrder(currentOrder, orderRequest.esopType!!, username)
+        }
+        return response
     }
 }

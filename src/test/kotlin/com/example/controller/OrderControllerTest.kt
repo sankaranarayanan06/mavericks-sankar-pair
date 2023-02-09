@@ -9,6 +9,7 @@ import com.example.services.OrderService
 import com.example.services.WalletHandler
 import com.example.services.addUser
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.gson.Gson
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.client.HttpClient
 import io.micronaut.http.client.annotation.Client
@@ -18,6 +19,7 @@ import jakarta.inject.Inject
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.math.BigInteger
 
 @MicronautTest
@@ -26,8 +28,6 @@ class OrderControllerTest {
     @Inject
     @field:Client("/")
     lateinit var client: HttpClient
-
-    var orderService = OrderService()
 
     private val buyerUser = User(
         firstName = "Anushkar",
@@ -58,8 +58,7 @@ class OrderControllerTest {
         // Arrange
         InventoryHandler.addToNonPerformanceInventory(BigInteger.valueOf(100), sellerUser.userName)
         val order = OrderDTO(BigInteger.TEN, BigInteger.TEN,"SELL","PERFORMANCE")
-        val expectedResponse = OrderResponse(orderId = 1, price = BigInteger.TEN, quantity = BigInteger.TEN, type = "SELL")
-        val sellOrder = Order(BigInteger.TEN,BigInteger.TEN,"SELL",sellerUser.userName,"PERFORMANCE")
+        val expectedResponse = Gson().toJson(mutableMapOf("orderId" to "1","quantity" to 10,"type" to "SELL","price" to 10))
 
         // Act
         val request = HttpRequest.POST(
@@ -72,29 +71,28 @@ class OrderControllerTest {
 
         assertEquals(
             expectedResponse,
-            orderService.placeSellOrder(sellOrder,sellOrder.esopType,sellerUser.userName)
+            response
         )
     }
+
     @Test
     fun `Place a valid buy order`() {
         // Arrange
-        WalletHandler.addFreeAmountInWallet(sellerUser.userName, BigInteger.valueOf(100))
-        val order = OrderDTO(BigInteger.TEN, BigInteger.TEN,"BUY","")
-        val expectedResponse = OrderResponse(orderId = 1, price = BigInteger.TEN, quantity = BigInteger.TEN, type = "BUY")
-        val buyOrder = Order(BigInteger.TEN,BigInteger.TEN,"BUY",buyerUser.userName)
+        WalletHandler.addFreeAmountInWallet(buyerUser.userName, BigInteger.valueOf(100))
+        val order = OrderDTO(BigInteger.valueOf(10), BigInteger.TEN,"BUY","")
+        val expectedResponse = Gson().toJson(mutableMapOf("orderId" to "1","quantity" to 10,"type" to "BUY","price" to 10))
 
         // Act
         val request = HttpRequest.POST(
-            "/user/${sellerUser.userName}/order", order
+            "/user/${buyerUser.userName}/order", order
         )
 
         // Assert
         val response = client.toBlocking().retrieve(request)
 
-
         assertEquals(
             expectedResponse,
-            orderService.placeBuyOrder(buyOrder,buyerUser.userName)
+            response
         )
     }
 }
