@@ -1,19 +1,21 @@
-package com.example.Wallet
+package com.example.wallet
 
 import com.example.constants.Limits
+import com.example.dto.OrderDTO
 import com.example.model.Order
 import com.example.model.User
 import com.example.services.OrderService
 import com.example.services.WalletHandler
 import com.example.services.addUser
 import com.example.validations.WalletValidation
+import com.example.validations.order.validateOrder
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.math.BigInteger
 
 class WalletTest {
-    lateinit var orderService: OrderService
+    private var orderService = OrderService()
     @BeforeEach
     fun createdUser() {
         Order.orderIdCounter = 1
@@ -29,42 +31,24 @@ class WalletTest {
 
     @Test
     fun `It should test for insufficient amount in wallet`() {
-
         val buyerName = "03Anushka"
-
-        val buyOrder = Order()
-        buyOrder.currentQuantity = BigInteger.ONE
-        buyOrder.placedQuantity = BigInteger.ONE
-        buyOrder.price = BigInteger.valueOf(100)
-        buyOrder.type = "BUY"
-        buyOrder.userName = buyerName
-
+        val order = Order(BigInteger.valueOf(100),BigInteger.ONE,"BUY",buyerName)
         WalletHandler.addFreeAmountInWallet(buyerName, BigInteger.valueOf(90))
+        val expectedResponse = listOf("Insufficient amount in wallet")
 
-        val orderResponse = orderService.(buyOrder)
+        val orderResponse = validateOrder(order,buyerName)
 
-        Assertions.assertEquals("[Insufficient amount in wallet]", orderResponse["errors"].toString())
-
-
+        Assertions.assertEquals(expectedResponse, orderResponse)
     }
 
     @Test
     fun `It should test wallet amount`() {
-
-
         val buyerName = "03Anushka"
-        val buyOrder = Order()
-        buyOrder.currentQuantity = BigInteger.ONE
-        buyOrder.placedQuantity = BigInteger.ONE
-        buyOrder.price = BigInteger.valueOf(100)
-        buyOrder.type = "BUY"
-        buyOrder.userName = buyerName
-
         WalletHandler.addFreeAmountInWallet(buyerName, BigInteger.valueOf(500))
+        val order = OrderDTO(BigInteger.valueOf(100),BigInteger.ONE,"BUY","")
 
-        val orderResponse = addBuyOrder(buyOrder)
+        orderService.placeBuyOrder(order,buyerName)
 
-        Assertions.assertEquals(null, orderResponse["errors"])
         Assertions.assertEquals(BigInteger.valueOf(100), WalletHandler.getLockedAmount(buyerName))
         Assertions.assertEquals(BigInteger.valueOf(400), WalletHandler.getFreeAmount(buyerName))
 
@@ -81,7 +65,7 @@ class WalletTest {
 
         WalletHandler.addFreeAmountInWallet(buyerName, Limits.MAX_WALLET_AMOUNT)
 
-        var freeAmount = WalletHandler.getFreeAmount(buyerName)
+        val freeAmount = WalletHandler.getFreeAmount(buyerName)
         val orderResponse = walletValidation.validations(freeAmount, buyOrder.currentQuantity * buyOrder.price)
 
 
