@@ -9,7 +9,7 @@ class Order(
     var userName: String = "",
     var esopType: String = "NON_PERFORMANCE"
 ) {
-    var currentQuantity: BigInteger = BigInteger.ZERO
+    var currentQuantity: BigInteger = placedQuantity
     var status: String = "unfilled"
     val orderId: Int = orderIdCounter++
 
