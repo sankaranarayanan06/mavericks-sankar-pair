@@ -9,8 +9,7 @@ import java.math.BigInteger
 
 
 fun performBuys(currentOrder: Order, username: String) {
-    print("PErformbuy")
-    val n: Int = orderList.size
+    orderList.size
     while (true) {
         if (currentOrder.currentQuantity == BigInteger.ZERO) break
 
