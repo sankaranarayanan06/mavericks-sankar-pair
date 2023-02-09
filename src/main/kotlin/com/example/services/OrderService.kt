@@ -9,8 +9,7 @@ import com.example.model.OrderResponse
 
 class OrderService {
 
-    fun placeBuyOrder(body: OrderDTO,username:String): OrderResponse {
-        val order = Order(body.price,body.quantity,body.type,username)
+    fun placeBuyOrder(order: Order,username:String): OrderResponse {
         val orderAmount = order.price * order.placedQuantity
 
         orderList[order.orderId] = order
@@ -25,9 +24,8 @@ class OrderService {
         return OrderResponse(order)
     }
 
-    fun placeSellOrder(body: OrderDTO,username:String): OrderResponse {
-        val order = Order(body.price,body.quantity,body.type,username)
-        if (body.esopType == "PERFORMANCE") {
+    fun placeSellOrder(order: Order,esopType: String,username:String): OrderResponse {
+        if (esopType == "PERFORMANCE") {
             order.esopType = "PERFORMANCE"
         }
 
