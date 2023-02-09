@@ -10,8 +10,9 @@ import com.example.model.OrderResponse
 import com.example.validations.isUserExists
 import com.example.validations.order.validateOrder
 
-class OrderService {
+class OrderService{
 
+    private val performOrder = PerformOrder()
     fun placeBuyOrder(order: Order,username:String): OrderResponse {
         val orderAmount = order.price * order.placedQuantity
 
@@ -22,7 +23,7 @@ class OrderService {
         WalletHandler.addLockedAmountInWallet(username, orderAmount)
         WalletHandler.discardedFreeAmountFromWallet(username, orderAmount)
 
-        performBuys(order, username)
+        performOrder.performBuys(order, username)
 
         return OrderResponse(order)
     }
@@ -42,14 +43,14 @@ class OrderService {
                 inventoryData[order.userName]!![0].free -= order.placedQuantity
                 inventoryData[order.userName]!![0].locked += order.placedQuantity
 
-                performSells(order, username)
+                performOrder.performSells(order, username)
             }
 
             "NON_PERFORMANCE" -> {
                 inventoryData[order.userName]!![1].free -= order.placedQuantity
                 inventoryData[order.userName]!![1].locked += order.placedQuantity
 
-                performSells(order, username)
+                performOrder.performSells(order, username)
             }
         }
         return OrderResponse(order)
