@@ -31,4 +31,11 @@ class Order(
         }
         return seller.currentQuantity
     }
+
+    fun checkIfOrderCanBeMatched(buyer:Order, maxBuyerPrice:BigInteger): Boolean {
+        if(buyer.status != "filled" && type != buyer.type && price <= buyer.price && buyer.price > maxBuyerPrice){
+            return true
+        }
+        return false
+    }
 }
