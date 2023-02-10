@@ -18,10 +18,10 @@ class Order(
     }
 
     fun updateStatus(){
-        if (this.currentQuantity == BigInteger.ZERO){
-            status = "filled"
+        status = if (this.currentQuantity == BigInteger.ZERO){
+            "filled"
         }else{
-            status = "partially filled"
+            "partially filled"
         }
     }
 
@@ -37,5 +37,9 @@ class Order(
             return true
         }
         return false
+    }
+
+    fun updateExecutedQuantity(orderExecutionQuantity: BigInteger) {
+        currentQuantity -= orderExecutionQuantity
     }
 }

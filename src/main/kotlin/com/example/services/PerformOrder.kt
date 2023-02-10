@@ -11,19 +11,30 @@ import java.math.BigInteger
 class PerformOrder {
     fun performSells(seller: Order, sellerUser: String) {
         while (true) {
-            if (seller.currentQuantity == BigInteger.ZERO){
+            if (seller.currentQuantity == BigInteger.ZERO) {
                 break
             }
 
-            val buyerOrderId = findBestBuyOrder(seller)
-            if(buyerOrderId != null){
+            var maxBuyerPrice: BigInteger = BigInteger.valueOf(Long.MIN_VALUE)
+            var buyerOrderId = Int.MIN_VALUE
+
+            for ((_, orderPrev) in orderList) {
+                if (seller.checkIfOrderCanBeMatched(orderPrev, maxBuyerPrice)) {
+                    if (orderPrev.price > maxBuyerPrice) {
+                        maxBuyerPrice = orderPrev.price
+                        buyerOrderId = orderPrev.orderId
+                    }
+                }
+            }
+
+            if (buyerOrderId != Int.MIN_VALUE) {
                 val buyer = orderList[buyerOrderId]
                 val buyPrice = buyer!!.price
 
                 val orderExecutionQuantity: BigInteger = buyer.getMinimumQuantity(seller)
 
-                buyer.currentQuantity -= orderExecutionQuantity
-                seller.currentQuantity -= orderExecutionQuantity
+                buyer.updateExecutedQuantity(orderExecutionQuantity)
+                seller.updateExecutedQuantity(orderExecutionQuantity)
 
                 // Return amount for high buy low sell scenario
                 val returnAmount: BigInteger = ((buyPrice - seller.price) * orderExecutionQuantity)
@@ -50,53 +61,45 @@ class PerformOrder {
                     transactions[seller.orderId] = mutableListOf()
                 }
 
-                transactions[seller.orderId]!!
-                    .add(Transaction(orderExecutionQuantity, seller.price, orderList[seller.orderId]!!.esopType))
+                transactions[seller.orderId]!!.add(
+                    Transaction(
+                        orderExecutionQuantity,
+                        seller.price,
+                        orderList[seller.orderId]!!.esopType
+                    )
+                )
 
                 if (!transactions.containsKey(buyer.orderId)) {
                     transactions[buyer.orderId] = mutableListOf()
                 }
 
-                transactions[buyerOrderId]!!
-                    .add(Transaction(orderExecutionQuantity, seller.price, orderList[seller.orderId]!!.esopType))
+                transactions[buyerOrderId]!!.add(
+                    Transaction(
+                        orderExecutionQuantity,
+                        seller.price,
+                        orderList[seller.orderId]!!.esopType
+                    )
+                )
 
                 seller.updateStatus()
                 orderList[buyerOrderId]?.updateStatus()
 
-            } else{
+            } else {
                 break
             }
 
         }
     }
 
-    private fun findBestBuyOrder(seller: Order): Int?{
-        val buyList = orderList.filter { (orderId,order) -> order.type == "BUY"}
-        if(buyList.size <= 0){
-            return null
-        }
-        var maxBuyer = BigInteger.ZERO
-        var orderId:Int = 0
-        for ((id,order) in buyList){
-            if(order.price > maxBuyer){
-                maxBuyer = order.price
-                orderId = id
-            }
-        }
-        return orderId
-    }
-
     private fun calculatePlatformFee(seller: Order, orderTotal: BigInteger): BigInteger? {
-        val platformCharge =
-            if (orderList[seller.orderId]!!.esopType != "PERFORMANCE") (orderTotal * BigInteger.TWO) / BigInteger.valueOf(
-                100
-            ) else BigInteger.ZERO
-        return platformCharge
+        return if (orderList[seller.orderId]!!.esopType != "PERFORMANCE") (orderTotal * BigInteger.TWO) / BigInteger.valueOf(
+            100
+        ) else BigInteger.ZERO
     }
 
     fun performBuys(currentOrder: Order, username: String) {
         while (true) {
-            if (currentOrder.currentQuantity == BigInteger.ZERO){
+            if (currentOrder.currentQuantity == BigInteger.ZERO) {
                 break
             }
 
@@ -105,7 +108,7 @@ class PerformOrder {
 
             // Find if seller with PERFORMANCE order fulfils the deal
             for ((orderID, orderPrev) in orderList) {
-                if ((orderPrev.esopType == "PERFORMANCE")){
+                if ((orderPrev.esopType == "PERFORMANCE")) {
                     val pair = findSeller(orderPrev, currentOrder, minSellerPrice, sellerID, orderID)
                     minSellerPrice = pair.first
                     sellerID = pair.second
@@ -124,7 +127,6 @@ class PerformOrder {
                 }
             }
             if (sellerID != Int.MIN_VALUE) {
-                // performESOPVestings(orderList[sellerID]!!.userName)
                 val transQuantity = orderList[sellerID]!!.currentQuantity.min(currentOrder.currentQuantity)
 
                 orderList[sellerID]!!.currentQuantity -= transQuantity
@@ -143,8 +145,8 @@ class PerformOrder {
                 updateBuyOrderDetails(username, currentOrder, minSellerPrice, transQuantity, sellerID, platformCharge)
 
                 // Update the Order History
-                updateTransactionDetails(currentOrder.orderId,transQuantity,minSellerPrice)
-                updateTransactionDetails(sellerID,transQuantity,minSellerPrice)
+                updateTransactionDetails(currentOrder.orderId, transQuantity, minSellerPrice)
+                updateTransactionDetails(sellerID, transQuantity, minSellerPrice)
 
                 //Update Status of the order
                 val seller = orderList[sellerID]
@@ -158,13 +160,14 @@ class PerformOrder {
         }
     }
 
-    fun updateTransactionDetails(orderID: Int, transQuantity: BigInteger, minSellerPrice: BigInteger){
+    private fun updateTransactionDetails(orderID: Int, transQuantity: BigInteger, minSellerPrice: BigInteger) {
         if (!transactions.containsKey(orderID)) {
             transactions[orderID] = mutableListOf()
         }
         transactions[orderID]!!.add(Transaction(transQuantity, minSellerPrice, orderList[orderID]!!.esopType))
 
     }
+
     private fun updateBuyOrderDetails(
         username: String,
         currentOrder: Order,
