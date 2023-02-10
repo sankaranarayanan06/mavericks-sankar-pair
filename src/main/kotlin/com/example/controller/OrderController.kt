@@ -9,16 +9,23 @@ import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.PathVariable
 import io.micronaut.http.annotation.Post
-import jakarta.inject.Inject
 
 
 @Controller("/user")
-class OrderController(){
+class OrderController {
 
-    val orderService = OrderService()
+    private val orderService = OrderService()
+
     @Post("/{username}/order")
     fun addNewOrder(@Body orderRequest: OrderDTO, @PathVariable username: String): HttpResponse<ResponseBody> {
-        val response = orderService.placeOrder(orderRequest,username)
-        return HttpResponse.ok(ResponseBody(response.orderId.toString(),response.quantity,response.type,response.price))
+        val response = orderService.placeOrder(orderRequest, username)
+        return HttpResponse.ok(
+            ResponseBody(
+                response.orderId.toString(),
+                response.quantity,
+                response.type,
+                response.price
+            )
+        )
     }
 }

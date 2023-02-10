@@ -8,7 +8,6 @@ import com.example.model.Order
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.math.BigInteger
 
 class CreateUserTest {
     @BeforeEach
@@ -21,7 +20,7 @@ class CreateUserTest {
     }
 
     @Test
-    fun `it should add valid user`(){
+    fun `it should add valid user`() {
         val firstName = "Satyam"
         val lastName = "baldawa"
         val userName = "sat"
