@@ -1,6 +1,6 @@
 package com.example.controller
 
-import com.example.model.ErrorResponse
+import com.example.model.response.ErrorResponse
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.client.HttpClient

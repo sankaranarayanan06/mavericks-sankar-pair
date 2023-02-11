@@ -1,7 +1,7 @@
 package com.example.services
 
 import com.example.constants.*
-import com.example.model.VestingData
+import com.example.model.vesting.VestingData
 import java.math.BigInteger
 import java.time.LocalDateTime
 

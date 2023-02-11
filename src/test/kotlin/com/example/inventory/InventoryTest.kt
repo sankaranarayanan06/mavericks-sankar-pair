@@ -5,12 +5,10 @@ import com.example.constants.allUsers
 import com.example.constants.inventoryData
 import com.example.constants.orderList
 import com.example.controller.walletList
-import com.example.model.Inventory
-import com.example.model.Order
-import com.example.model.User
+import com.example.model.order.Order
+import com.example.model.user.User
 import com.example.services.InventoryHandler
 import com.example.services.addUser
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

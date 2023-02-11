@@ -1,4 +1,4 @@
-package com.example.model
+package com.example.model.inventory
 
 enum class EsopType(val type: String) {
     NONE("NONE"),

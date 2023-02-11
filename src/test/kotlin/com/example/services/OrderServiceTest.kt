@@ -4,9 +4,9 @@ import com.example.constants.allUsers
 import com.example.constants.inventoryData
 import com.example.constants.orderList
 import com.example.controller.walletList
-import com.example.model.Inventory
-import com.example.model.Order
-import com.example.model.User
+import com.example.model.inventory.Inventory
+import com.example.model.order.Order
+import com.example.model.user.User
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

@@ -1,6 +1,6 @@
 package com.example.controller
 
-import com.example.model.Wallet
+import com.example.model.wallet.Wallet
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller

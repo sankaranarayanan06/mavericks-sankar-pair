@@ -5,15 +5,15 @@ import com.example.constants.orderList
 import com.example.constants.transactions
 import com.example.dto.OrderDTO
 import com.example.exception.ErrorResponseBodyException
-import com.example.model.Order
-import com.example.model.OrderResponse
+import com.example.model.order.Order
+import com.example.model.order.OrderResponse
 import com.example.validations.isUserExists
 import com.example.validations.order.validateOrder
 
 class OrderService{
 
     private val performOrder = PerformOrder()
-    fun placeBuyOrder(order: Order,username:String): OrderResponse {
+    fun placeBuyOrder(order: Order, username:String): OrderResponse {
         val orderAmount = order.price * order.quantity
 
         orderList[order.orderId] = order
@@ -28,7 +28,7 @@ class OrderService{
         return OrderResponse(order)
     }
 
-    fun placeSellOrder(order: Order,esopType: String,username:String): OrderResponse {
+    fun placeSellOrder(order: Order, esopType: String, username:String): OrderResponse {
         if (esopType == "PERFORMANCE") {
             order.esopType = "PERFORMANCE"
         }
@@ -56,7 +56,7 @@ class OrderService{
         return OrderResponse(order)
     }
 
-    fun placeOrder(orderRequest: OrderDTO,username: String): OrderResponse{
+    fun placeOrder(orderRequest: OrderDTO,username: String): OrderResponse {
         if (!isUserExists(username)) {
             throw ErrorResponseBodyException("User does not exist.")
         }

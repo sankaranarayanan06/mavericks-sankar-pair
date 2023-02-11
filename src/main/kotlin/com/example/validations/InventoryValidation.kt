@@ -1,7 +1,7 @@
 package com.example.validations
 
 import com.example.constants.Limits
-import com.example.model.Inventory
+import com.example.model.inventory.Inventory
 import java.math.BigInteger
 
 class InventoryValidation {

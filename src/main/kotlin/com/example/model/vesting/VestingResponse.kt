@@ -1,9 +1,13 @@
-package com.example.model
+package com.example.model.vesting
 
 import java.math.BigInteger
 import java.time.format.DateTimeFormatter
 
-class VestingResponse(var quantity: BigInteger, var time: String, var esopType: String) {
+data class VestingResponse(
+    var quantity: BigInteger,
+    var time: String,
+    var esopType: String
+) {
     constructor(vesting: VestingData) : this(
         quantity = vesting.quantity,
         time = vesting.time.format(DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss")),

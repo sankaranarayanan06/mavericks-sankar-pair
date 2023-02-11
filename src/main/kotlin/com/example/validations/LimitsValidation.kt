@@ -1,7 +1,7 @@
 package com.example.validations
 
 import com.example.constants.Limits
-import com.example.model.LimitsResponse
+import com.example.model.response.LimitsResponse
 import io.micronaut.http.HttpResponse
 import io.micronaut.json.tree.JsonObject
 

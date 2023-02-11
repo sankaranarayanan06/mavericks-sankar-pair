@@ -1,6 +1,10 @@
 package com.example.constants
 
-import com.example.model.*
+import com.example.model.history.Transaction
+import com.example.model.inventory.Inventory
+import com.example.model.order.Order
+import com.example.model.user.User
+import com.example.model.vesting.VestingData
 import java.math.BigInteger
 
 val regex = Regex()

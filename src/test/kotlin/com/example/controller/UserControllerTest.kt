@@ -1,7 +1,7 @@
 package com.example.controller
 
 import com.example.constants.allUsers
-import com.example.model.User
+import com.example.model.user.User
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.client.HttpClient
 import io.micronaut.http.client.annotation.Client

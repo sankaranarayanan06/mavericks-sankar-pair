@@ -1,7 +1,7 @@
 package com.example.services
 
 import com.example.constants.vestings
-import com.example.model.VestingResponse
+import com.example.model.vesting.VestingResponse
 
 fun getPendingVestingInfo(username: String): Any {
     val list = mutableListOf<VestingResponse>()

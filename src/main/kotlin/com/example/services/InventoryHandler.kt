@@ -2,7 +2,7 @@ package com.example.services
 
 import com.example.constants.Limits
 import com.example.constants.inventoryData
-import com.example.model.Inventory
+import com.example.model.inventory.Inventory
 import java.math.BigInteger
 
 class InventoryHandler {

@@ -4,8 +4,8 @@ import com.example.constants.inventoryData
 import com.example.constants.orderList
 import com.example.constants.transactions
 import com.example.controller.walletList
-import com.example.model.Order
-import com.example.model.Transaction
+import com.example.model.order.Order
+import com.example.model.history.Transaction
 import java.math.BigInteger
 
 class PerformOrder {

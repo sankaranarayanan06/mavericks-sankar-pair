@@ -1,6 +1,6 @@
-package com.example.model
+package com.example.model.inventory
 
-import com.example.model.EsopType.NON_PERFORMANCE
+import com.example.model.inventory.EsopType.NON_PERFORMANCE
 import java.math.BigInteger
 
 data class Inventory(

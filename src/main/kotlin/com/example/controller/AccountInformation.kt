@@ -1,19 +1,13 @@
 package com.example.controller
 
 import com.example.constants.inventoryData
-import com.example.model.Inventory
+import com.example.model.inventory.Inventory
 import com.example.services.*
 import com.example.validations.isUserExists
-import com.fasterxml.jackson.core.JsonParseException
-import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
-import io.micronaut.http.HttpStatus
 import io.micronaut.http.annotation.Controller
-import io.micronaut.http.annotation.Error
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.PathVariable
-import io.micronaut.http.hateoas.JsonError
-import io.micronaut.http.hateoas.Link
 import java.util.*
 
 @Controller("/user")

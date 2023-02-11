@@ -1,4 +1,4 @@
-package com.example.model
+package com.example.model.history
 
 import java.math.BigInteger
 

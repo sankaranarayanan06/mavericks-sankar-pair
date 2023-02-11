@@ -1,6 +1,7 @@
-package com.example.model
+package com.example.model.order
 
-import com.example.model.OrderStatus.*
+import com.example.model.inventory.EsopType
+import com.example.model.order.OrderStatus.*
 import java.math.BigInteger
 
 data class Order(

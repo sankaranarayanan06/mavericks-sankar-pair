@@ -1,11 +1,11 @@
-package com.example.model
+package com.example.model.order
 
 import java.math.BigInteger
 
 data class OrderResponse(
     val orderId: Int,
     var quantity: BigInteger,
-    var type: String,
+    var type: OrderType,
     var price: BigInteger
 ) {
     constructor(order: Order) : this(

@@ -5,9 +5,9 @@ import com.example.constants.inventoryData
 import com.example.constants.vestingHistory
 import com.example.constants.vestings
 import com.example.controller.walletList
-import com.example.model.Inventory
-import com.example.model.User
-import com.example.model.Wallet
+import com.example.model.inventory.Inventory
+import com.example.model.user.User
+import com.example.model.wallet.Wallet
 
 
 fun addUser(newUser: User){

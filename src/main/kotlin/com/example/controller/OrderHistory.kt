@@ -2,10 +2,10 @@ package com.example.controller
 
 import com.example.constants.orderList
 import com.example.constants.transactions
-import com.example.model.BuyOrderHistory
-import com.example.model.ErrorResponse
-import com.example.model.SellOrderHistory
-import com.example.model.Transaction
+import com.example.model.history.BuyOrderHistory
+import com.example.model.response.ErrorResponse
+import com.example.model.history.SellOrderHistory
+import com.example.model.history.Transaction
 import com.example.services.performESOPVestings
 import com.example.validations.isUserExists
 import io.micronaut.http.HttpResponse

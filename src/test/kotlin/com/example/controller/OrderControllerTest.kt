@@ -4,6 +4,8 @@ import com.example.constants.allUsers
 import com.example.constants.orderList
 import com.example.dto.OrderDTO
 import com.example.model.*
+import com.example.model.order.Order
+import com.example.model.user.User
 import com.example.services.InventoryHandler
 import com.example.services.WalletHandler
 import com.example.services.addUser

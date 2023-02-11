@@ -3,8 +3,8 @@ package com.example.validations.order
 import com.example.constants.Limits
 import com.example.constants.inventoryData
 import com.example.controller.walletList
-import com.example.model.Inventory
-import com.example.model.Order
+import com.example.model.inventory.Inventory
+import com.example.model.order.Order
 import java.math.BigInteger
 
 

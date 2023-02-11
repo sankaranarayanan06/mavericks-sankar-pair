@@ -1,8 +1,8 @@
 package com.example.wallet
 
 import com.example.constants.Limits
-import com.example.model.Order
-import com.example.model.User
+import com.example.model.order.Order
+import com.example.model.user.User
 import com.example.services.OrderService
 import com.example.services.WalletHandler
 import com.example.services.addUser

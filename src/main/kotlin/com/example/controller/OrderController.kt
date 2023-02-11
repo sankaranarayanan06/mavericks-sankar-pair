@@ -2,7 +2,7 @@ package com.example.controller
 
 import com.example.constants.*
 import com.example.dto.OrderDTO
-import com.example.model.ResponseBody
+import com.example.model.response.ResponseBody
 import com.example.services.*
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Body
