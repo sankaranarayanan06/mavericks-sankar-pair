@@ -7,8 +7,8 @@ data class Order(
     var price: BigInteger = BigInteger.ZERO,
     var quantity: BigInteger = BigInteger.ZERO,
     var userName: String = "",
-    open var type: OrderType,
-    open var esopType: EsopType
+    var type: OrderType,
+    var esopType: EsopType
 ) {
     var remainingQuantity: BigInteger = quantity
     var status = UNFILLED
