@@ -5,6 +5,7 @@ import com.example.constants.allUsers
 import com.example.constants.inventoryData
 import com.example.constants.orderList
 import com.example.controller.walletList
+import com.example.model.Inventory
 import com.example.model.Order
 import com.example.model.User
 import com.example.services.InventoryHandler
