@@ -58,14 +58,14 @@ class WalletTest {
         val buyerName = "03Anushka"
         val walletValidation = WalletValidation()
         val buyOrder = Order()
-        buyOrder.currentQuantity = BigInteger.ONE
-        buyOrder.placedQuantity = buyOrder.currentQuantity
+        buyOrder.remainingQuantity = BigInteger.ONE
+        buyOrder.quantity = buyOrder.remainingQuantity
         buyOrder.price = BigInteger.valueOf(100)
 
         WalletHandler.addFreeAmountInWallet(buyerName, Limits.MAX_WALLET_AMOUNT)
 
         val freeAmount = WalletHandler.getFreeAmount(buyerName)
-        val orderResponse = walletValidation.validations(freeAmount, buyOrder.currentQuantity * buyOrder.price)
+        val orderResponse = walletValidation.validations(freeAmount, buyOrder.remainingQuantity * buyOrder.price)
 
 
         Assertions.assertEquals(

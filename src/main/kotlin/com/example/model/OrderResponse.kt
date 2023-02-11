@@ -10,7 +10,7 @@ data class OrderResponse(
 ) {
     constructor(order: Order) : this(
         orderId = order.orderId,
-        quantity = order.placedQuantity,
+        quantity = order.quantity,
         type = order.type,
         price = order.price
     )

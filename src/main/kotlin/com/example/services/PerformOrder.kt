@@ -11,7 +11,7 @@ import java.math.BigInteger
 class PerformOrder {
     fun performSells(seller: Order, sellerUser: String) {
         while (true) {
-            if (seller.currentQuantity == BigInteger.ZERO) {
+            if (seller.remainingQuantity == BigInteger.ZERO) {
                 break
             }
 
@@ -99,7 +99,7 @@ class PerformOrder {
 
     fun performBuys(currentOrder: Order, username: String) {
         while (true) {
-            if (currentOrder.currentQuantity == BigInteger.ZERO) {
+            if (currentOrder.remainingQuantity == BigInteger.ZERO) {
                 break
             }
 
@@ -127,10 +127,10 @@ class PerformOrder {
                 }
             }
             if (sellerID != Int.MIN_VALUE) {
-                val transQuantity = orderList[sellerID]!!.currentQuantity.min(currentOrder.currentQuantity)
+                val transQuantity = orderList[sellerID]!!.remainingQuantity.min(currentOrder.remainingQuantity)
 
-                orderList[sellerID]!!.currentQuantity -= transQuantity
-                currentOrder.currentQuantity -= transQuantity
+                orderList[sellerID]!!.remainingQuantity -= transQuantity
+                currentOrder.remainingQuantity -= transQuantity
 
                 val orderTotal = minSellerPrice * transQuantity
 

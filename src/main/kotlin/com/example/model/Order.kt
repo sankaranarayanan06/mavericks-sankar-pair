@@ -1,45 +1,46 @@
 package com.example.model
 
+import com.example.model.OrderStatus.*
 import java.math.BigInteger
 
-class Order(
+data class Order(
     var price: BigInteger = BigInteger.ZERO,
-    var placedQuantity: BigInteger = BigInteger.ZERO,
-    var type: String = "",
+    var quantity: BigInteger = BigInteger.ZERO,
     var userName: String = "",
-    var esopType: String = "NON_PERFORMANCE"
+    open var type: OrderType,
+    open var esopType: EsopType
 ) {
-    var currentQuantity: BigInteger = placedQuantity
-    var status: String = "unfilled"
+    var remainingQuantity: BigInteger = quantity
+    var status = UNFILLED
     val orderId: Int = orderIdCounter++
 
     companion object {
         var orderIdCounter = 1
     }
 
-    fun updateStatus(){
-        status = if (this.currentQuantity == BigInteger.ZERO){
-            "filled"
-        }else{
-            "partially filled"
+    fun updateStatus() {
+        status = if (this.remainingQuantity == BigInteger.ZERO) {
+            FILLED
+        } else {
+            PARTIALLY_FILLED
         }
     }
 
     fun getMinimumQuantity(seller: Order): BigInteger {
-        if(currentQuantity < seller.currentQuantity){
-            return currentQuantity
+        if (remainingQuantity < seller.remainingQuantity) {
+            return remainingQuantity
         }
-        return seller.currentQuantity
+        return seller.remainingQuantity
     }
 
-    fun checkIfOrderCanBeMatched(buyer:Order, maxBuyerPrice:BigInteger): Boolean {
-        if(buyer.status != "filled" && type != buyer.type && price <= buyer.price && buyer.price > maxBuyerPrice){
+    fun checkIfOrderCanBeMatched(buyer: Order, maxBuyerPrice: BigInteger): Boolean {
+        if (buyer.status != FILLED && type != buyer.type && price <= buyer.price && buyer.price > maxBuyerPrice) {
             return true
         }
         return false
     }
 
     fun updateExecutedQuantity(orderExecutionQuantity: BigInteger) {
-        currentQuantity -= orderExecutionQuantity
+        remainingQuantity -= orderExecutionQuantity
     }
 }

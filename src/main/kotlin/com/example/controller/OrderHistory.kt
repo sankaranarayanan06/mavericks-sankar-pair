@@ -6,7 +6,6 @@ import com.example.model.BuyOrderHistory
 import com.example.model.ErrorResponse
 import com.example.model.SellOrderHistory
 import com.example.model.Transaction
-import com.example.services.generateErrorResponse
 import com.example.services.performESOPVestings
 import com.example.validations.isUserExists
 import io.micronaut.http.HttpResponse
@@ -37,7 +36,7 @@ class OrderHistory() {
                             BuyOrderHistory(
                                 orderId = orderID,
                                 price = order.price,
-                                quantity = order.placedQuantity,
+                                quantity = order.quantity,
                                 type = order.type,
                                 status = order.status,
                                 filled = listOfTransactions
@@ -48,7 +47,7 @@ class OrderHistory() {
                             SellOrderHistory(
                                 orderId = orderID + 1,
                                 price = order.price,
-                                quantity = order.placedQuantity,
+                                quantity = order.quantity,
                                 type = order.type,
                                 status = order.status,
                                 filled = listOfTransactions,

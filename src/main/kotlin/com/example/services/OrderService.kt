@@ -14,7 +14,7 @@ class OrderService{
 
     private val performOrder = PerformOrder()
     fun placeBuyOrder(order: Order,username:String): OrderResponse {
-        val orderAmount = order.price * order.placedQuantity
+        val orderAmount = order.price * order.quantity
 
         orderList[order.orderId] = order
         transactions[order.orderId] = mutableListOf()
@@ -40,15 +40,15 @@ class OrderService{
         // Locking
         when (order.esopType) {
             "PERFORMANCE" -> {
-                inventoryData[order.userName]!![0].free -= order.placedQuantity
-                inventoryData[order.userName]!![0].locked += order.placedQuantity
+                inventoryData[order.userName]!![0].free -= order.quantity
+                inventoryData[order.userName]!![0].locked += order.quantity
 
                 performOrder.performSells(order, username)
             }
 
             "NON_PERFORMANCE" -> {
-                inventoryData[order.userName]!![1].free -= order.placedQuantity
-                inventoryData[order.userName]!![1].locked += order.placedQuantity
+                inventoryData[order.userName]!![1].free -= order.quantity
+                inventoryData[order.userName]!![1].locked += order.quantity
 
                 performOrder.performSells(order, username)
             }

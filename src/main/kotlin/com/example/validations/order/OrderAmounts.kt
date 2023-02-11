@@ -64,7 +64,7 @@ fun validateOrder(
     val errorList = mutableListOf<String>()
     orderValidation(
         errorList,
-        currentOrder.placedQuantity,
+        currentOrder.quantity,
         currentOrder.type,
         currentOrder.price
     )
@@ -72,13 +72,13 @@ fun validateOrder(
     orderoverflowValidation(
         errorList,
         username,
-        currentOrder.placedQuantity,
+        currentOrder.quantity,
         currentOrder.price,
         currentOrder.type
     )
 
     if(currentOrder.type == "BUY"){
-        if (!ifSufficientAmountInWallet(username, currentOrder.placedQuantity * currentOrder.price)) {
+        if (!ifSufficientAmountInWallet(username, currentOrder.quantity * currentOrder.price)) {
             errorList.add("Insufficient amount in wallet")
         }
     }
