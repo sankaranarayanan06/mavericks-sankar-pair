@@ -9,7 +9,19 @@ enum class EsopType(val type: String) {
 }
 
 data class Inventory(
-    var free: BigInteger = BigInteger.ZERO,
-    var locked: BigInteger = BigInteger.ZERO,
-    var type: EsopType = NON_PERFORMANCE
-)
+    private var free: BigInteger = BigInteger.ZERO,
+    private var locked: BigInteger = BigInteger.ZERO,
+    private var type: EsopType = NON_PERFORMANCE
+) {
+    fun getFreeEsop(): BigInteger {
+        return free
+    }
+
+    fun getLockedEsop(): BigInteger {
+        return locked
+    }
+
+    fun getType(): EsopType {
+        return type
+    }
+}
