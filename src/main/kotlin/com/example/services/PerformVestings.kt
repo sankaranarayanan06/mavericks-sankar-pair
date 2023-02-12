@@ -37,11 +37,11 @@ fun performESOPVestings(username: String)
         if(vestingEntry.time <= systemTime)
         {
             if(vestingEntry.esopType == "PERFORMANCE"){
-                inventoryData[username]!![0].free += vestingEntry.quantity
+                inventoryData[username]!![0].addFreeEsops(vestingEntry.quantity)
             }
             else
             {
-                inventoryData[username]!![1].free += vestingEntry.quantity
+                inventoryData[username]!![1].addFreeEsops(vestingEntry.quantity)
             }
         }
         else

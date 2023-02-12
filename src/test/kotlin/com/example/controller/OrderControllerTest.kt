@@ -4,7 +4,9 @@ import com.example.constants.allUsers
 import com.example.constants.orderList
 import com.example.dto.OrderDTO
 import com.example.model.*
+import com.example.model.inventory.EsopType
 import com.example.model.order.Order
+import com.example.model.order.OrderType
 import com.example.model.user.User
 import com.example.services.InventoryHandler
 import com.example.services.WalletHandler
@@ -54,14 +56,14 @@ class OrderControllerTest {
     @Test
     fun `Place a valid sell order`() {
         // Arrange
-        InventoryHandler.addToNonPerformanceInventory(BigInteger.valueOf(100), sellerUser.userName)
-        val order = OrderDTO(BigInteger.TEN, BigInteger.TEN, "SELL", "PERFORMANCE")
+        InventoryHandler.addToNonPerformanceInventory(BigInteger.valueOf(100), sellerUser.getUserName())
+        val order = OrderDTO(BigInteger.TEN, BigInteger.TEN, OrderType.SELL, EsopType.PERFORMANCE)
         val expectedResponse =
             Gson().toJson(mutableMapOf("orderId" to "1", "quantity" to 10, "type" to "SELL", "price" to 10))
 
         // Act
         val request = HttpRequest.POST(
-            "/user/${sellerUser.userName}/order", order
+            "/user/${sellerUser.getUserName()}/order", order
         )
 
         // Assert
@@ -77,14 +79,14 @@ class OrderControllerTest {
     @Test
     fun `Place a valid buy order`() {
         // Arrange
-        WalletHandler.addFreeAmountInWallet(buyerUser.userName, BigInteger.valueOf(100))
-        val order = OrderDTO(BigInteger.valueOf(10), BigInteger.TEN, "BUY", "")
+        WalletHandler.addFreeAmountInWallet(buyerUser.getUserName(), BigInteger.valueOf(100))
+        val order = OrderDTO(BigInteger.valueOf(10), BigInteger.TEN, OrderType.BUY, EsopType.NONE)
         val expectedResponse =
             Gson().toJson(mutableMapOf("orderId" to "1", "quantity" to 10, "type" to "BUY", "price" to 10))
 
         // Act
         val request = HttpRequest.POST(
-            "/user/${buyerUser.userName}/order", order
+            "/user/${buyerUser.getUserName()}/order", order
         )
 
         // Assert

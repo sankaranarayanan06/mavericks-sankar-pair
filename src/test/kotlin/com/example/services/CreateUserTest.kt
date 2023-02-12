@@ -29,7 +29,7 @@ class CreateUserTest {
 
         createUser(firstName, lastName, phoneNumber, email, userName)
 
-        assertEquals(allUsers[userName]!!.userName, userName)
+        assertEquals(allUsers[userName]!!.getUserName(), userName)
         assertEquals(walletList[userName]!!.freeAmount, 0.toBigInteger())
         assertEquals(walletList[userName]!!.lockedAmount, 0.toBigInteger())
     }

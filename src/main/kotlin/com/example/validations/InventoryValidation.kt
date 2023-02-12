@@ -12,13 +12,13 @@ class InventoryValidation {
         quantityToAdd: BigInteger,
         type: String
     ) {
-        if (performance.free + performance.locked + nonPerformance.free + nonPerformance.locked > Limits.MAX_INVENTORY_QUANTITY) {
+        if (performance.getFreeEsop() + performance.getLockedEsop() + nonPerformance.getFreeEsop() + nonPerformance.getLockedEsop() > Limits.MAX_INVENTORY_QUANTITY) {
             inventoryError.add("ESOPs Quantity out of Range. Max: ${Limits.MAX_INVENTORY_QUANTITY}, Min: 1")
         }
         if (quantityToAdd !in BigInteger.ONE..Limits.MAX_INVENTORY_QUANTITY) {
             inventoryError.add("ESOPs Quantity out of Range. Max: ${Limits.MAX_INVENTORY_QUANTITY}, Min: 1")
         }
-        if (performance.free + performance.locked + nonPerformance.free + nonPerformance.locked + quantityToAdd > Limits.MAX_INVENTORY_QUANTITY) {
+        if (performance.getFreeEsop() + performance.getLockedEsop() + nonPerformance.getFreeEsop()   + nonPerformance.getLockedEsop() + quantityToAdd > Limits.MAX_INVENTORY_QUANTITY) {
             inventoryError.add("Inventory limit of ${Limits.MAX_INVENTORY_QUANTITY} exceeded")
         }
         if (type != "PERFORMANCE" && type != "NON_PERFORMANCE") {

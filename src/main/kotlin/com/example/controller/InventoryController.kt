@@ -43,7 +43,8 @@ class InventoryController {
             }
 
             if (type == "PERFORMANCE") {
-                inventoryList[0].free += quantityToAdd
+                inventoryList[0].getFreeEsop()
+//                inventoryList[0].free += quantityToAdd
             } else if (type == "NON_PERFORMANCE") {
                 // Vesting period for non performance esops
 

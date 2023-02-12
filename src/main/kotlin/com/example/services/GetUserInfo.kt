@@ -8,9 +8,9 @@ fun getUserInfo(username: String): MutableMap<String, Any> {
 
     val userData: MutableMap<String, Any> = mutableMapOf<String, Any>()
 
-    userData["firstName"] = user!!.firstName
-    userData["lastName"] = user.lastName
-    userData["phoneNumber"] = user.phoneNumber
-    userData["email"] = user.email
+    userData["firstName"] = user!!.getFirstName()
+    userData["lastName"] = user.getLastName()
+    userData["phoneNumber"] = user.getPhoneNumber()
+    userData["email"] = user.getEmail()
     return userData
 }

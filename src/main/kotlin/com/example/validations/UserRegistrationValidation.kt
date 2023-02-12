@@ -36,7 +36,7 @@ fun nullBoolean(variable: Any?) = variable == null
 
 fun isUniquePhoneNumber(phoneNumber: String): Boolean {
     for (user in allUsers.keys) {
-        if (allUsers[user]?.phoneNumber == phoneNumber) {
+        if (allUsers[user]?.getPhoneNumber() == phoneNumber) {
             return false
         }
     }
@@ -45,7 +45,7 @@ fun isUniquePhoneNumber(phoneNumber: String): Boolean {
 
 fun isUniqueEmail(email: String): Boolean {
     for (user in allUsers.keys) {
-        if (allUsers[user]?.email == email) {
+        if (allUsers[user]?.getEmail() == email) {
             return false
         }
     }

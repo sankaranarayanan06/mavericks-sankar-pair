@@ -6,6 +6,7 @@ import com.example.model.history.BuyOrderHistory
 import com.example.model.response.ErrorResponse
 import com.example.model.history.SellOrderHistory
 import com.example.model.history.Transaction
+import com.example.model.order.OrderType
 import com.example.services.performESOPVestings
 import com.example.validations.isUserExists
 import io.micronaut.http.HttpResponse
@@ -31,7 +32,7 @@ class OrderHistory() {
                         listOfTransactions.add(transaction)
                     }
 
-                    if (order.type == "BUY") {
+                    if (order.type == OrderType.BUY) {
                         listOfOrders.add(
                             BuyOrderHistory(
                                 orderId = orderID,

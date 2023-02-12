@@ -8,6 +8,10 @@ data class Inventory(
     private var locked: BigInteger = BigInteger.ZERO,
     private var type: EsopType = NON_PERFORMANCE
 ) {
+    fun addFreeEsops(amount: BigInteger){
+        free += amount
+    }
+
     fun getFreeEsop(): BigInteger {
         return free
     }
@@ -18,5 +22,17 @@ data class Inventory(
 
     fun getType(): EsopType {
         return type
+    }
+
+    fun addLockedEsops(quantity: BigInteger) {
+        locked += quantity
+    }
+
+    fun removeFreeEsops(quantity: BigInteger) {
+        free -= quantity
+    }
+
+    fun removeLockedEsops(quantity: BigInteger){
+        locked -= quantity
     }
 }

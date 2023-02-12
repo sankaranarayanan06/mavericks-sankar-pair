@@ -6,6 +6,8 @@ import com.example.constants.transactions
 import com.example.controller.walletList
 import com.example.model.order.Order
 import com.example.model.history.Transaction
+import com.example.model.inventory.EsopType
+import com.example.model.order.OrderStatus
 import java.math.BigInteger
 
 class PerformOrder {
@@ -51,11 +53,11 @@ class PerformOrder {
                 walletList[buyer.userName]!!.lockedAmount -= (orderExecutionQuantity * seller.price)
 
 
-                inventoryData[buyer.userName]!![1].free += orderExecutionQuantity
-                if (seller.esopType == "PERFORMANCE")
-                    inventoryData[sellerUser]!![0].locked -= orderExecutionQuantity
+                inventoryData[buyer.userName]!![1].addFreeEsops(orderExecutionQuantity)
+                if (seller.esopType == EsopType.PERFORMANCE)
+                    inventoryData[sellerUser]!![0].removeLockedEsops(orderExecutionQuantity)
                 else
-                    inventoryData[sellerUser]!![1].locked -= orderExecutionQuantity
+                    inventoryData[sellerUser]!![1].removeLockedEsops(orderExecutionQuantity)
 
                 if (!transactions.containsKey(seller.orderId)) {
                     transactions[seller.orderId] = mutableListOf()
@@ -92,7 +94,7 @@ class PerformOrder {
     }
 
     private fun calculatePlatformFee(seller: Order, orderTotal: BigInteger): BigInteger? {
-        return if (orderList[seller.orderId]!!.esopType != "PERFORMANCE") (orderTotal * BigInteger.TWO) / BigInteger.valueOf(
+        return if (orderList[seller.orderId]!!.esopType != EsopType.PERFORMANCE) (orderTotal * BigInteger.TWO) / BigInteger.valueOf(
             100
         ) else BigInteger.ZERO
     }
@@ -108,7 +110,7 @@ class PerformOrder {
 
             // Find if seller with PERFORMANCE order fulfils the deal
             for ((orderID, orderPrev) in orderList) {
-                if ((orderPrev.esopType == "PERFORMANCE")) {
+                if ((orderPrev.esopType == EsopType.PERFORMANCE)) {
                     val pair = findSeller(orderPrev, currentOrder, minSellerPrice, sellerID, orderID)
                     minSellerPrice = pair.first
                     sellerID = pair.second
@@ -118,7 +120,7 @@ class PerformOrder {
             // If not found any performance esop seller then go for normal esop seller
             if (sellerID == Int.MIN_VALUE) {
                 for ((orderID, orderPrev) in orderList) {
-                    if (orderPrev.esopType == "NON_PERFORMANCE") {
+                    if (orderPrev.esopType == EsopType.NON_PERFORMANCE) {
                         val pair = findSeller(orderPrev, currentOrder, minSellerPrice, sellerID, orderID)
                         minSellerPrice = pair.first
                         sellerID = pair.second
@@ -136,7 +138,7 @@ class PerformOrder {
 
 
                 val platformCharge =
-                    if (orderList[sellerID]!!.esopType != "PERFORMANCE") (orderTotal * BigInteger.TWO) / BigInteger.valueOf(
+                    if (orderList[sellerID]!!.esopType != EsopType.PERFORMANCE) (orderTotal * BigInteger.TWO) / BigInteger.valueOf(
                         100
                     ) else BigInteger.ZERO
 
@@ -188,14 +190,14 @@ class PerformOrder {
         WalletHandler.addAmount(sellerID, transQuantity * minSellerPrice - platformCharge)
 
         // Reducing the esops from seller account
-        if (orderList[sellerID]!!.esopType == "PERFORMANCE") {
-            inventoryData[orderList[sellerID]!!.userName]!![0].locked -= transQuantity
+        if (orderList[sellerID]!!.esopType == EsopType.PERFORMANCE) {
+            inventoryData[orderList[sellerID]!!.userName]!![0].removeLockedEsops(transQuantity)
         } else {
-            inventoryData[orderList[sellerID]!!.userName]!![1].locked -= transQuantity
+            inventoryData[orderList[sellerID]!!.userName]!![1].removeLockedEsops(transQuantity)
         }
 
         //Adding ESOP to buyers account
-        inventoryData[username]!![1].free += transQuantity
+        inventoryData[username]!![1].addFreeEsops(transQuantity)
     }
 
     private fun findSeller(
@@ -207,7 +209,7 @@ class PerformOrder {
     ): Pair<BigInteger, Int> {
         var minSellerPrice1 = minSellerPrice
         var sellerID1 = sellerID
-        if ((orderPrev.orderId != currentOrder.orderId) && (orderPrev.status != "filled") && (currentOrder.type != orderPrev.type) && (currentOrder.price >= orderPrev.price)) {
+        if ((orderPrev.orderId != currentOrder.orderId) && (orderPrev.status != OrderStatus.FILLED) && (currentOrder.type != orderPrev.type) && (currentOrder.price >= orderPrev.price)) {
             if (orderPrev.price < minSellerPrice1) {
                 minSellerPrice1 = orderPrev.price
                 sellerID1 = orderID

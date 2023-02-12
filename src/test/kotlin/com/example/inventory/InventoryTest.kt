@@ -36,9 +36,9 @@ class InventoryTest {
         )
         addUser(user)
 
-        InventoryHandler.addToNonPerformanceInventory(BigInteger.valueOf(50), user.userName)
+        InventoryHandler.addToNonPerformanceInventory(BigInteger.valueOf(50), user.getUserName())
 
-        assertEquals(BigInteger.valueOf(50), InventoryHandler.getFreeNonPerformanceInventory(user.userName))
+        assertEquals(BigInteger.valueOf(50), InventoryHandler.getFreeNonPerformanceInventory(user.getUserName()))
 
     }
 
@@ -53,9 +53,9 @@ class InventoryTest {
         )
         addUser(user)
 
-        InventoryHandler.lockNonPerformanceInventory(BigInteger.valueOf(50), user.userName)
+        InventoryHandler.lockNonPerformanceInventory(BigInteger.valueOf(50), user.getUserName())
 
-        assertEquals(BigInteger.valueOf(50), InventoryHandler.getLockedNonPerformanceInventory(user.userName))
+        assertEquals(BigInteger.valueOf(50), InventoryHandler.getLockedNonPerformanceInventory(user.getUserName()))
 
     }
 
@@ -70,9 +70,9 @@ class InventoryTest {
         )
         addUser(user)
 
-        InventoryHandler.addToPerformanceInventory(BigInteger.valueOf(50), user.userName)
+        InventoryHandler.addToPerformanceInventory(BigInteger.valueOf(50), user.getUserName())
 
-        assertEquals(BigInteger.valueOf(50), InventoryHandler.getFreePerformanceInventory(user.userName))
+        assertEquals(BigInteger.valueOf(50), InventoryHandler.getFreePerformanceInventory(user.getUserName()))
 
     }
 
@@ -87,9 +87,9 @@ class InventoryTest {
         )
         addUser(user)
 
-        InventoryHandler.lockPerformanceInventory(BigInteger.valueOf(50), user.userName)
+        InventoryHandler.lockPerformanceInventory(BigInteger.valueOf(50), user.getUserName())
 
-        assertEquals(BigInteger.valueOf(50), InventoryHandler.getLockedPerformanceInventory(user.userName))
+        assertEquals(BigInteger.valueOf(50), InventoryHandler.getLockedPerformanceInventory(user.getUserName()))
 
     }
 
@@ -105,7 +105,7 @@ class InventoryTest {
         addUser(user)
 
         val status =
-            InventoryHandler.addToPerformanceInventory(Limits.MAX_INVENTORY_QUANTITY + BigInteger.ONE, user.userName)
+            InventoryHandler.addToPerformanceInventory(Limits.MAX_INVENTORY_QUANTITY + BigInteger.ONE, user.getUserName())
 
         assertEquals(false, status)
     }

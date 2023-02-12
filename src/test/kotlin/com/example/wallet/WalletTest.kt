@@ -1,7 +1,9 @@
 package com.example.wallet
 
 import com.example.constants.Limits
+import com.example.model.inventory.EsopType
 import com.example.model.order.Order
+import com.example.model.order.OrderType
 import com.example.model.user.User
 import com.example.services.OrderService
 import com.example.services.WalletHandler
@@ -31,7 +33,7 @@ class WalletTest {
     @Test
     fun `It should test for insufficient amount in wallet`() {
         val buyerName = "03Anushka"
-        val order = Order(BigInteger.valueOf(100),BigInteger.ONE,"BUY",buyerName)
+        val order = Order(BigInteger.valueOf(100),BigInteger.ONE,buyerName,OrderType.BUY,EsopType.NONE)
         WalletHandler.addFreeAmountInWallet(buyerName, BigInteger.valueOf(90))
         val expectedResponse = listOf("Insufficient amount in wallet")
 
@@ -44,7 +46,7 @@ class WalletTest {
     fun `It should test wallet amount`() {
         val buyerName = "03Anushka"
         WalletHandler.addFreeAmountInWallet(buyerName, BigInteger.valueOf(500))
-        val order = Order(BigInteger.valueOf(100),BigInteger.ONE,"BUY",buyerName)
+        val order = Order(BigInteger.valueOf(100),BigInteger.ONE,buyerName,OrderType.BUY,EsopType.NONE)
 
         orderService.placeBuyOrder(order,buyerName)
 
@@ -57,10 +59,8 @@ class WalletTest {
     fun `It should test for maximum wallet amount limit`() {
         val buyerName = "03Anushka"
         val walletValidation = WalletValidation()
-        val buyOrder = Order()
-        buyOrder.remainingQuantity = BigInteger.ONE
-        buyOrder.quantity = buyOrder.remainingQuantity
-        buyOrder.price = BigInteger.valueOf(100)
+        val buyOrder = Order(BigInteger.valueOf(100),BigInteger.ONE,buyerName,OrderType.BUY,EsopType.NONE)
+
 
         WalletHandler.addFreeAmountInWallet(buyerName, Limits.MAX_WALLET_AMOUNT)
 

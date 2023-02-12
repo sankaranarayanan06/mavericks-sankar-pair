@@ -1,6 +1,7 @@
 package com.example.controller
 
 import com.example.constants.inventoryData
+import com.example.model.inventory.EsopType
 import com.example.model.inventory.Inventory
 import com.example.services.*
 import com.example.validations.isUserExists
@@ -20,7 +21,7 @@ class AccountInformation {
             performESOPVestings(username)
 
             val inventoryList: MutableList<Inventory> =
-                mutableListOf(Inventory(type = "PERFORMANCE"), Inventory(type = "NON_PERFORMANCE"))
+                mutableListOf(Inventory(type = EsopType.PERFORMANCE), Inventory(type = EsopType.NON_PERFORMANCE))
             inventoryList[0] = inventoryData[username]?.get(0)!!
             inventoryList[1] = inventoryData[username]?.get(1)!!
 
