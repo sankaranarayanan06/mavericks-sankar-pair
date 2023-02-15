@@ -51,4 +51,4 @@ jobs:
         host: ${{ secrets.HOST_DNS }}
         username: ${{ secrets.USERNAME }}
         script: |
-          scp -i sahdowJar ec2user@ec2-3-109-62-206.ap-south-1.compute.amazonaws.com:~
+          scp -i sahdowJar ec2user@3.109.62.206:~
