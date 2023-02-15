@@ -46,7 +46,7 @@ jobs:
         name: shadowJar
         
     - name: print the JAR
-      run: echo shadowJar
+      run: cat shadowJar
       
     - name: Checkout the files
       uses: actions/checkout@v2
