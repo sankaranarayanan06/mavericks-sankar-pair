@@ -20,6 +20,7 @@ jobs:
         ./gradlew test
         
   build-gradle-project:
+    needs: test
     runs-on: ubuntu-latest
     steps:
     - name: Checkout project sources
@@ -35,6 +36,7 @@ jobs:
         path: build/libs/
   
   deploy-to-ec2:
+    needs: build-gradle-project
     name: Deploy to EC2
     runs-on: ubuntu-latest
     
@@ -49,5 +51,5 @@ jobs:
         host: ${{ secrets.HOST_DNS }}
         username: ${{ secrets.USERNAME }}
         script: |
-          scp ./gradle/wrapper/gradle-wrapper.jar ec2user@ec2-3-109-62-206.ap-south-1.compute.amazonaws.com
+          scp -i /shadowJar ec2user@ec2-3-109-62-206.ap-south-1.compute.amazonaws.com
           echo "Hello world!"
