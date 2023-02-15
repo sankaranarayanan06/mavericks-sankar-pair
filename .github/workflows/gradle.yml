@@ -1,0 +1,46 @@
+name: CI/CD PIPELINE
+
+on:
+  push:
+    branches: ["deploy-sankar-satyam"]
+  pull_request:
+    branches: ["deploy-sankar-satyam"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        java-version: '17'
+    - name: Run test
+      run:  |
+        ./gradlew test
+        
+  build-gradle-project:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout project sources
+      uses: actions/checkout@v3
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v3
+    - name: Run build with Gradle Wrapper
+      run: ./gradlew build
+  
+  deploy-to-ec2:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout the files
+      uses: actions/checkout@v3
+      
+    - name: Deploy to EC2
+      uses: easingthemes/ssh-deploy@deploy-sankar-satyam
+      env:
+        SSH_PRIVATE_KEY: ${ { secrets.EC2_SSH_KEY }}
+        REMOTE_HOST: ${ { secrets.HOST_DNS }}
+        REMOTE_USER: ${ { secrets.USERNAME }}
+        TARGET: ${ { secrets.TARGET_DIR }}
