@@ -44,9 +44,6 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: shadowJar
-        
-    - name: print the JAR
-      run: cat shadowJar
       
     - name: Checkout the files
       uses: actions/checkout@v2
