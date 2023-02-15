@@ -32,7 +32,7 @@ jobs:
     - name: Upload shadowJar
       uses: actions/upload-artifact@v3
       with:
-        name: shadowJar.jar
+        name: shadowJar
         path: build/libs/
   
   deploy-to-ec2:
@@ -47,7 +47,7 @@ jobs:
     - name: Download a Build Artifact
       uses: actions/download-artifact@v3.0.2
       with:
-        name: shadowJar.jar
+        name: shadowJar
         
     - name: Deploy to EC2
       uses: appleboy/ssh-action@v0.1.7
@@ -56,4 +56,4 @@ jobs:
         host: ${{ secrets.HOST_DNS }}
         username: ${{ secrets.USERNAME }}
         script: |
-          scp -i sahdowJar.jar ec2user@ec2-3-109-62-206.ap-south-1.compute.amazonaws.com:~
+          scp -i sahdowJar ec2user@ec2-3-109-62-206.ap-south-1.compute.amazonaws.com:~
