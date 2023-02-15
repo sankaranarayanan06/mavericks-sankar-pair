@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout project sources
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
     - name: Run build with Gradle Wrapper
@@ -35,7 +35,7 @@ jobs:
     
     steps:
     - name: Checkout the files
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
       
     - name: Deploy to EC2
       uses: sankaranarayanan06/mavericks-sankar-pair@deploy-sankar-satyam
