@@ -26,8 +26,13 @@ jobs:
       uses: actions/checkout@v2
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
-    - name: Run build with Gradle Wrapper
-      run: ./gradlew build
+    - name: Create the shadowJar
+      run: ./gradlew shadowJar
+    - name: Upload shadowJar
+      uses: actions/upload-artifact@v3
+      with:
+        name: shadowJar
+        path: path/to/artifact/
   
   deploy-to-ec2:
     name: Deploy to EC2
