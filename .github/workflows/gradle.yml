@@ -41,6 +41,13 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+    - uses: actions/download-artifact@v3
+      with:
+        name: shadowJar
+        
+    - name: print the JAR
+      run: echo shadowJar
+      
     - name: Checkout the files
       uses: actions/checkout@v2
       
@@ -53,8 +60,7 @@ jobs:
         username: ${{ secrets.USERNAME }}
         source: shadowJar
       
-    - name: cat shadowJar
-      run: cat shadowJar
+
         
     - name: Deploy to EC2
       uses: appleboy/ssh-action@v0.1.7
