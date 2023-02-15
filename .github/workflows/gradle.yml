@@ -32,7 +32,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: shadowJar
-        path: path/to/artifact/
+        path: build/libs/
   
   deploy-to-ec2:
     name: Deploy to EC2
