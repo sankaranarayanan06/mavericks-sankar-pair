@@ -51,7 +51,10 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         host: ${{ secrets.HOST_DNS }}
         username: ${{ secrets.USERNAME }}
-        source: "shadowJar"
+        source: shadowJar
+      
+    - name: cat shadowJar
+      run: cat shadowJar
         
     - name: Deploy to EC2
       uses: appleboy/ssh-action@v0.1.7
