@@ -33,7 +33,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: shadowJar
-        path: build/libs/
+        path: build/libs/maverics-0.1-all.jar
   
   deploy-to-ec2:
     needs: build-gradle-project
