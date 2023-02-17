@@ -54,7 +54,7 @@ jobs:
         host: ${{ secrets.HOST_DNS }}
         username: ${{ secrets.USERNAME }}
         source: "maverics-0.1-all.jar"
-        target: "/home/esop"
+        target: "/esop"
 
         
     - name: Deploy to EC2
