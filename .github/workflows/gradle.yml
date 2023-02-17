@@ -11,29 +11,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        java-version: '17'
-    - name: Run test
-      run:  |
-        ./gradlew test
-        
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          java-version: '17'
+      - name: Run test
+        run:  |
+          ./gradlew test
+
   build-gradle-project:
     needs: test
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout project sources
-      uses: actions/checkout@v2
-    - name: Setup Gradle
-      uses: gradle/gradle-build-action@v2
-    - name: Create the shadowJar
-      run: ./gradlew shadowJar
-    - name: Upload shadowJar
-      uses: actions/upload-artifact@v3
-      with:
-        name: maverics-0.1-all
-        path: build/libs/maverics-0.1-all.jar
+      - name: Checkout project sources
+        uses: actions/checkout@v2
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+      - name: Create the shadowJar
+        run: ./gradlew shadowJar
+      - name: Upload shadowJar
+        uses: actions/upload-artifact@v3
+        with:
+          name: maverics-0.1-all
+          path: build/libs/maverics-0.1-all.jar
   
   deploy-to-ec2:
     needs: build-gradle-project
@@ -41,27 +41,29 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout project sources
-      uses: actions/checkout@v2
-    - uses: actions/download-artifact@v3
-      with:
-        name: maverics-0.1-all
-      
-    - name: copy file to EC2
-      uses: appleboy/scp-action@master
-      with:
-        key: ${{ secrets.EC2_SSH_KEY }}
-        host: ${{ secrets.HOST_DNS }}
-        username: ${{ secrets.USERNAME }}
-        source: "maverics-0.1-all.jar"
-        target: "./esop"
+      - name: Checkout project sources
+        uses: actions/checkout@v2
+      - uses: actions/download-artifact@v3
+        with:
+          name: maverics-0.1-all
 
-        
-    - name: Deploy to EC2
-      uses: appleboy/ssh-action@v0.1.7
-      with:
-        key: ${{ secrets.EC2_SSH_KEY }}
-        host: ${{ secrets.HOST_DNS }}
-        username: ${{ secrets.USERNAME }}
-        script: |
-          echo "Hello World"
+      - name: copy file to EC2
+        uses: appleboy/scp-action@master
+        with:
+          key: ${{ secrets.EC2_SSH_KEY }}
+          host: ${{ secrets.HOST_DNS }}
+          username: ${{ secrets.USERNAME }}
+          source: "maverics-0.1-all.jar"
+          target: "./esop"
+
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          key: ${{ secrets.EC2_SSH_KEY }}
+          host: ${{ secrets.HOST_DNS }}
+          username: ${{ secrets.USERNAME }}
+          script: |
+            cd esop
+            java -jar maverics-0.1-all.jar
+            nohup MICRONAUT_SERVER_PORT=80 ./gradlew run 
