@@ -53,7 +53,7 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         host: ${{ secrets.HOST_DNS }}
         username: ${{ secrets.USERNAME }}
-        source: "build/libs/maverics-0.1-all.jar"
+        source: "maverics-0.1-all.jar"
         target: "/home/esop"
 
         
