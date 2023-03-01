@@ -19,10 +19,10 @@ jobs:
         run : terraform -chdir=infrastructure init -backend-config="access_key=${{ secrets.EC2_ACCESS_ID }}" -backend-config="secret_key=${{ secrets.EC2_SECRET_ACCESS_KEY}}" -backend-config="region=ap-south-1"
 
       - name: Terraform plan
-        run: terraform -chdir=infrastructure plan -out=tfplan
+        run: terraform -chdir=infrastructure  plan -out=tfplan -backend-config="access_key=${{ secrets.EC2_ACCESS_ID }}" -backend-config="secret_key=${{ secrets.EC2_SECRET_ACCESS_KEY}}" -backend-config="region=ap-south-1"
 
-      - name: Terraform init
-        run: terraform -chdir=infrastructure apply "tfplan"
+      - name: Terraform apply
+        run: terraform -chdir=infrastructure apply "tfplan" -backend-config="access_key=${{ secrets.EC2_ACCESS_ID }}" -backend-config="secret_key=${{ secrets.EC2_SECRET_ACCESS_KEY}}" -backend-config="region=ap-south-1"
 
 
 
