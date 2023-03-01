@@ -30,7 +30,7 @@ data "aws_security_group" "security-group" {
 }
 
 resource "aws_instance" "app_server" {
-  ami             =  "ami-0e742cca61fb65051"
+  ami             = "ami-0e742cca61fb65051"
   instance_type   = "t2.micro"
   key_name        = data.aws_key_pair.key-pair.key_name
   security_groups = [data.aws_security_group.security-group.name]
