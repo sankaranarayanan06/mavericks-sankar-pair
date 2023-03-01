@@ -16,7 +16,7 @@ jobs:
         uses: hashicorp/setup-terraform@v1
 
       - name: Terraform init
-        run : terraform -chdir=infrastructure init
+        run : terraform -chdir=infrastructure init -backend-config="access_key=${{ secrets.ACCESS_KEY }}" -backend-config="secret_key=${{ secrets.ACCESS_VALUE}}" -backend-config="region=<your region>"
 
       - name: Terraform plan
         run: terraform -chdir=infrastructure plan -out=tfplan
