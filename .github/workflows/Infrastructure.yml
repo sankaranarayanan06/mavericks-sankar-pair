@@ -16,7 +16,7 @@ jobs:
         uses: hashicorp/setup-terraform@v1
 
       - name: Terraform init
-        run : terraform -chdir=infrastructure init -backend-config="access_key=${{ secrets.EC2_ACCESS_ID }}" -backend-config="secret_key=${{ secrets.EC2_SECRET_ACCESS_KEY}}" -backend-config="region=ap-south-1"
+        run : AWS_ACCESS_KEY_ID=${{ secrets.EC2_ACCESS_ID }} AWS_SECRET_ACCESS_KEY=${{ secrets.EC2_SECRET_ACCESS_KEY }} terraform -chdir=infrastructure init
 
       - name: Terraform plan
         run: AWS_ACCESS_KEY_ID=${{ secrets.EC2_ACCESS_ID }} AWS_SECRET_ACCESS_KEY=${{ secrets.EC2_SECRET_ACCESS_KEY }} terraform -chdir=infrastructure  plan -out=tfplan.json
