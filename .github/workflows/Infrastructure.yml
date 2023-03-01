@@ -21,9 +21,6 @@ jobs:
       - name: Terraform plan
         run: AWS_ACCESS_KEY_ID=${{ secrets.EC2_ACCESS_ID }} AWS_SECRET_ACCESS_KEY=${{ secrets.EC2_SECRET_ACCESS_KEY }} terraform -chdir=infrastructure  plan -out=tfplan
 
-      - name: Sample
-        run: ls
-
       - name: Terraform Apply
         if: github.ref == 'refs/heads/infra-main' && github.event_name == 'push'
-        run: terraform apply "tfplan"
+        run: terraform -chdir=infrastructure apply "tfplan"
