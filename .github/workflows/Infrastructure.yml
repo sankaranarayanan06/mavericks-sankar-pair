@@ -24,8 +24,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with: 
-          name: plan
-
+          name: tfstate
+          path: infrastructure/tfstate
 
 
 
