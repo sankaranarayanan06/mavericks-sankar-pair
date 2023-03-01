@@ -17,8 +17,7 @@ jobs:
 
       - name: Terraform init
         run :
-            cd infrastructure
-            terraform fmt
+          terraform -chdir=infrastructure fmt
 
 
 
