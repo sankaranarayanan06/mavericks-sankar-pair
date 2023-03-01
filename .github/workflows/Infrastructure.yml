@@ -28,7 +28,7 @@ jobs:
           path: tfplan
 
       - name: Download Artifact
-      - uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v3
         with:
           name: tfplan
 
