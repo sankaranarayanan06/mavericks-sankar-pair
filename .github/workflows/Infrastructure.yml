@@ -19,13 +19,13 @@ jobs:
         run : AWS_ACCESS_KEY_ID=${{ secrets.EC2_ACCESS_ID }} AWS_SECRET_ACCESS_KEY=${{ secrets.EC2_SECRET_ACCESS_KEY }} terraform -chdir=infrastructure init
 
       - name: Terraform plan
-        run: AWS_ACCESS_KEY_ID=${{ secrets.EC2_ACCESS_ID }} AWS_SECRET_ACCESS_KEY=${{ secrets.EC2_SECRET_ACCESS_KEY }} terraform -chdir=infrastructure  plan -out=./tfstate/tfplan
+        run: AWS_ACCESS_KEY_ID=${{ secrets.EC2_ACCESS_ID }} AWS_SECRET_ACCESS_KEY=${{ secrets.EC2_SECRET_ACCESS_KEY }} terraform -chdir=infrastructure  plan -out=tfplan
         
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with: 
           name: tfplan
-          path: tfstate/tfplan
+          path: ./tfplan
 
       - name: Download Artifact
         uses: actions/download-artifact@v3
